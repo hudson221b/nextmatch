@@ -16,7 +16,12 @@ export const TopNav = () => {
       maxWidth="xl"
       className="bg-gradient-to-r from-purple-400 to-purple-700"
       classNames={{
-        item: ["text-xl", "text-white", "uppercase", "data-[active='true'"],
+        item: [
+          "text-xl",
+          "text-white",
+          "uppercase",
+          "data-[active=true]:text-yellow-200",
+        ],
       }}
     >
       <NavbarBrand as={Link} href="/">
