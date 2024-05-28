@@ -15,7 +15,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <h1>This is root layout.tsx</h1>
         <UIProviders>{children}</UIProviders>
       </body>
     </html>
