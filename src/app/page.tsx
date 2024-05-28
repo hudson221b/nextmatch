@@ -1,4 +1,5 @@
 import { Button } from "@nextui-org/react"
+import Link from "next/link"
 import { FaRegSmile } from "react-icons/fa"
 
 export default function Home() {
@@ -9,7 +10,8 @@ export default function Home() {
         color="primary"
         variant="bordered"
         startContent={<FaRegSmile size={20} />}
-        
+        as={Link}
+        href="/members"
       >
         Click me
       </Button>
