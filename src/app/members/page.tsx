@@ -1,6 +1,6 @@
 import React from "react"
 
-const MembersPage = () => {
+export const MembersPage = () => {
   return <div> This will be the MembersPage</div>
 }
 

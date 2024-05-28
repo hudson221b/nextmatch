@@ -9,6 +9,7 @@ export default function Home() {
         color="primary"
         variant="bordered"
         startContent={<FaRegSmile size={20} />}
+        
       >
         Click me
       </Button>
