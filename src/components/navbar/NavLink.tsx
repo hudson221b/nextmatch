@@ -9,6 +9,7 @@ type Props = {
   label: string
 }
 
+
 export const NavLink = ({ href, label }: Props) => {
   const pathName = usePathname()
   return (

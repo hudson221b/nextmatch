@@ -5,7 +5,7 @@ import React from "react"
 const MembersPage: React.FC = () => {
   return (
     <div>
-      <div>This will be the MembersPage</div>
+      <div>This will be the Members Page</div>
       <Button as={Link} href="/">
         Go back home
       </Button>

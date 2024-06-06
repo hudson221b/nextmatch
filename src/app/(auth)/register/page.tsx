@@ -1,7 +1,7 @@
 import React from 'react'
 
 const RegisterPage: React.FC = () => {
-  return <div>This is register page</div>
+  return <h1>This is register paged</h1>
 }
 
 export default RegisterPage
