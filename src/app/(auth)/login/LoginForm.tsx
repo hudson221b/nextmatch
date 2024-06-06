@@ -1,8 +1,16 @@
+"use client"
 import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react"
 import React from "react"
+import { useForm } from "react-hook-form"
 import { GiPadlock } from "react-icons/gi"
 
 const LoginForm: React.FC = () => {
+  const { register, handleSubmit } = useForm()
+
+  const onSubmit = (data: any) => {
+    console.log(data)
+  }
+
   return (
     <Card className="w-2/5 mx-auto">
       <CardHeader className="flex flex-col items-center justify-center">
@@ -15,10 +23,20 @@ const LoginForm: React.FC = () => {
         </div>
       </CardHeader>
       <CardBody>
-        <form action="">
+        <form action="" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
-            <Input type="text" label="Email" variant="bordered" />
-            <Input type="password" label="Password" variant="bordered" />
+            <Input
+              {...register("email")}
+              type="text"
+              label="Email"
+              variant="bordered"
+            />
+            <Input
+              {...register("password")}
+              type="password"
+              label="Password"
+              variant="bordered"
+            />
             <Button fullWidth color="secondary" type="submit">
               Login
             </Button>
