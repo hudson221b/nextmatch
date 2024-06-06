@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <UIProviders>
-          <main className="p-10 container mx-auto ">{children}</main>
+          <main className="p-10 container mx-auto">{children}</main>
         </UIProviders>
       </body>
     </html>
