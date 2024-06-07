@@ -1,7 +1,12 @@
 import React from 'react'
+import RegisterForm from "./RegisterForm"
 
 const RegisterPage: React.FC = () => {
-  return <h1>This is register paged</h1>
+  return (
+    <div className="flex items-center justify-start">
+      <RegisterForm />
+    </div>
+  )
 }
 
 export default RegisterPage
