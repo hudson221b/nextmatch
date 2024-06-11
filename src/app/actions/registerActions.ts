@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { registerSchema, type RegisterSchema } from "@/lib/schemas/auth-schema"
-import type { ActionResult } from "../types"
+import type { ActionResult } from "../../types"
 import type { User } from "@prisma/client"
 
 export async function registerUser(

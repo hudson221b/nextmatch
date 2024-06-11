@@ -10,7 +10,8 @@ const RegisterForm: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
+    setError,
   } = useForm<RegisterSchema>({
     // resolver: zodResolver(registerSchema),
     mode: "onTouched",
@@ -18,7 +19,23 @@ const RegisterForm: React.FC = () => {
 
   const onSubmit = async (data: RegisterSchema) => {
     const result = await registerUser(data)
-    console.log({ result })
+    if (result.status === "error") {
+      // handle validation error
+      if (Array.isArray(result.error)) {
+        // set validation error to each form field
+        result.error.forEach(zodIssue => {
+          console.log({ zodIssue })
+          const fieldName = zodIssue.path.join(".") as
+            | "email"
+            | "name"
+            | "password"
+          setError(fieldName, { message: zodIssue.message })
+        })
+      } else {
+        // set server error
+        setError("root.serverError", { message: result.error })
+      }
+    }
   }
 
   return (
@@ -51,16 +68,23 @@ const RegisterForm: React.FC = () => {
             />
             <Input
               {...register("password")}
+              type={"password"}
               label="Password"
               variant="bordered"
               isInvalid={!!errors.password}
               errorMessage={errors.password?.message}
             />
+            {errors.root?.serverError && (
+              <p className="text-danger text-sm">
+                {errors.root.serverError.message}
+              </p>
+            )}
             <Button
               fullWidth
               color="secondary"
               type="submit"
               isDisabled={!isValid}
+              isLoading={isSubmitting}
             >
               Register
             </Button>
