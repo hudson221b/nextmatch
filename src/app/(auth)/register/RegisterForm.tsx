@@ -18,7 +18,7 @@ const RegisterForm: React.FC = () => {
 
   const onSubmit = async (data: RegisterSchema) => {
     const result = await registerUser(data)
-    console.log(result)
+    console.log({ result })
   }
 
   return (
