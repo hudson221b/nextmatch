@@ -4,12 +4,13 @@ import { prisma } from "@/lib/prisma"
 import { registerSchema, type RegisterSchema } from "@/lib/schemas/auth-schema"
 import type { ActionResult } from "../../types"
 import type { User } from "@prisma/client"
+import bcrypt from "bcryptjs"
 
 export async function registerUser(
   data: RegisterSchema
 ): Promise<ActionResult<User>> {
   try {
-    // validate data again on server side
+    // validate data on the server side
     const validated = registerSchema.safeParse(data) // do not throw when validation fails
     if (!validated.success) {
       return { status: "error", error: validated.error.issues }
@@ -23,10 +24,12 @@ export async function registerUser(
       return { status: "error", error: "User already exists" }
     }
 
+    const passwordHash = bcrypt.hashSync(password, 10)
     const user = await prisma.user.create({
       data: {
         name,
         email,
+        passwordHash,
       },
     })
 
