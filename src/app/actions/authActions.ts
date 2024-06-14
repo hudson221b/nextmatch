@@ -38,3 +38,11 @@ export async function registerUser(
     return { status: "error", error: "Interval server error" }
   }
 }
+
+export async function getUserByEmail(email: string) {
+  return prisma.user.findUnique({ where: { email } })
+}
+
+export async function getUserById(id: string) {
+  return prisma.user.findUnique({ where: { id } })
+}
