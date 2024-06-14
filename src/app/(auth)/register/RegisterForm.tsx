@@ -1,5 +1,5 @@
 "use client"
-import { registerUser } from "@/app/actions/registerActions"
+import { registerUser } from "@/app/actions/authActions"
 import { type RegisterSchema, registerSchema } from "@/lib/schemas/auth-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardHeader, CardBody, Button, Input } from "@nextui-org/react"
