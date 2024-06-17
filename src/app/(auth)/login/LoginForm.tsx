@@ -7,6 +7,7 @@ import { GiPadlock } from "react-icons/gi"
 import { loginSchema, type LoginSchema } from "@/lib/schemas/auth-schema"
 import { signInUser } from "@/app/actions/authActions"
 import { useRouter } from "next/navigation"
+import { toast } from "react-toastify"
 
 const LoginForm: React.FC = () => {
   const {
@@ -27,6 +28,8 @@ const LoginForm: React.FC = () => {
       router.push("./members")
     } else {
       console.log(result.error)
+      toast.error(result.error as string,{hideProgressBar: true});
+      
     }
   }
 
