@@ -1,4 +1,5 @@
 "use client"
+
 import {
   Avatar,
   Dropdown,
@@ -27,7 +28,7 @@ export default function UserMenu({ user }: UserMenuProps) {
           color="secondary"
           name={user?.name || "user avatar"}
           size="sm"
-          src=""
+          src="/public/images/user.png"
         />
       </DropdownTrigger>
       <DropdownMenu variant="flat" aria-label="user actions menu">
@@ -43,7 +44,7 @@ export default function UserMenu({ user }: UserMenuProps) {
           key="delete"
           className="text-danger"
           color="danger"
-          onClick={async () => signOut()}
+          onClick={async () => signOut({ redirect: true, callbackUrl: "/" })}
         >
           Log out
         </DropdownItem>
