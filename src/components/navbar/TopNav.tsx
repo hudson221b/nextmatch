@@ -33,7 +33,7 @@ export const TopNav = async () => {
         <NavLink href="/lists" label="Lists" />
         <NavLink href="/messages" label="Messages" />
       </NavbarContent>
-      <NavbarContent>
+      <NavbarContent justify="end">
         {session?.user ? (
           <UserMenu user={session.user} />
         ) : (
