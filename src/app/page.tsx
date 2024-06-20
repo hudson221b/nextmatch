@@ -4,6 +4,8 @@ import Link from "next/link"
 import { FaRegSmile } from "react-icons/fa"
 
 export default async function Home() {
+  // auth returns the result of its callbacks. 
+  // TODO: what about the results from multiple callbacks?
   const session = await auth()
   return (
     <div className="text-3xl text-red-700">
