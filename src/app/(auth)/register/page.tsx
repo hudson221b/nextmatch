@@ -1,8 +1,11 @@
 import React from 'react'
+import RegisterForm from "./RegisterForm"
 
-export const RegisterPage = () => {
+const RegisterPage: React.FC = () => {
   return (
-    <div>This is register page</div>
+    <div className="flex items-center justify-start">
+      <RegisterForm />
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 import React from "react"
 
-export const ListsPage = () => {
+const ListsPage: React.FC = () => {
   return <div>ListsPage</div>
 }
 

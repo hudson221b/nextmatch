@@ -1,6 +1,6 @@
 import React from "react"
 
-export const Messagespage = () => {
-  return <div>Messagespage</div>
+const Messagespage: React.FC = () => {
+  return <div>Messages page</div>
 }
 export default Messagespage
