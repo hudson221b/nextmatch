@@ -1,14 +1,15 @@
 import { Button } from "@nextui-org/react"
-import Link from "next/link"
 import React from "react"
+import { getMembers } from "../actions/memberActions"
 
-const MembersPage: React.FC = () => {
+const MembersPage: React.FC = async () => {
+  const members = await getMembers()
   return (
     <div>
-      <div>This will be the Members Page</div>
-      <Button as={Link} href="/">
-        Go back home
-      </Button>
+      <ul>
+        {members &&
+          members.map(member => <li key={member.id}>{member.name}</li>)}
+      </ul>
     </div>
   )
 }
