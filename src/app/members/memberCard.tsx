@@ -1,6 +1,7 @@
 import { Card, CardFooter, Image } from "@nextui-org/react"
 import type { Member } from "@prisma/client"
 import { differenceInYears } from "date-fns"
+import Link from "next/link"
 import React from "react"
 
 type memberCardProps = {
@@ -10,7 +11,7 @@ type memberCardProps = {
 export default function MemberCard({ member }: memberCardProps) {
   const age = differenceInYears(new Date(), member.dateOfBirth)
   return (
-    <Card fullWidth>
+    <Card fullWidth as={Link} href={`/members/${member.userId}`}>
       <Image
         isZoomed
         alt={`${member.name} image`}
