@@ -16,7 +16,7 @@ export default function MemberCard({ member }: memberCardProps) {
         width={300}
         className="aspect-square object-cover"
       />
-      <CardFooter>
+      <CardFooter className="absolute bottom-0 bg-black z-10 bg-dark-gradient">
         <div className="flex flex-col text-white">
           <span className="font-semibold">{member.name}</span>
           <span className="text-sm"> {member.city}</span>
