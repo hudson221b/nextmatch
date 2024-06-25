@@ -8,6 +8,9 @@ type memberCardProps = {
   member: Member
 }
 
+/**
+ * Used on /members page to display all members
+ */
 export default function MemberCard({ member }: memberCardProps) {
   const age = differenceInYears(new Date(), member.dateOfBirth)
   return (
