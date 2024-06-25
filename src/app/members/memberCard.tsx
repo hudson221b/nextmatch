@@ -1,5 +1,6 @@
 import { Card, CardFooter, Image } from "@nextui-org/react"
 import type { Member } from "@prisma/client"
+import { differenceInYears } from "date-fns"
 import React from "react"
 
 type memberCardProps = {
@@ -7,6 +8,7 @@ type memberCardProps = {
 }
 
 export default function MemberCard({ member }: memberCardProps) {
+  const age = differenceInYears(new Date(), member.dateOfBirth)
   return (
     <Card fullWidth>
       <Image
@@ -18,7 +20,9 @@ export default function MemberCard({ member }: memberCardProps) {
       />
       <CardFooter className="absolute bottom-0 bg-black z-10 bg-dark-gradient">
         <div className="flex flex-col text-white">
-          <span className="font-semibold">{member.name}</span>
+          <span className="font-semibold">
+            {member.name}, {age}
+          </span>
           <span className="text-sm"> {member.city}</span>
         </div>
       </CardFooter>
