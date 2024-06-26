@@ -12,6 +12,10 @@ export const getMembers = async () => {
   if (!session?.user) return null
 
   try {
+    const random = Math.random()
+    if (random < 0.5) {
+      throw new Error("Just testing.......")
+    }
     return prisma.member.findMany({
       where: {
         NOT: {
@@ -21,6 +25,7 @@ export const getMembers = async () => {
     })
   } catch (error) {
     console.error(error)
+    throw error
   }
 }
 
