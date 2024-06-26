@@ -1,7 +1,7 @@
 import { getMemberById } from "@/app/actions/memberActions"
 import { notFound } from "next/navigation"
 import React from "react"
-import MemberSidebar from "../memberSidebar"
+import { CardHeader, CardBody, Divider } from "@nextui-org/react"
 
 export default async function MemberDetails(params: {
   params: { memberId: string }
@@ -9,8 +9,12 @@ export default async function MemberDetails(params: {
   const member = await getMemberById(params.params.memberId)
   if (!member) return notFound()
   return (
-    <div>
-      {member.name}
-    </div>
+    <>
+      <CardHeader className="text-2xl font-semibold text-secondary">
+        Profile
+      </CardHeader>
+      <Divider />
+      <CardBody>{member.description}</CardBody>
+    </>
   )
 }

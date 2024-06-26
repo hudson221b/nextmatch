@@ -17,11 +17,14 @@ type memberSidebarProps = {
   member: Member
 }
 
+/**
+ * Shared left sidebar for individual member page
+ */
 export default function MemberSidebar({ member }: memberSidebarProps) {
   const pathName = usePathname()
   const baseUrl = `/members/${member.userId}`
   const navLinks = [
-    { name: "Profile", href: `${baseUrl}/profile` },
+    { name: "Profile", href: baseUrl },
     { name: "Photos", href: `${baseUrl}/photos` },
     { name: "Chat", href: `${baseUrl}/chat` },
   ]
