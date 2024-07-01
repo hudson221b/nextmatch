@@ -1,5 +1,6 @@
 "use client"
-import { toggleLike } from "@/app/actions/likeActions"
+import { toggleLikeMember } from "@/app/actions/likeActions"
+import { useRouter } from "next/navigation"
 import React from "react"
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai"
 
@@ -9,8 +10,14 @@ type LikeButtonProp = {
 }
 
 function LikeButton({ isLiked, targetUserId }: LikeButtonProp) {
-  const toggleButton = async () => {
-    await toggleLike(targetUserId, isLiked)
+  const router = useRouter()
+  const toggleButton = async (e: React.MouseEvent) => {
+    // stops the redirecting because this button is a child of MemberCard that acts like a link
+    e.preventDefault()
+    e.stopPropagation()
+    await toggleLikeMember(targetUserId, isLiked)
+    // refreshes matches page to reflect the lates like Ids
+    router.refresh()
   }
   return (
     <div
