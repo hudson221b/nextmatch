@@ -9,7 +9,7 @@ import {
 import type { ActionResult } from "../../types"
 import type { User } from "@prisma/client"
 import bcrypt from "bcryptjs"
-import { signIn } from "@/auth"
+import { auth, signIn } from "@/auth"
 import { AuthError } from "next-auth"
 
 export async function registerUser(
@@ -73,4 +73,12 @@ export async function signInUser(
     }
     return { status: "error", error: "Sign in internal error" }
   }
+}
+
+
+export const getCurrentUserId = async () => {
+  const session = await auth()
+  const userId = session?.user?.id
+  if (!userId) throw new Error("Not authorized")
+  return userId
 }

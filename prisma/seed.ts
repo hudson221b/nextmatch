@@ -38,22 +38,21 @@ async function main() {
   await seedMembers()
 }
 
-// main()
-updateUserImage()
-  .catch(e => {
-    console.error(e)
-    process.exit(1)
-  })
-  .finally(async () => await prisma.$disconnect())
-
-
-  async function updateUserImage() {
-    for (const member of membersData) {
-      await prisma.user.updateMany({
-        where: { name: member.name },
-        data: {
-          image: member.image,
-        },
-      })
-    }
+async function updateUserImage() {
+  for (const member of membersData) {
+    await prisma.user.updateMany({
+      where: { name: member.name },
+      data: {
+        image: member.image,
+      },
+    })
   }
+}
+
+  main()
+    // updateUserImage()
+    .catch(e => {
+      console.error(e)
+      process.exit(1)
+    })
+    .finally(async () => await prisma.$disconnect())
