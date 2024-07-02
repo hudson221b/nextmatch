@@ -12,7 +12,7 @@ const ListsPage = async ({
   searchParams: { type: string }
 }) => {
   const likeIds = (await fetchLikesForCurrentUser()) as string[]
-  const type = searchParams.type.toString() as LikeTypes
+  const type = searchParams?.type?.toString() as LikeTypes
   const membersToDisplay = (await fetchLikesForCurrentUser(
     type,
     "member"

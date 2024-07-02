@@ -13,7 +13,6 @@ type ListTabProps = {
 export function ListTabs({ members, likeIds }: ListTabProps) {
   const pathName = usePathname()
   const router = useRouter()
-  const searchParams = useSearchParams()
 
   let items = [
     {
@@ -41,7 +40,7 @@ export function ListTabs({ members, likeIds }: ListTabProps) {
       aria-label="list member tabs"
       items={items}
       onSelectionChange={onTabSelection}
-      color="secondary"
+      color="secondary" 
     >
       {item => (
         <Tab key={item.id} title={item.label}>
