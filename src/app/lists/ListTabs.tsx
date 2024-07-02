@@ -1,9 +1,10 @@
 "use client"
-import React from "react"
-import { Tabs, Tab} from "@nextui-org/react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import React, { useTransition } from "react"
+import { Tabs, Tab } from "@nextui-org/react"
+import { usePathname, useRouter } from "next/navigation"
 import MemberCard from "../members/memberCard"
 import type { Member } from "@prisma/client"
+import Loading from "@/components/Loading"
 
 type ListTabProps = {
   members: Member[]
@@ -13,6 +14,7 @@ type ListTabProps = {
 export function ListTabs({ members, likeIds }: ListTabProps) {
   const pathName = usePathname()
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
 
   let items = [
     {
@@ -30,9 +32,11 @@ export function ListTabs({ members, likeIds }: ListTabProps) {
   ]
 
   const onTabSelection = async (key: React.Key) => {
-    const params = new URLSearchParams()
-    params.set("type", key.toString())
-    router.replace(`${pathName}?${params}`)
+    startTransition(() => {
+      const params = new URLSearchParams()
+      params.set("type", key.toString())
+      router.replace(`${pathName}?${params}`)
+    })
   }
 
   return (
@@ -40,11 +44,14 @@ export function ListTabs({ members, likeIds }: ListTabProps) {
       aria-label="list member tabs"
       items={items}
       onSelectionChange={onTabSelection}
-      color="secondary" 
+      color="secondary"
+      defaultSelectedKey="source"
     >
       {item => (
         <Tab key={item.id} title={item.label}>
-          {members.length ? (
+          {isPending ? (
+            <Loading />
+          ) : members.length ? (
             <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8">
               {members.map(m => (
                 <MemberCard key={m.userId} member={m} likeIds={likeIds} />
