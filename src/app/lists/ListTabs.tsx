@@ -10,7 +10,7 @@ type ListTabProps = {
   likeIds: string[]
 }
 
-export const ListTabs: React.FC = ({ members, likeIds }: ListTabProps) => {
+export function ListTabs({ members, likeIds }: ListTabProps) {
   const pathName = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -37,21 +37,25 @@ export const ListTabs: React.FC = ({ members, likeIds }: ListTabProps) => {
   }
 
   return (
-    <div>
-      <Tabs
-        aria-label="list member tabs"
-        items={items}
-        onSelectionChange={onTabSelection}
-        color="secondary"
-      >
-        {item => (
-          <Tab key={item.id} title={item.label}>
-            {members.length
-              ? members.map(m => <li key={m.userId}>{m.userId}</li>)
-              : "No members meet the filter"}
-          </Tab>
-        )}
-      </Tabs>
-    </div>
+    <Tabs
+      aria-label="list member tabs"
+      items={items}
+      onSelectionChange={onTabSelection}
+      color="secondary"
+    >
+      {item => (
+        <Tab key={item.id} title={item.label}>
+          {members.length ? (
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8">
+              {members.map(m => (
+                <MemberCard key={m.userId} member={m} likeIds={likeIds} />
+              ))}
+            </div>
+          ) : (
+            "No members meet the filter"
+          )}
+        </Tab>
+      )}
+    </Tabs>
   )
 }

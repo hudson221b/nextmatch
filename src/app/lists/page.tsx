@@ -1,14 +1,26 @@
 import React from "react"
 import { ListTabs } from "./ListTabs"
-import { fetchLikesForCurrentUser } from "../actions/likeActions"
+import {
+  fetchLikesForCurrentUser,
+  type LikeTypes,
+} from "../actions/likeActions"
+import type { Member } from "@prisma/client"
 
-const ListsPage: React.FC = async () => {
-  const likeIds = await fetchLikesForCurrentUser()
-  // need to access the query string to decide which members to fetch
+const ListsPage = async ({
+  searchParams,
+}: {
+  searchParams: { type: string }
+}) => {
+  const likeIds = (await fetchLikesForCurrentUser()) as string[]
+  const type = searchParams.type.toString() as LikeTypes
+  const membersToDisplay = (await fetchLikesForCurrentUser(
+    type,
+    "member"
+  )) as Member[]
 
   return (
     <div>
-      <ListTabs />
+      <ListTabs members={membersToDisplay} likeIds={likeIds} />
     </div>
   )
 }

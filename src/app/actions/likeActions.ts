@@ -33,13 +33,15 @@ export const toggleLikeMember = async (
   }
 }
 
+export type LikeTypes = "source" | "target" | "mutual"
+
 /**
  * @param type whether the current user is the source, target or mutual target of likes
  * @param select whether to return the member Ids or members that meet the like type
  * @returns array of member Ids or members
  */
 export const fetchLikesForCurrentUser = async (
-  type: "source" | "target" | "mutual" = "source",
+  type: LikeTypes = "source",
   select: "id" | "member" = "id"
 ): Promise<string[] | Member[]> => {
   try {
