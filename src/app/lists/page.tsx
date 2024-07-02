@@ -1,7 +1,12 @@
 import React from "react"
+import { ListTabs } from "./ListTabs"
 
 const ListsPage: React.FC = () => {
-  return <div>ListsPage</div>
+  return (
+    <div>
+      <ListTabs/>
+    </div>
+  )
 }
 
 export default ListsPage
