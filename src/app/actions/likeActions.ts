@@ -46,13 +46,114 @@ export const fetchTargetLikeIds = async () => {
         targetUserId: true,
       },
     })
-    console.log(
-      "#####🚀🚀🚀 ~ file: likeActions.ts:46 ~ fetchCurrentUserLikeIds ~ likes➡️ ➡️ ➡️",
-      likes
-    )
     return likes.map(like => like.targetUserId)
   } catch (error) {
     console.error(error)
     throw error
   }
 }
+
+/**
+ * @param type whether the current user is the source, target or mutual target of likes
+ * @param select whether to return the member Ids or members that meet the like type
+ * @returns array of member Ids or members
+ */
+export const fetchLikesForCurrentUser = async (
+  type: "source" | "target" | "mutual",
+  select: "id" | "member"
+) => {
+  try {
+    const userId = await getCurrentUserId()
+
+    switch (type) {
+      case "source":
+        if (select === "id") {
+          const likes = await prisma.like.findMany({
+            where: {
+              sourceUserId: userId,
+            },
+            select: {
+              targetUserId: true,
+            },
+          })
+          return likes.map(like => like.targetUserId)
+        } else {
+          const likes = await prisma.like.findMany({
+            where: {
+              sourceUserId: userId,
+            },
+            select: {
+              targetMember: true,
+            },
+          })
+          return likes.map(like => like.targetMember)
+        }
+
+      case "target":
+        if (select === "id") {
+          const likes = await prisma.like.findMany({
+            where: {
+              targetUserId: userId,
+            },
+            select: {
+              sourceUserId: true,
+            },
+          })
+          return likes.map(like => like.sourceUserId)
+        } else {
+          const likes = await prisma.like.findMany({
+            where: {
+              targetUserId: userId,
+            },
+            select: {
+              sourceMember: true,
+            },
+          })
+          return likes.map(like => like.sourceMember)
+        }
+      case "mutual":
+        // fetch source like Ids first
+        const sourceLikes = await prisma.like.findMany({
+          where: {
+            sourceUserId: userId,
+          },
+          select: {
+            targetUserId: true,
+          },
+        })
+        const sourceLikeIds = sourceLikes.map(like => like.targetUserId)
+
+        if (select === "id") {
+          const mutualLikes = await prisma.like.findMany({
+            where: {
+              AND: [
+                { targetUserId: userId },
+                { sourceUserId: { in: sourceLikeIds } },
+              ],
+            },
+            select: {
+              sourceUserId: true,
+            },
+          })
+          return mutualLikes.map(like => like.sourceUserId)
+        } else {
+          const mutualLikes = await prisma.like.findMany({
+            where: {
+              AND: [
+                { targetUserId: userId },
+                { sourceUserId: { in: sourceLikeIds } },
+              ],
+            },
+            select: {
+              sourceMember: true,
+            },
+          })
+          return mutualLikes.map(like => like.sourceMember)
+        }
+
+      default:
+        break
+    }
+  } catch (error) {}
+}
+
