@@ -1,6 +1,7 @@
 "use server"
 import { prisma } from "@/lib/prisma"
 import { getCurrentUserId } from "./authActions"
+import type { Member } from "@prisma/client"
 
 /**
  * Toggles the like status of a target for the logged in user
@@ -33,27 +34,6 @@ export const toggleLikeMember = async (
 }
 
 /**
- * @returns all target likes for the current user, ie, who has the current user liked
- */
-export const fetchTargetLikeIds = async () => {
-  try {
-    const userId = await getCurrentUserId()
-    const likes = await prisma.like.findMany({
-      where: {
-        sourceUserId: userId,
-      },
-      select: {
-        targetUserId: true,
-      },
-    })
-    return likes.map(like => like.targetUserId)
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-}
-
-/**
  * @param type whether the current user is the source, target or mutual target of likes
  * @param select whether to return the member Ids or members that meet the like type
  * @returns array of member Ids or members
@@ -61,7 +41,7 @@ export const fetchTargetLikeIds = async () => {
 export const fetchLikesForCurrentUser = async (
   type: "source" | "target" | "mutual",
   select: "id" | "member"
-) => {
+): Promise<string[] | Member[]> => {
   try {
     const userId = await getCurrentUserId()
 
@@ -152,8 +132,11 @@ export const fetchLikesForCurrentUser = async (
         }
 
       default:
-        break
+        throw new Error("fetchLikesForCurrentUser arguments not correct")
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
