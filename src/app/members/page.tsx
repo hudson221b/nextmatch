@@ -13,12 +13,11 @@ const MembersPage: React.FC = async () => {
     <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8">
       {members &&
         members.map(member => {
-          const isLiked = likeIds.includes(member.userId)
           return (
             <MemberCard
               member={member}
               key={`${member.id}-member-card`}
-              isLiked={isLiked}
+              likeIds={likeIds}
             />
           )
         })}

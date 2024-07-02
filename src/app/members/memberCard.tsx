@@ -8,14 +8,15 @@ import React from "react"
 
 type memberCardProps = {
   member: Member
-  isLiked: boolean
+  likeIds: string[]
 }
 
 /**
  * Used on /members page to display all members
  */
-export default function MemberCard({ member, isLiked }: memberCardProps) {
+export default function MemberCard({ member, likeIds }: memberCardProps) {
   const age = differenceInYears(new Date(), member.dateOfBirth)
+  const isLiked = likeIds.includes(member.userId)
   return (
     <Card fullWidth as={Link} href={`/members/${member.userId}`}>
       <Image

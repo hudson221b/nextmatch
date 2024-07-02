@@ -1,13 +1,19 @@
 "use client"
 import React from "react"
-import { Tabs, Tab, Card, CardBody, CardHeader } from "@nextui-org/react"
+import { Tabs, Tab} from "@nextui-org/react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import MemberCard from "../members/memberCard"
+import type { Member } from "@prisma/client"
 
-export function ListTabs() {
-  const pathname = usePathname()
+type ListTabProps = {
+  members: Member[]
+  likeIds: string[]
+}
+
+export const ListTabs: React.FC = ({ members, likeIds }: ListTabProps) => {
+  const pathName = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
-  console.log("#####🚀🚀🚀 ~ file: ListTabs.tsx:10 ~ ListTabs ~ searchParams➡️➡️➡️", searchParams)
 
   let items = [
     {
@@ -16,7 +22,7 @@ export function ListTabs() {
     },
     {
       id: "target",
-      label: "Members that like me",  
+      label: "Members that like me",
     },
     {
       id: "mutual",
@@ -24,24 +30,25 @@ export function ListTabs() {
     },
   ]
 
-  const onTabSelection = (key: React.Key) => {
+  const onTabSelection = async (key: React.Key) => {
     const params = new URLSearchParams()
-      params.set("type", key.toString())
-      router.replace(`${pathname}?${params}`)
+    params.set("type", key.toString())
+    router.replace(`${pathName}?${params}`)
   }
+
   return (
     <div>
       <Tabs
         aria-label="list member tabs"
         items={items}
-        // selectedKey={pathname}
-        // defaultSelectedKey="source"
         onSelectionChange={onTabSelection}
+        color="secondary"
       >
         {item => (
           <Tab key={item.id} title={item.label}>
-            {/* member cards based on filter dummy content */}
-            <div>dummy content</div>
+            {members.length
+              ? members.map(m => <li key={m.userId}>{m.userId}</li>)
+              : "No members meet the filter"}
           </Tab>
         )}
       </Tabs>

@@ -39,8 +39,8 @@ export const toggleLikeMember = async (
  * @returns array of member Ids or members
  */
 export const fetchLikesForCurrentUser = async (
-  type: "source" | "target" | "mutual",
-  select: "id" | "member"
+  type: "source" | "target" | "mutual" = "source",
+  select: "id" | "member" = "id"
 ): Promise<string[] | Member[]> => {
   try {
     const userId = await getCurrentUserId()
