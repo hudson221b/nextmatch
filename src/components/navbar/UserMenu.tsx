@@ -31,7 +31,7 @@ export default function UserMenu({ user }: UserMenuProps) {
           src={user?.image || "/images/user.png"}
         />
       </DropdownTrigger>
-      <DropdownMenu variant="flat" aria-label="user actions menu">
+      <DropdownMenu variant="flat" aria-label="user actions menu" >
         <DropdownSection showDivider>
           <DropdownItem isReadOnly as="span" className="h-14 flex flex-grow">
             Now logged in as {user?.name}

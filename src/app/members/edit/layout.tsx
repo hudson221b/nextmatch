@@ -1,35 +1,34 @@
 import { getMemberById } from "@/app/actions/memberActions"
 import { notFound } from "next/navigation"
 import React, { type ReactNode } from "react"
-import MemberSidebar from "./memberSidebar"
 import { Card } from "@nextui-org/react"
+import MemberSidebar from "../[memberId]/memberSidebar"
+import { getCurrentUserId } from "@/app/actions/authActions"
 
 /**
  * This layout component receives a prop object containing two properties: 1. children: which are React elements returned from page.tsx under route /members/memberId.
  * 2. params: another object with key being the memberId, value is the memberId value
  */
-export default async function MemberPageLayout({
+export default async function MemberEditLayout({
   children,
-  params,
 }: {
   children: ReactNode
-  params: { memberId: string }
 }) {
-  const member = await getMemberById(params.memberId)
+  const userId = await getCurrentUserId()
+  const member = await getMemberById(userId)
   if (!member) return notFound()
 
-  const baseUrl = `/members/${params.memberId}`
+    const baseUrl = "/members/edit"
 
-  const navLinks = [
-    { name: "Profile", href: baseUrl },
-    { name: "Photos", href: `${baseUrl}/photos` },
-    { name: "Chat", href: `${baseUrl}/chat` },
-  ]
+    const navLinks = [
+      { name: "Edit Profile", href: baseUrl },
+      { name: "Update Photos", href: `${baseUrl}/photos` },
+    ]
 
   return (
     <div className="grid grid-cols-12 gap-5 h-[80vh]">
       <div className="col-span-3">
-        <MemberSidebar member={member} navLinks={navLinks} />
+        <MemberSidebar member={member} navLinks={navLinks}/>
       </div>
       <div className="col-span-9">
         <Card className="w-full h-full">{children}</Card>

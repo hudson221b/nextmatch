@@ -15,19 +15,17 @@ import React from "react"
 
 type memberSidebarProps = {
   member: Member
+  navLinks: { name: string; href: string }[]
 }
 
 /**
  * Shared left sidebar for individual member page
  */
-export default function MemberSidebar({ member }: memberSidebarProps) {
+export default function MemberSidebar({
+  member,
+  navLinks,
+}: memberSidebarProps) {
   const pathName = usePathname()
-  const baseUrl = `/members/${member.userId}`
-  const navLinks = [
-    { name: "Profile", href: baseUrl },
-    { name: "Photos", href: `${baseUrl}/photos` },
-    { name: "Chat", href: `${baseUrl}/chat` },
-  ]
 
   return (
     <Card className="h-[80vh] w-full items-center">
