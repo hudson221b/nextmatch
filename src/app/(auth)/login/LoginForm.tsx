@@ -26,6 +26,8 @@ const LoginForm: React.FC = () => {
 
     if (result.status === "success") {
       router.push("./members")
+      // force page refresh after sign in to re-render TopNav server component
+      router.refresh()
     } else {
       console.log(result.error)
       toast.error(result.error as string,{hideProgressBar: true});
