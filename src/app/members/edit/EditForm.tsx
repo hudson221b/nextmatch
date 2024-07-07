@@ -8,6 +8,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import type { Member } from "@prisma/client"
+import { updateMemberProfile } from "@/app/actions/memberActions"
+import { toast } from "react-toastify"
+import { handleFormServerErrors } from "@/app/util"
 
 type EditFormProp = {
   member: Member
@@ -18,22 +21,19 @@ export function EditForm({ member }: EditFormProp) {
     register,
     handleSubmit,
     formState: { isValid, isDirty, errors, isSubmitting },
+    setError,
   } = useForm<MemberEditSchema>({
     resolver: zodResolver(memberEditSchema),
     mode: "onTouched",
   })
 
   const onSubmit = async (data: MemberEditSchema) => {
-    // const result = await editUser(data)
-
-    // if (result.status === "success") {
-    //   // router.push("./members")
-    // } else {
-    //   console.log(result.error)
-    //   toast.error(result.error as string,{hideProgressBar: true});
-
-    // }
-    console.log("submitting")
+    const result = await updateMemberProfile(data)
+    if (result.status === "success") {
+      toast.success("Profile updated")
+    } else {
+      handleFormServerErrors(result, setError)
+    }
   }
 
   return (

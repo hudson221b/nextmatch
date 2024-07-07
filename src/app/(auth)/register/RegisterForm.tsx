@@ -13,7 +13,7 @@ const RegisterForm: React.FC = () => {
     formState: { errors, isValid, isSubmitting },
     setError,
   } = useForm<RegisterSchema>({
-    // resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerSchema),
     mode: "onTouched",
   })
 
@@ -24,7 +24,6 @@ const RegisterForm: React.FC = () => {
       if (Array.isArray(result.error)) {
         // set validation error to each form field
         result.error.forEach(zodIssue => {
-          console.log({ zodIssue })
           const fieldName = zodIssue.path.join(".") as
             | "email"
             | "name"
