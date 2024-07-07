@@ -11,6 +11,7 @@ import type { Member } from "@prisma/client"
 import { updateMemberProfile } from "@/app/actions/memberActions"
 import { toast } from "react-toastify"
 import { handleFormServerErrors } from "@/lib/util"
+import { useRouter } from "next/navigation"
 
 type EditFormProp = {
   member: Member
@@ -24,16 +25,16 @@ export function EditForm({ member }: EditFormProp) {
     setError,
     reset,
   } = useForm<MemberEditSchema>({
-    // resolver: zodResolver(memberEditSchema),
+    resolver: zodResolver(memberEditSchema),
     mode: "onTouched",
   })
 
+  const router = useRouter()
   const onSubmit = async (data: MemberEditSchema) => {
     const result = await updateMemberProfile(data)
     if (result.status === "success") {
       toast.success("Profile updated")
-      // router.refresh()
-      // reset()
+      router.refresh()
     } else {
       handleFormServerErrors(result, setError)
     }
