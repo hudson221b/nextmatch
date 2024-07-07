@@ -40,6 +40,7 @@ export function EditForm({ member }: EditFormProp) {
     }
   }
 
+  // reseting on component mount or change will correctly maintain the isDirty form state
   useEffect(() => {
     reset({
       name: member.name,
