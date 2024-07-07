@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useEffect } from "react"
 import { Button, Input, Textarea } from "@nextui-org/react"
 import {
   type MemberEditSchema,
@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form"
 import type { Member } from "@prisma/client"
 import { updateMemberProfile } from "@/app/actions/memberActions"
 import { toast } from "react-toastify"
-import { handleFormServerErrors } from "@/app/util"
+import { handleFormServerErrors } from "@/lib/util"
 
 type EditFormProp = {
   member: Member
@@ -22,8 +22,9 @@ export function EditForm({ member }: EditFormProp) {
     handleSubmit,
     formState: { isValid, isDirty, errors, isSubmitting },
     setError,
+    reset,
   } = useForm<MemberEditSchema>({
-    resolver: zodResolver(memberEditSchema),
+    // resolver: zodResolver(memberEditSchema),
     mode: "onTouched",
   })
 
@@ -31,10 +32,21 @@ export function EditForm({ member }: EditFormProp) {
     const result = await updateMemberProfile(data)
     if (result.status === "success") {
       toast.success("Profile updated")
+      // router.refresh()
+      // reset()
     } else {
       handleFormServerErrors(result, setError)
     }
   }
+
+  useEffect(() => {
+    reset({
+      name: member.name,
+      description: member.description,
+      city: member.city,
+      country: member.country,
+    })
+  }, [member, reset])
 
   return (
     <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
@@ -42,7 +54,6 @@ export function EditForm({ member }: EditFormProp) {
         {...register("name")}
         label="Name"
         variant="bordered"
-        defaultValue={member.name}
         isInvalid={!!errors.name}
         errorMessage={errors.name?.message}
       />
@@ -50,7 +61,6 @@ export function EditForm({ member }: EditFormProp) {
         {...register("description")}
         label="Description"
         variant="bordered"
-        defaultValue={member.description}
         isInvalid={!!errors.description}
         errorMessage={errors.description?.message}
         minRows={6}
@@ -60,7 +70,6 @@ export function EditForm({ member }: EditFormProp) {
           {...register("city")}
           label="City"
           variant="bordered"
-          defaultValue={member.city}
           isInvalid={!!errors.city}
           errorMessage={errors.city?.message}
         />
@@ -68,11 +77,13 @@ export function EditForm({ member }: EditFormProp) {
           {...register("country")}
           label="Country"
           variant="bordered"
-          defaultValue={member.country}
           isInvalid={!!errors.country}
           errorMessage={errors.country?.message}
         />
       </div>
+      {errors.root?.serverError && (
+        <p className="text-danger text-sm">{errors.root.serverError.message}</p>
+      )}
       <Button
         color="secondary"
         type="submit"

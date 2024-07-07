@@ -1,10 +1,12 @@
 "use client"
 import { registerUser } from "@/app/actions/authActions"
 import { type RegisterSchema, registerSchema } from "@/lib/schemas/auth-schema"
+import { handleFormServerErrors } from "@/lib/util"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardHeader, CardBody, Button, Input } from "@nextui-org/react"
 import { useForm } from "react-hook-form"
 import { GiPadlock } from "react-icons/gi"
+import { toast } from "react-toastify"
 
 const RegisterForm: React.FC = () => {
   const {
@@ -19,24 +21,12 @@ const RegisterForm: React.FC = () => {
 
   const onSubmit = async (data: RegisterSchema) => {
     const result = await registerUser(data)
-    if (result.status === "error") {
-      // handle validation error
-      if (Array.isArray(result.error)) {
-        // set validation error to each form field
-        result.error.forEach(zodIssue => {
-          const fieldName = zodIssue.path.join(".") as
-            | "email"
-            | "name"
-            | "password"
-          setError(fieldName, { message: zodIssue.message })
-        })
-      } else {
-        // set server error
-        setError("root.serverError", { message: result.error })
-      }
+    if (result.status === "success") {
+      toast.success("User registered successfully")
+    } else {
+      handleFormServerErrors(result, setError)
     }
   }
-
   return (
     <Card className="w-2/5 mx-auto">
       <CardHeader className="flex flex-col items-center justify-center">
