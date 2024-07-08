@@ -3,6 +3,7 @@ import { getMemberPhotosByUserId } from "@/app/actions/memberActions"
 import { CardHeader, Divider, CardBody, Image } from "@nextui-org/react"
 import React from "react"
 import { StarButton } from "@/components/StarButton"
+import { DeleteButton } from "@/components/DeleteButton"
 
 export default async function EditPhotsPage() {
   const userId = await getCurrentUserId()
@@ -26,6 +27,9 @@ export default async function EditPhotsPage() {
                 />
                 <div className="absolute top-3 left-3 z-20">
                   <StarButton isSelected={true} isLoading={false} />
+                </div>
+                <div className="absolute top-3 right-3 z-20">
+                  <DeleteButton isLoading={false} />
                 </div>
               </div>
             ))}
