@@ -4,6 +4,7 @@ import { CardHeader, Divider, CardBody, Image } from "@nextui-org/react"
 import React from "react"
 import { StarButton } from "@/components/StarButton"
 import { DeleteButton } from "@/components/DeleteButton"
+import ImageUploadButton from "@/components/ImageUploadButton"
 
 export default async function EditPhotsPage() {
   const userId = await getCurrentUserId()
@@ -15,6 +16,7 @@ export default async function EditPhotsPage() {
       </CardHeader>
       <Divider />
       <CardBody>
+        <ImageUploadButton />
         <div className="grid grid-cols-5 gap-3 p-5">
           {photos &&
             photos.map(p => (
