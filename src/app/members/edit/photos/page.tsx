@@ -3,12 +3,10 @@ import {
   getMemberById,
   getMemberPhotosByUserId,
 } from "@/app/actions/memberActions"
-import { CardHeader, Divider, CardBody, Image } from "@nextui-org/react"
+import { CardHeader, Divider, CardBody } from "@nextui-org/react"
 import React from "react"
-import { StarButton } from "@/components/StarButton"
-import { DeleteButton } from "@/components/DeleteButton"
 import ImageUploadButton from "@/components/ImageUploadButton"
-import MemberPhotos from "@/components/MemberPhotos"
+import MemberPhoto from "@/components/MemberPhotos"
 
 export default async function EditPhotsPage() {
   const userId = await getCurrentUserId()
@@ -26,9 +24,14 @@ export default async function EditPhotsPage() {
           <ImageUploadButton />
         </div>
         <div className="grid grid-cols-5 gap-3 p-5">
-          {photos?.length && (
-            <MemberPhotos photos={photos} mainImageUrl={mainImageUrl} />
-          )}
+          {photos?.length &&
+            photos.map(photo => (
+              <MemberPhoto
+                photo={photo}
+                mainImageUrl={mainImageUrl}
+                key={photo.id}
+              />
+            ))}
         </div>
       </CardBody>
     </>

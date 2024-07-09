@@ -14,29 +14,25 @@ import { useRouter } from "next/navigation"
 import { setMainImage } from "@/app/actions/memberActions"
 
 type Props = {
-  photos: Photo[]
+  photo: Photo
   mainImageUrl: string | null | undefined
 }
 
-export default function MemberPhotos({ photos, mainImageUrl }: Props) {
+export default function MemberPhoto({ photo, mainImageUrl }: Props) {
   const [isStarButtonLoading, setIsStarButtonLoading] = useState(false)
   const [isDeleteButtonLoading, setIsDeleteButtonLoading] = useState(false)
   const router = useRouter()
 
   const handleStarButtonClick = async (url: string) => {
-    // set isLoading to true
     setIsStarButtonLoading(true)
-    // set this photo as main image (use server action)
     await setMainImage(url)
-    // set isLoading to false
     setIsStarButtonLoading(false)
     router.refresh()
   }
 
-  return photos.map(photo => (
+  return (
     <div key={photo.id} className="relative">
-      {/* <MemberPhoto photo={p} /> */}
-      {photo?.publicId ? (
+      {photo.publicId ? (
         <CldImage
           alt="member photo"
           src={photo.publicId}
@@ -68,6 +64,5 @@ export default function MemberPhotos({ photos, mainImageUrl }: Props) {
         <DeleteButton isLoading={isDeleteButtonLoading} />
       </div>
     </div>
-  ))
-  return
+  )
 }
