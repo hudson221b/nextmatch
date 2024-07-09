@@ -17,7 +17,7 @@ export default function ImageUploadButton() {
       onSuccess={async results => {
 
         if (results && typeof results.info === "object") {
-          await updateMemberPhotos(results.info.url)
+          await updateMemberPhotos(results.info.url, results.info.public_id)
         }
         router.refresh()
         toast.success("Image upload successful")

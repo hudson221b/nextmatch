@@ -84,27 +84,22 @@ export const updateMemberProfile = async (
   }
 }
 
-export const updateMemberPhotos = async (
-  url: string
-): Promise<ActionResult<Member>> => {
+export const updateMemberPhotos = async (url: string, publicId: string) => {
   try {
     const userId = await getCurrentUserId()
-    const member = await prisma.member.update({
+    await prisma.member.update({
       where: { userId },
       data: {
         photos: {
           create: {
             url,
+            publicId,
           },
         },
       },
     })
-    return { status: "success", data: member }
   } catch (error) {
     console.error(error)
-    return {
-      status: "error",
-      error: "Error updating member photos in database",
-    }
+    throw error
   }
 }

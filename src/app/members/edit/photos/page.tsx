@@ -5,6 +5,7 @@ import React from "react"
 import { StarButton } from "@/components/StarButton"
 import { DeleteButton } from "@/components/DeleteButton"
 import ImageUploadButton from "@/components/ImageUploadButton"
+import MemberPhoto from "@/components/MemberPhoto"
 
 export default async function EditPhotsPage() {
   const userId = await getCurrentUserId()
@@ -23,12 +24,7 @@ export default async function EditPhotsPage() {
           {photos &&
             photos.map(p => (
               <div key={p.id} className="relative">
-                <Image
-                  src={p.url}
-                  alt="member image"
-                  width={220}
-                  height={220}
-                />
+                <MemberPhoto photo={p} />
                 <div className="absolute top-3 left-3 z-20">
                   <StarButton isSelected={true} isLoading={false} />
                 </div>
