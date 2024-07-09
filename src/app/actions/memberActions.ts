@@ -84,6 +84,9 @@ export const updateMemberProfile = async (
   }
 }
 
+/**
+ * Add a new photo to Member
+ */
 export const updateMemberPhotos = async (url: string, publicId: string) => {
   try {
     const userId = await getCurrentUserId()
@@ -97,6 +100,30 @@ export const updateMemberPhotos = async (url: string, publicId: string) => {
           },
         },
       },
+    })
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+/**
+ * Set image field for both User and Member
+ */
+export const setMainImage = async (url: string) => {
+  try {
+    const userId = await getCurrentUserId()
+    await prisma.user.update({
+      where: {id: userId},
+      data:{
+        image: url
+      }
+    })
+    return prisma.member.update({
+      where: {userId},
+      data:{
+        image: url
+      }
     })
   } catch (error) {
     console.error(error)

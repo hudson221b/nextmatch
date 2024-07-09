@@ -8,7 +8,7 @@ type Props = {
 
 export function DeleteButton({ isLoading }: Props) {
   return (
-    <div className="relative hover:opacity-80">
+    <div className="relative opacity-55 hover:opacity-80">
       {!isLoading ? (
         <>
           <AiFillDelete size={28} className="fill-red-600" />

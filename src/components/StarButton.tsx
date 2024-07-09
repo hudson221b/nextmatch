@@ -9,7 +9,7 @@ type Props = {
 
 export function StarButton({ isSelected, isLoading }: Props) {
   return (
-    <div className="relative hover:opacity-80">
+    <div className="relative">
       {!isLoading ? (
         <>
           <AiFillStar
