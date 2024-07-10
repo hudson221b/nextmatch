@@ -7,11 +7,12 @@ import { CldImage } from "next-cloudinary"
  * Component for a single photo on members/edit/photos page
  */
 
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { DeleteButton } from "./DeleteButton"
 import { StarButton } from "./StarButton"
 import { useRouter } from "next/navigation"
-import { setMainImage } from "@/app/actions/memberActions"
+import { deleteImage, setMainImage } from "@/app/actions/memberActions"
+import { toast } from "react-toastify"
 
 type Props = {
   photo: Photo
@@ -23,11 +24,26 @@ export default function MemberPhoto({ photo, mainImageUrl }: Props) {
   const [isDeleteButtonLoading, setIsDeleteButtonLoading] = useState(false)
   const router = useRouter()
 
-  const handleStarButtonClick = async (url: string) => {
+  const isMainImage = useMemo(
+    () => mainImageUrl === photo.url,
+    [photo, mainImageUrl]
+  )
+
+  const handleStarButton = async () => {
     setIsStarButtonLoading(true)
-    await setMainImage(url)
+    await setMainImage(photo.url)
     setIsStarButtonLoading(false)
     router.refresh()
+  }
+
+  const handleDeleteButton = async () => {
+    if (isMainImage) {
+      toast.info("Cannot delete main image")
+    } else {
+      setIsDeleteButtonLoading(true)
+      await deleteImage(photo)
+      router.refresh()
+    }
   }
 
   return (
@@ -51,16 +67,13 @@ export default function MemberPhoto({ photo, mainImageUrl }: Props) {
           className="object-cover aspect-square"
         />
       )}
-      <div
-        className="absolute top-3 left-3 z-20"
-        onClick={async () => await handleStarButtonClick(photo.url)}
-      >
+      <div className="absolute top-3 left-3 z-20" onClick={handleStarButton}>
         <StarButton
           isSelected={mainImageUrl === photo.url}
           isLoading={isStarButtonLoading}
         />
       </div>
-      <div className="absolute top-3 right-3 z-20">
+      <div className="absolute top-3 right-3 z-20" onClick={handleDeleteButton}>
         <DeleteButton isLoading={isDeleteButtonLoading} />
       </div>
     </div>

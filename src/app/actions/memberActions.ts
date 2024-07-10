@@ -9,6 +9,7 @@ import {
 import type { Member, Photo } from "@prisma/client"
 import { getCurrentUserId } from "./authActions"
 import type { ActionResult } from "@/types"
+import { cloudinary } from "@/lib/cloudinary"
 
 /**
  * get all members except oneself after login
@@ -124,19 +125,43 @@ export const setMainImage = async (url: string) => {
   try {
     const userId = await getCurrentUserId()
     await prisma.user.update({
-      where: {id: userId},
-      data:{
-        image: url
-      }
+      where: { id: userId },
+      data: {
+        image: url,
+      },
     })
     return prisma.member.update({
-      where: {userId},
-      data:{
-        image: url
-      }
+      where: { userId },
+      data: {
+        image: url,
+      },
     })
   } catch (error) {
     console.error(error)
     throw error
   }
 }
+
+export const deleteImage = async (photo: Photo) => {
+  const userId = await getCurrentUserId()
+  try {
+    // delete from cloudinary
+    if (photo.publicId) {
+      await cloudinary.v2.uploader.destroy(photo.publicId)
+    }
+    return prisma.member.update({
+      where: { userId },
+      data: {
+        photos: {
+          delete: {
+            id: photo.id,
+          },
+        },
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
