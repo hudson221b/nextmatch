@@ -8,13 +8,13 @@ import {
   DropdownSection,
   DropdownTrigger,
 } from "@nextui-org/react"
-import type { Session } from "next-auth"
+import type { User } from "@prisma/client"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
 import React from "react"
 
 type UserMenuProps = {
-  user: Session["user"]
+  user: User
 }
 
 export default function UserMenu({ user }: UserMenuProps) {

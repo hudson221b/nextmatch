@@ -6,25 +6,12 @@ import { NavLink } from "./NavLink"
 import { auth } from "@/auth"
 import UserMenu from "./UserMenu"
 import { getUserById } from "@/app/actions/authActions"
+import type { User } from "@prisma/client"
 
 export const TopNav = async () => {
   const session = await auth()
-  const latestUser = {
-    name: "",
-    email: "",
-    image: "",
-    id: "",
-  }
-  if (session?.user) {
-    const user = await getUserById(session.user.id as string)
-    if (user) {
-      latestUser.name = user.name as string
-      latestUser.email = user.email as string
-      latestUser.image = user.image as string
-      latestUser.id = user.id as string
-    }
-  }
-
+  const latestUser:User | undefined | null = session?.user &&  await getUserById(session.user.id as string)
+    
   return (
     <Navbar
       maxWidth="xl"
@@ -51,7 +38,7 @@ export const TopNav = async () => {
         <NavLink href="/messages" label="Messages" />
       </NavbarContent>
       <NavbarContent justify="end">
-        {session?.user ? (
+        {latestUser ? (
           <UserMenu user={latestUser} />
         ) : (
           <>
