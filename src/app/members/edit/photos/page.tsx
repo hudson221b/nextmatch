@@ -15,14 +15,12 @@ export default async function EditPhotsPage() {
   const mainImageUrl = member?.image
   return (
     <>
-      <CardHeader className="text-2xl font-semibold text-secondary">
-        Edit Photos
+      <CardHeader className="flex justify-between items-center px-3">
+        <div className="text-2xl font-semibold text-secondary">Edit Photos</div>
+        <ImageUploadButton />
       </CardHeader>
       <Divider />
       <CardBody>
-        <div className="pt-5 pl-5">
-          <ImageUploadButton />
-        </div>
         <div className="grid grid-cols-5 gap-3 p-5">
           {photos?.length &&
             photos.map(photo => (

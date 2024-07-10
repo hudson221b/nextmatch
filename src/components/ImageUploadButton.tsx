@@ -11,11 +11,10 @@ export default function ImageUploadButton() {
 
   return (
     <CldUploadButton
-      className="flex items-center gap-2 text-white bg-secondary rounded-lg py-2 px-4 hover:bg-secondary/70"
+      className="flex items-center gap-2 text-secondary border-2 border-secondary rounded-lg py-2 px-4 hover:bg-secondary/10"
       signatureEndpoint="/api/sign-image"
       uploadPreset="project_demo"
       onSuccess={async results => {
-
         if (results && typeof results.info === "object") {
           await updateMemberPhotos(results.info.url, results.info.public_id)
         }

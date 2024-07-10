@@ -3,6 +3,9 @@
 import type { FieldValues, Path, UseFormSetError } from "react-hook-form"
 import type { ZodIssue } from "zod"
 
+/**
+ * Display errors after submitting the form to server
+ */
 export function handleFormServerErrors<TFieldValues extends FieldValues>(
   errorResponse: { error: string | ZodIssue[] },
   setError: UseFormSetError<TFieldValues>
@@ -19,3 +22,5 @@ export function handleFormServerErrors<TFieldValues extends FieldValues>(
     setError("root.serverError", { message: errorResponse.error })
   }
 }
+
+
