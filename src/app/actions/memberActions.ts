@@ -54,7 +54,8 @@ export const getMemberPhotosByUserId = async (userId: string) => {
 }
 
 export const updateMemberProfile = async (
-  data: MemberEditSchema
+  data: MemberEditSchema,
+  updatingName: boolean
 ): Promise<ActionResult<Member>> => {
   try {
     const userId = await getCurrentUserId()
@@ -64,6 +65,15 @@ export const updateMemberProfile = async (
     }
 
     const { name, description, city, country } = validated.data
+
+    if (updatingName) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          name,
+        },
+      })
+    }
 
     const member = await prisma.member.update({
       where: { userId },

@@ -34,7 +34,7 @@ export default function MemberSidebar({
         alt="member-image-sidebar"
         width={200}
         height={200}
-        className="rounded-full mt-6 object-cover"
+        className="rounded-full mt-6 object-cover aspect-square"
       />
       <CardBody>
         <div className="flex flex-col items-center">

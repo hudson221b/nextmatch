@@ -10,6 +10,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async session({ session, token }) {
       if (session.user && token.sub) {
+        // Auth.js only expose a subset of the user’s information by default. See docs here https://authjs.dev/guides/extending-the-session
         session.user.id = token.sub
       }
 

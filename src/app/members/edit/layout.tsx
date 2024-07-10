@@ -2,7 +2,7 @@ import { getMemberById } from "@/app/actions/memberActions"
 import { notFound } from "next/navigation"
 import React, { type ReactNode } from "react"
 import { Card } from "@nextui-org/react"
-import MemberSidebar from "../[memberId]/memberSidebar"
+import MemberSidebar from "../memberSidebar"
 import { getCurrentUserId } from "@/app/actions/authActions"
 
 /**

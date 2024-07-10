@@ -1,7 +1,7 @@
 import { getMemberById } from "@/app/actions/memberActions"
 import { notFound } from "next/navigation"
 import React, { type ReactNode } from "react"
-import MemberSidebar from "./memberSidebar"
+import MemberSidebar from "../memberSidebar"
 import { Card } from "@nextui-org/react"
 
 /**
