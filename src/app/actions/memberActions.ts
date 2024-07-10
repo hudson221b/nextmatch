@@ -2,7 +2,14 @@
 
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import type { Photo } from "@prisma/client"
+import {
+  type MemberEditSchema,
+  memberEditSchema,
+} from "@/lib/schemas/member-edit-schema"
+import type { Member, Photo } from "@prisma/client"
+import { getCurrentUserId } from "./authActions"
+import type { ActionResult } from "@/types"
+import { cloudinary } from "@/lib/cloudinary"
 
 /**
  * get all members except oneself after login
@@ -46,3 +53,115 @@ export const getMemberPhotosByUserId = async (userId: string) => {
     console.error("Error finding a member")
   }
 }
+
+export const updateMemberProfile = async (
+  data: MemberEditSchema,
+  updatingName: boolean
+): Promise<ActionResult<Member>> => {
+  try {
+    const userId = await getCurrentUserId()
+    const validated = memberEditSchema.safeParse(data)
+    if (!validated.success) {
+      return { status: "error", error: validated.error.issues }
+    }
+
+    const { name, description, city, country } = validated.data
+
+    if (updatingName) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          name,
+        },
+      })
+    }
+
+    const member = await prisma.member.update({
+      where: { userId },
+      data: {
+        name,
+        description,
+        city,
+        country,
+      },
+    })
+    return { status: "success", data: member }
+  } catch (error) {
+    console.error(error)
+    return {
+      status: "error",
+      error: "Error updating member profile",
+    }
+  }
+}
+
+/**
+ * Add a new photo to Member
+ */
+export const updateMemberPhotos = async (url: string, publicId: string) => {
+  try {
+    const userId = await getCurrentUserId()
+    await prisma.member.update({
+      where: { userId },
+      data: {
+        photos: {
+          create: {
+            url,
+            publicId,
+          },
+        },
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+/**
+ * Set image field for both User and Member
+ */
+export const setMainImage = async (url: string) => {
+  try {
+    const userId = await getCurrentUserId()
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        image: url,
+      },
+    })
+    return prisma.member.update({
+      where: { userId },
+      data: {
+        image: url,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const deleteImage = async (photo: Photo) => {
+  const userId = await getCurrentUserId()
+  try {
+    // delete from cloudinary
+    if (photo.publicId) {
+      await cloudinary.v2.uploader.destroy(photo.publicId)
+    }
+    return prisma.member.update({
+      where: { userId },
+      data: {
+        photos: {
+          delete: {
+            id: photo.id,
+          },
+        },
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+

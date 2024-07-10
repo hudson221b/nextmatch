@@ -62,10 +62,9 @@ export async function signInUser(
       password: data.password,
       redirect: false,
     })
-    console.log(result)
     return { status: "success", data: "Logged in" }
   } catch (error) {
-    console.log(error)
+    console.error(error)
     if (error instanceof AuthError) {
       if (error.type === "CredentialsSignin")
         return { status: "error", error: "Invalid credentials" }
@@ -75,8 +74,7 @@ export async function signInUser(
   }
 }
 
-
-export const getCurrentUserId = async () => {
+export const getCurrentUserId = async (): Promise<string> => {
   const session = await auth()
   const userId = session?.user?.id
   if (!userId) throw new Error("Not authorized")

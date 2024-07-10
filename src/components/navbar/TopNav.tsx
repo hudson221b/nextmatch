@@ -5,9 +5,13 @@ import { GiMatchTip } from "react-icons/gi"
 import { NavLink } from "./NavLink"
 import { auth } from "@/auth"
 import UserMenu from "./UserMenu"
+import { getUserById } from "@/app/actions/authActions"
+import type { User } from "@prisma/client"
 
 export const TopNav = async () => {
   const session = await auth()
+  const latestUser:User | undefined | null = session?.user &&  await getUserById(session.user.id as string)
+    
   return (
     <Navbar
       maxWidth="xl"
@@ -34,8 +38,8 @@ export const TopNav = async () => {
         <NavLink href="/messages" label="Messages" />
       </NavbarContent>
       <NavbarContent justify="end">
-        {session?.user ? (
-          <UserMenu user={session.user} />
+        {latestUser ? (
+          <UserMenu user={latestUser} />
         ) : (
           <>
             <Button
