@@ -1,4 +1,5 @@
 "use client"
+import { createMessage } from "@/app/actions/messageActions"
 import { messageSchema, type MessageSchema } from "@/lib/schemas/message-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input } from "@nextui-org/react"
@@ -15,8 +16,8 @@ export default function ChatForm() {
     resolver: zodResolver(messageSchema),
   })
 
-  const onSubmit = (data: MessageSchema) => {
-    console.log(data)
+  const onSubmit = async (data: MessageSchema) => {
+    const result = await createMessage(data)
   }
 
   return (
