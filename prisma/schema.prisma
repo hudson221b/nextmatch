@@ -82,7 +82,7 @@ model Like {
 
   @@id([sourceUserId, targetUserId])
 }
-
+ 
 model Message {
   id               String   @id @default(cuid())
   text             String
