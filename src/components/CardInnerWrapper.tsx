@@ -34,7 +34,7 @@ export default function CardInnerWrapper({
       </CardHeader>
       <Divider />
       <CardBody className={bodyClassName}>{body}</CardBody>
-      {footer && <CardFooter className={footerClassName}>footer</CardFooter>}
+      {footer && <CardFooter className={footerClassName}>{footer}</CardFooter>}
     </>
   )
 }
