@@ -1,10 +1,11 @@
 "use server"
 
 import { messageSchema, type MessageSchema } from "@/lib/schemas/message-schema"
-import { ActionResult } from "@/types"
+import { ActionResult, type MessageDTO, type MessageFetchResult } from "@/types"
 import { getCurrentUserId } from "./authActions"
 import { prisma } from "@/lib/prisma"
-
+import type { Message } from "@prisma/client"
+import { format } from "date-fns"
 
 export const createMessage = async (
   data: MessageSchema,
@@ -31,10 +32,33 @@ export const createMessage = async (
   }
 }
 
-export const getMessageHistory = async (recipientId: string) => {
+/**
+ * Flattens the result from prisma messages query and formate UTC date to more readable string
+ */
+function formatMessage(message: MessageFetchResult): MessageDTO {
+  return {
+    id: message.id,
+    text: message.text,
+    created: format(message.created, "dd MM yy h:mm:a"),
+    dateRead: message.dateRead
+      ? format(message.dateRead, "dd MM yy h:mm:a")
+      : null,
+    senderId: message.sender?.userId,
+    senderName: message.sender?.name,
+    senderImage: message.sender?.image,
+    recipientId: message.recipient?.userId,
+    recipientName: message.recipient?.name,
+    recipientImage: message.recipient?.image,
+  }
+}
+
+
+export const getMessageHistory = async (
+  recipientId: string
+): Promise<MessageDTO[]> => {
   try {
     const userId = await getCurrentUserId()
-    return prisma.message.findMany({
+    const messages: MessageFetchResult[] = await prisma.message.findMany({
       where: {
         OR: [
           { senderId: userId, recipientId },
@@ -42,8 +66,10 @@ export const getMessageHistory = async (recipientId: string) => {
         ],
       },
       select: {
+        id: true,
         text: true,
         created: true,
+        dateRead: true,
         sender: {
           select: {
             name: true,
@@ -63,6 +89,7 @@ export const getMessageHistory = async (recipientId: string) => {
         created: "asc",
       },
     })
+    return messages.map(m => formatMessage(m))
   } catch (error) {
     console.error(error)
     throw error
