@@ -1,6 +1,4 @@
-import { EditForm } from "@/app/members/edit/EditForm"
 import { CardHeader, Divider, CardBody, CardFooter } from "@nextui-org/react"
-import { HeadManagerContext } from "next/dist/server/future/route-modules/app-page/vendored/contexts/entrypoints"
 import React, { type ReactNode } from "react"
 
 type Props = {

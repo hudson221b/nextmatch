@@ -1,6 +1,7 @@
+"use client"
 import type { MessageDTO } from "@/types"
 import { Avatar } from "@nextui-org/react"
-import React, { type ReactNode } from "react"
+import React, { useEffect, useRef, type ReactNode } from "react"
 
 type Props = {
   message: MessageDTO
@@ -57,6 +58,16 @@ export default function MessageBox({ message, userId }: Props) {
     )
   }
 
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [message])
+
   return (
     <BoxWrapper isCurrentUserSender={isSender}>
       <Avatar src={message.senderImage || "/images/user"} />
@@ -64,6 +75,7 @@ export default function MessageBox({ message, userId }: Props) {
         <Header message={message} />
         <div className="text-gray-900">{message.text}</div>
       </Bubble>
+      <div ref={messagesEndRef}></div>
     </BoxWrapper>
   )
 }
