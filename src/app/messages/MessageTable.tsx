@@ -56,7 +56,17 @@ export default function MessageTable({
           {item => (
             <TableRow key={item.id}>
               {columnKey => (
-                <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                <TableCell>
+                  <div
+                    className={`${
+                      !item.dateRead && container === "inbox"
+                        ? "font-semibold"
+                        : ""
+                    }`}
+                  >
+                    {getKeyValue(item, columnKey)}
+                  </div>
+                </TableCell>
               )}
             </TableRow>
           )}

@@ -91,6 +91,19 @@ export const getMessageHistory = async (
         created: "asc",
       },
     })
+    // mark received messages as read
+    if (messages.length > 0) {
+      await prisma.message.updateMany({
+        where: {
+          recipientId: userId,
+          senderId: recipientId,
+          dateRead: null,
+        },
+        data: {
+          dateRead: new Date(),
+        },
+      })
+    }
     return messages.map(m => formatMessage(m))
   } catch (error) {
     console.error(error)
