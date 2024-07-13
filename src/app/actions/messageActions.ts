@@ -152,3 +152,52 @@ export const getMessagesByContainer = async (container: string) => {
     throw error
   }
 }
+
+/** soft and hard delete a message for the current user */
+export const deleteMessageById = async (
+  messageId: string,
+  isInbox: boolean
+) => {
+  try {
+    const userId = await getCurrentUserId()
+  const selector = isInbox ? "recipientDeleted" : "senderDeleted"
+
+  // soft delete
+  await prisma.message.update({
+    where: { id: messageId },
+    data: {
+      [selector]: true,
+    },
+  })
+
+  // actually delete the message if the other party also 'delete' the message
+  const messagesToDelete = await prisma.message.findMany({
+    where:{
+      OR:[{
+        recipientId: userId,
+        senderDeleted: true,
+        recipientDeleted:true
+      }, {
+        senderId: userId,
+        senderDeleted: true,
+        recipientDeleted:true
+      }]
+    }
+  })
+
+  if (messagesToDelete.length) {
+    const ids = messagesToDelete.map(m => m.id)
+    await prisma.message.deleteMany({
+      where:{ 
+        id: {in: ids}
+      }
+
+    })
+  }
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+  
+
+}
