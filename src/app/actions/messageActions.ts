@@ -63,8 +63,12 @@ export const getMessageHistory = async (
     const messages: MessageFetchResult[] = await prisma.message.findMany({
       where: {
         OR: [
-          { senderId: userId, recipientId },
-          { senderId: recipientId, recipientId: userId },
+          { senderId: userId, recipientId, senderDeleted: false },
+          {
+            senderId: recipientId,
+            recipientId: userId,
+            recipientDeleted: false,
+          },
         ],
       },
       select: {
@@ -114,13 +118,19 @@ export const getMessageHistory = async (
 export const getMessagesByContainer = async (container: string) => {
   try {
     const userId = await getCurrentUserId()
+
     // if container is inbox, selects all messages the current user has received
     const selector = container === "inbox" ? "recipientId" : "senderId"
 
+    const conditions = {
+      [container === "inbox" ? "recipientId" : "senderId"]: userId,
+      ...(container === "inbox"
+        ? { recipientDeleted: false }
+        : { senderDeleted: false }),
+    }
+
     const messages = await prisma.message.findMany({
-      where: {
-        [selector]: userId,
-      },
+      where: conditions,
       select: {
         id: true,
         text: true,
