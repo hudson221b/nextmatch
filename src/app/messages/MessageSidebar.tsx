@@ -25,6 +25,7 @@ export default function MessageSidebar() {
     const params = new URLSearchParams()
     params.set("container", key)
     router.replace(`${pathname}?${params}`)
+    router.refresh()
   }
 
   return (

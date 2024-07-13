@@ -33,7 +33,7 @@ export const createMessage = async (
 }
 
 /**
- * Flattens the result from prisma messages query and formate UTC date to more readable string
+ * Flattens the result from prisma messages query and format UTC date to more readable string
  */
 function formatMessage(message: MessageFetchResult): MessageDTO {
   return {
@@ -52,7 +52,9 @@ function formatMessage(message: MessageFetchResult): MessageDTO {
   }
 }
 
-
+/**
+ * Gets all messages between the current user and certain recipient 
+ */
 export const getMessageHistory = async (
   recipientId: string
 ): Promise<MessageDTO[]> => {
@@ -89,6 +91,48 @@ export const getMessageHistory = async (
         created: "asc",
       },
     })
+    return messages.map(m => formatMessage(m))
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const getMessagesByContainer = async (container: string) => {
+  try {
+    const userId = await getCurrentUserId()
+    // if container is inbox, selects all messages the current user has received
+    const selector = container === "inbox" ? "recipientId" : "senderId"
+
+    const messages = await prisma.message.findMany({
+      where: {
+        [selector]: userId,
+      },
+      select: {
+        id: true,
+        text: true,
+        created: true,
+        dateRead: true,
+        sender: {
+          select: {
+            name: true,
+            image: true,
+            userId: true,
+          },
+        },
+        recipient: {
+          select: {
+            name: true,
+            image: true,
+            userId: true,
+          },
+        },
+      },
+      orderBy: {
+        created: "desc",
+      },
+    })
+
     return messages.map(m => formatMessage(m))
   } catch (error) {
     console.error(error)
