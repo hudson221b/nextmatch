@@ -1,18 +1,16 @@
 import React from "react"
 import MessageSidebar from "./MessageSidebar"
 import { getMessagesByContainer } from "../actions/messageActions"
+import MessageTable from "./MessageTable"
 
 const MessagesPage = async ({
   searchParams,
 }: {
   searchParams: { container: string }
 }) => {
-  console.log("#####🚀🚀🚀 ~ searchParams👉👉", searchParams)
-
   const messages = searchParams.container
     ? await getMessagesByContainer(searchParams.container)
     : "Please select Inbox or Outbox to see messages"
-  console.log("#####🚀🚀🚀 ~ messages👉👉", messages)
 
   return (
     <div className="grid grid-cols-12 gap-5 h-[80vh]mt-10">
@@ -23,7 +21,10 @@ const MessagesPage = async ({
         {typeof messages === "string" ? (
           <div>{messages}</div>
         ) : (
-          messages[0].text
+          <MessageTable
+            messages={messages}
+            container={searchParams.container}
+          />
         )}
       </div>
     </div>
