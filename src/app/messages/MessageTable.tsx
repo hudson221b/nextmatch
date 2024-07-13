@@ -54,11 +54,7 @@ export default function MessageTable({
         case "senderName":
         case "recipientName":
           return (
-            <div
-              className={`flex items-center gap-2 ${
-                !item.dateRead && isInbox && "font-semibold"
-              }`}
-            >
+            <div className="flex items-center gap-2">
               <Avatar
                 src={
                   (isInbox ? item.senderImage : item.recipientImage) ||
@@ -74,11 +70,7 @@ export default function MessageTable({
           return <div className="truncate">{cellValue}</div>
 
         case "created":
-          return (
-            <div className={`${!item.dateRead && isInbox && "font-semibold"}`}>
-              {cellValue}
-            </div>
-          )
+          return cellValue
 
         default:
           return (
@@ -107,7 +99,9 @@ export default function MessageTable({
           {item => (
             <TableRow key={item.id}>
               {columnKey => (
-                <TableCell>
+                <TableCell
+                  className={`${!item.dateRead && isInbox && "font-semibold"}`}
+                >
                   {renderCell(item, columnKey as keyof MessageDTO)}
                 </TableCell>
               )}
