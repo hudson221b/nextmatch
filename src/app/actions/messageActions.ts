@@ -39,9 +39,9 @@ function formatMessage(message: MessageFetchResult): MessageDTO {
   return {
     id: message.id,
     text: message.text,
-    created: format(message.created, "dd MM yy h:mm:a"),
+    created: format(message.created, "M-d-yyyy h:mm:a"),
     dateRead: message.dateRead
-      ? format(message.dateRead, "dd MM yy h:mm:a")
+      ? format(message.dateRead, "M-d-yyyy h:mm:a")
       : null,
     senderId: message.sender?.userId,
     senderName: message.sender?.name,
