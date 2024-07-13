@@ -9,9 +9,12 @@ import {
   TableCell,
   getKeyValue,
   Card,
+  Avatar,
+  Button,
 } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
-import React, { type Key } from "react"
+import React, { useCallback, type Key } from "react"
+import { AiFillDelete } from "react-icons/ai"
 
 export default function MessageTable({
   container,
@@ -20,26 +23,74 @@ export default function MessageTable({
   container: string
   messages: MessageDTO[]
 }) {
+  const isInbox = container === "inbox"
   const columns = [
     {
-      key: container === "inbox" ? "senderName" : "recipientName",
-      label: container === "inbox" ? "Sender" : "Recipient",
+      key: isInbox ? "senderName" : "recipientName",
+      label: isInbox ? "Sender" : "Recipient",
     },
     { key: "text", label: "Content" },
     {
       key: "created",
-      label: container === "inbox" ? "Date sent" : "Date received",
+      label: isInbox ? "Date sent" : "Date received",
     },
+    { key: "action", label: "Delete" },
   ]
   const router = useRouter()
   const handleRowCLick = (key: Key) => {
     // key is message.id
     const message = messages.find(m => m.id === key)
-    const ownerId =
-      container === "inbox" ? message?.senderId : message?.recipientId
+    const ownerId = isInbox ? message?.senderId : message?.recipientId
     const url = `/members/${ownerId}/chat`
     router.push(url)
   }
+
+  // customize cells
+  const renderCell = useCallback(
+    (item: MessageDTO, columnKey: keyof MessageDTO) => {
+      const cellValue = item[columnKey]
+
+      switch (columnKey) {
+        case "senderName":
+        case "recipientName":
+          return (
+            <div
+              className={`flex items-center gap-2 ${
+                !item.dateRead && isInbox && "font-semibold"
+              }`}
+            >
+              <Avatar
+                src={
+                  (isInbox ? item.senderImage : item.recipientImage) ||
+                  "/images/user.png"
+                }
+                alt="user image in messages table"
+              />
+              <span>{cellValue}</span>
+            </div>
+          )
+
+        case "text":
+          return <div className="truncate">{cellValue}</div>
+
+        case "created":
+          return (
+            <div className={`${!item.dateRead && isInbox && "font-semibold"}`}>
+              {cellValue}
+            </div>
+          )
+
+        default:
+          return (
+            <Button isIconOnly>
+              <AiFillDelete size={24} className="text-danger" />
+            </Button>
+          )
+      }
+    },
+
+    [isInbox]
+  )
 
   return (
     <Card className="h-[80vh] overflow-auto">
@@ -57,15 +108,7 @@ export default function MessageTable({
             <TableRow key={item.id}>
               {columnKey => (
                 <TableCell>
-                  <div
-                    className={`${
-                      !item.dateRead && container === "inbox"
-                        ? "font-semibold"
-                        : ""
-                    }`}
-                  >
-                    {getKeyValue(item, columnKey)}
-                  </div>
+                  {renderCell(item, columnKey as keyof MessageDTO)}
                 </TableCell>
               )}
             </TableRow>
