@@ -73,7 +73,7 @@ export default function MessageBox({ message, userId }: Props) {
       <Avatar src={message.senderImage || "/images/user"} />
       <Bubble isCurrentUserSender={isSender}>
         <Header message={message} />
-        <div className="text-gray-900">{message.text}</div>
+        <div className="text-gray-900 w-full">{message.text}</div>
       </Bubble>
       <div ref={messagesEndRef}></div>
     </BoxWrapper>

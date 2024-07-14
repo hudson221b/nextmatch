@@ -15,6 +15,9 @@ import {
 import { useRouter } from "next/navigation"
 import React, { useCallback, type Key } from "react"
 import { AiFillDelete } from "react-icons/ai"
+import { deleteMessageById } from "../actions/messageActions"
+import TextWithTooltip from "@/components/TextWithTooltip"
+import textWithTooltip from "@/components/TextWithTooltip"
 
 export default function MessageTable({
   container,
@@ -37,6 +40,7 @@ export default function MessageTable({
     { key: "action", label: "Delete" },
   ]
   const router = useRouter()
+
   const handleRowCLick = (key: Key) => {
     // key is message.id
     const message = messages.find(m => m.id === key)
@@ -67,14 +71,22 @@ export default function MessageTable({
           )
 
         case "text":
-          return <div className="truncate">{cellValue}</div>
+          return (
+            <TextWithTooltip text={cellValue!} limit={15} showTooltip={true} />
+          )
 
         case "created":
           return cellValue
 
         default:
           return (
-            <Button isIconOnly>
+            <Button
+              isIconOnly
+              onClick={async () => {
+                await deleteMessageById(item.id, isInbox)
+                router.refresh()
+              }}
+            >
               <AiFillDelete size={24} className="text-danger" />
             </Button>
           )
