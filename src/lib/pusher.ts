@@ -10,18 +10,21 @@ declare global {
 }
 
 if (!global.pusherClient) {
-  global.pusherClient = new PusherClient(process.env.PUSHER_APP_KEY!, {
-    cluster: process.env.PUSHER_CLUSTER!,
-    forceTLS: true,
-  })
+  global.pusherClient = new PusherClient(
+    process.env.NEXT_PUBLIC_PUSHER_APP_KEY!,
+    {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+      forceTLS: true,
+    }
+  )
 }
 
 if (!global.pusherServer) {
   global.pusherServer = new PusherServer({
     appId: process.env.PUSHER_APP_ID!,
-    key: process.env.PUSHER_APP_KEY!,
+    key: process.env.NEXT_PUBLIC_PUSHER_APP_KEY!,
     secret: process.env.PUSHER_SECRET!,
-    cluster: process.env.PUSHER_CLUSTER!,
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     useTLS: true,
   })
 }
