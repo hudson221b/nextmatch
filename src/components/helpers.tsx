@@ -1,5 +1,3 @@
-"use client"
-
 import type { FieldValues, Path, UseFormSetError } from "react-hook-form"
 import type { ZodIssue } from "zod"
 
@@ -22,11 +20,3 @@ export function handleFormServerErrors<TFieldValues extends FieldValues>(
     setError("root.serverError", { message: errorResponse.error })
   }
 }
-
-/**
- * Creates a unique channel name between the current user and the recipient. It's alphabetically sorted so to ensure only one channel name between two users.
- */
-export const getChannelName = (userId: string, recipientId: string) => {
-  return userId > recipientId ? recipientId + userId : userId + recipientId
-}
-

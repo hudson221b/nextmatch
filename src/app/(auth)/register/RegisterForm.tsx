@@ -4,7 +4,7 @@ import {
   type RegisterSchema,
   registerSchema,
 } from "@/lib/zod-schemas/auth-schema"
-import { handleFormServerErrors } from "@/lib/util"
+import { handleFormServerErrors } from "@/components/helpers"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardHeader, CardBody, Button, Input } from "@nextui-org/react"
 import { useForm } from "react-hook-form"

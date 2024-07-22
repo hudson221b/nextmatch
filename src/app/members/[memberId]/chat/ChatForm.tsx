@@ -4,7 +4,7 @@ import {
   messageSchema,
   type MessageSchema,
 } from "@/lib/zod-schemas/message-schema"
-import { handleFormServerErrors } from "@/lib/util"
+import { handleFormServerErrors } from "@/components/helpers"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input } from "@nextui-org/react"
 import { useParams, useRouter } from "next/navigation"
@@ -12,6 +12,9 @@ import React, { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { HiPaperAirplane } from "react-icons/hi2"
 
+/**
+ * Component to type and send a new message in Chat page
+ */
 export default function ChatForm() {
   const {
     register,

@@ -8,6 +8,9 @@ type Props = {
   userId: string
 }
 
+/**
+ * Componenent to display a single message. Includes sender avatar and message bubble
+ */
 export default function MessageBox({ message, userId }: Props) {
   const isSender = message.senderId === userId
 
