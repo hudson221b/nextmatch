@@ -1,6 +1,9 @@
 "use client"
 import { createMessage } from "@/app/actions/messageActions"
-import { messageSchema, type MessageSchema } from "@/lib/schemas/message-schema"
+import {
+  messageSchema,
+  type MessageSchema,
+} from "@/lib/zod-schemas/message-schema"
 import { handleFormServerErrors } from "@/lib/util"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input } from "@nextui-org/react"

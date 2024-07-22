@@ -5,7 +5,7 @@ import {
   registerSchema,
   type LoginSchema,
   type RegisterSchema,
-} from "@/lib/schemas/auth-schema"
+} from "@/lib/zod-schemas/auth-schema"
 import type { ActionResult } from "../../types"
 import type { User } from "@prisma/client"
 import bcrypt from "bcryptjs"

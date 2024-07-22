@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 import {
   type MemberEditSchema,
   memberEditSchema,
-} from "@/lib/schemas/member-edit-schema"
+} from "@/lib/zod-schemas/member-edit-schema"
 import type { Member, Photo } from "@prisma/client"
 import { getCurrentUserId } from "./authActions"
 import type { ActionResult } from "@/types"

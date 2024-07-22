@@ -1,6 +1,9 @@
 "use server"
 
-import { messageSchema, type MessageSchema } from "@/lib/schemas/message-schema"
+import {
+  messageSchema,
+  type MessageSchema,
+} from "@/lib/zod-schemas/message-schema"
 import { ActionResult, type MessageDTO, type MessageFetchResult } from "@/types"
 import { getCurrentUserId } from "./authActions"
 import { prisma } from "@/lib/prisma"
