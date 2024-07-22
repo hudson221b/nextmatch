@@ -26,6 +26,9 @@ type MessageFetchResult = {
   } | null
 }
 
+/**
+ * a universal message object that can be directly used in both frontend and backend 
+ */
 type MessageDTO = {
   id: string
   text: string

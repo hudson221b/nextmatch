@@ -15,6 +15,15 @@ export default async function ChatPage({
   const chatHistory = await getMessageHistory(memberId)
   const userId = await getCurrentUserId()
 
+  // import pusherClient and subscribe to a unique channel that belongs to the currrent user and the recipient
+  /* 
+   const channelName = generateChannel(userId, memberId)
+   // subscribe to the unique channel
+   const channel = pusherClient.subscribe(channelName)
+ // bind to "new-message" event
+    channel.bind("new-message", (data)=>{})
+  */
+
   const body = (
     <div className="grid grid-cols-1">
       {chatHistory.map(message => (
