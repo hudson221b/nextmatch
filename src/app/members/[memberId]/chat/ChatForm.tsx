@@ -4,7 +4,7 @@ import {
   messageSchema,
   type MessageSchema,
 } from "@/lib/zod-schemas/message-schema"
-import { handleFormServerErrors } from "@/components/helpers"
+import { handleFormServerErrors } from "@/lib/client-utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input } from "@nextui-org/react"
 import { useParams, useRouter } from "next/navigation"

@@ -27,12 +27,20 @@ export default async function MemberPageLayout({
   ]
 
   return (
-    <div className="grid grid-cols-12 gap-5 h-[80vh] ">
+    <div className="grid grid-cols-12 gap-5 h-[80vh]">
       <div className="col-span-3">
         <MemberSidebar member={member} navLinks={navLinks} />
       </div>
       <div className="col-span-9">
-        <Card className="w-full h-[80vh]">{children}</Card>
+        <Card
+          className="w-full h-[80vh]"
+          classNames={{
+            footer:
+              "p-3 h-auto flex w-full items-center color-inherit subpixel-antialiased rounded-b-large",
+          }}
+        >
+          {children}
+        </Card>
       </div>
     </div>
   )

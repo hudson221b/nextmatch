@@ -19,11 +19,19 @@ export default async function ChatPage({
   const channelName = getChannelName(userId, memberId)
 
   const body = (
-    <ChatList
-      initialMessages={chatHistory}
-      userId={userId}
-      channelName={channelName}
+    <div className="overflow-y-auto w-full h-full">
+      <ChatList
+        initialMessages={chatHistory}
+        userId={userId}
+        channelName={channelName}
+      />
+    </div>
+  )
+  return (
+    <CardInnerWrapper
+      header="Chat"
+      body={body}
+      footer={<ChatForm />}
     />
   )
-  return <CardInnerWrapper header="Chat" body={body} footer={<ChatForm />} />
 }

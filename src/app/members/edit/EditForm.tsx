@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form"
 import type { Member } from "@prisma/client"
 import { updateMemberProfile } from "@/app/actions/memberActions"
 import { toast } from "react-toastify"
-import { handleFormServerErrors } from "@/components/helpers"
+import { handleFormServerErrors } from "@/lib/client-utils"
 import { useRouter } from "next/navigation"
 
 type EditFormProp = {

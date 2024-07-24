@@ -5,25 +5,12 @@ type Props = {
   header: ReactNode | string
   body: ReactNode
   footer?: ReactNode
-  classNames?: {
-    header?: string
-    body?: string
-    footer?: string
-  }
 }
 
-export default function CardInnerWrapper({
-  header,
-  body,
-  footer,
-  classNames,
-}: Props) {
-  const headerClassName = "" + classNames?.header
-  const bodyClassName = "" + classNames?.body
-  const footerClassName = "" + classNames?.footer
+export default function CardInnerWrapper({ header, body, footer }: Props) {
   return (
     <>
-      <CardHeader className={headerClassName}>
+      <CardHeader>
         {typeof header === "string" ? (
           <div className="text-2xl font-semibold text-secondary"> {header}</div>
         ) : (
@@ -31,8 +18,8 @@ export default function CardInnerWrapper({
         )}
       </CardHeader>
       <Divider />
-      <CardBody className={bodyClassName}>{body}</CardBody>
-      {footer && <CardFooter className={footerClassName}>{footer}</CardFooter>}
+      <CardBody>{body}</CardBody>
+      {footer && <CardFooter>{footer}</CardFooter>}
     </>
   )
 }
