@@ -10,7 +10,7 @@ type Props = {
   channelName: string
 }
 /**
- * Client component for chat history between the current user and a recipient
+ * Client component for chat history between the current user and a recipient. Has Pusher subscription
  */
 export default function ChatList({
   initialMessages,
@@ -22,24 +22,24 @@ export default function ChatList({
   useEffect(() => {
     const channel = pusherClient.subscribe(channelName)
     channel.bind("message:new", (data: MessageDTO) => {
-      console.log("#####🚀🚀🚀 ~ channel.bind ~ data👉👉", data)
-
       setMessages(prevState => {
         return [...prevState, data]
       })
     })
 
     return () => {
-      channel.unsubscribe()
-      channel.unbind(channelName)
+      // unbind events, not channels
+      channel.unbind("message:new")
+      // unsubscribe channel
+      pusherClient.unsubscribe(channelName)
     }
-  }, [channelName, messages])
+  }, [channelName])
 
   return (
     <div className="grid grid-cols-1">
       {messages.map(message => (
         <MessageBox message={message} userId={userId} key={message.id} />
-      ))}{" "}
+      ))}
     </div>
   )
 }

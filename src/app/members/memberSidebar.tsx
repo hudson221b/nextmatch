@@ -74,7 +74,6 @@ export default function MemberSidebar({
           color="secondary"
           fullWidth
         >
-          {" "}
           Go back to Members
         </Button>
       </CardFooter>
