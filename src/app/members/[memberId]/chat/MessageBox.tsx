@@ -61,13 +61,7 @@ export default function MessageBox({ message, userId }: Props) {
     )
   }
 
-  const Footer = ({ message }: { message: MessageDTO }) => {
-    return (
-      <div className="text-gray-500">
-        <span className="text-xs">{message.dateRead}</span>
-      </div>
-    )
-  }
+
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -85,7 +79,9 @@ export default function MessageBox({ message, userId }: Props) {
       <Bubble isCurrentUserSender={isSender}>
         <Header message={message} />
         <div className="text-gray-900 w-full">{message.text}</div>
-        {message.dateRead && <Footer message={message} />}
+        {isSender && message.dateRead && (
+          <span className="text-[10px] text-gray-500">{message.dateRead}</span>
+        )}
       </Bubble>
       <div ref={messagesEndRef}></div>
     </BoxWrapper>

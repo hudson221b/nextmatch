@@ -1,6 +1,6 @@
 "use client"
 import type { MessageDTO } from "@/types"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import MessageBox from "./MessageBox"
 import { pusherClient } from "@/lib/pusher"
 import { formatDistance } from "date-fns"
@@ -20,38 +20,44 @@ export default function ChatMessages({
 }: Props) {
   const [messages, setMessages] = useState(initialMessages)
 
-  useEffect(() => {
-    const channel = pusherClient.subscribe(channelName)
-    channel.bind("message:new", (data: MessageDTO) => {
+  const handleNewMessage = useCallback(
+    (data: MessageDTO) => {
       setMessages(prevState => {
         return [...prevState, data]
       })
-    })
+    },
+    [setMessages]
+  )
 
-    // add read time to messages
-    // channel.bind("messages:read", (data: string[]) => {
-    //   setMessages(prevState =>
-    //     prevState.map(message =>
-    //       data.includes(message.id)
-    //         ? {
-    //             ...message,
-    //             dateRead: formatDistance(Date.now(), message.dateRead!, {
-    //               addSuffix: true,
-    //             }),
-    //           }
-    //         : message
-    //     )
-    //   )
-    // })
+  const handleReadMessages = useCallback(
+    (data: string[]) => {
+      setMessages(prevState =>
+        prevState.map(message =>
+          data.includes(message.id)
+            ? {
+                ...message,
+                dateRead: "84 years ago",
+              }
+            : message
+        )
+      )
+    },
+    [setMessages]
+  )
+
+  useEffect(() => {
+    const channel = pusherClient.subscribe(channelName)
+    channel.bind("message:new", handleNewMessage)
+    channel.bind("messages:read", handleReadMessages)
 
     return () => {
       // unbind events, not channels
       channel.unbind("message:new")
-      // channel.unbind("messages:read")
+      channel.unbind("messages:read")
       // unsubscribe channel
       pusherClient.unsubscribe(channelName)
     }
-  }, [channelName])
+  }, [channelName, handleNewMessage, handleReadMessages])
 
   return (
     <div className="grid grid-cols-1">
