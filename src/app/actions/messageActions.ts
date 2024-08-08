@@ -10,7 +10,6 @@ import { prisma } from "@/lib/prisma"
 import { format } from "date-fns"
 import { getChannelName } from "@/lib/util"
 import { pusherServer } from "@/lib/pusher"
-import { read } from "fs"
 
 /**
  * When user sends a new message in browser, update database and publish a Pusher event.

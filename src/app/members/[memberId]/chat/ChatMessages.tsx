@@ -22,32 +22,32 @@ export default function ChatMessages({
 
   useEffect(() => {
     const channel = pusherClient.subscribe(channelName)
-    channel.bind("messages:new", (data: MessageDTO) => {
+    channel.bind("message:new", (data: MessageDTO) => {
       setMessages(prevState => {
         return [...prevState, data]
       })
     })
 
     // add read time to messages
-    channel.bind("messages:read", (data: string[]) => {
-      setMessages(prevState =>
-        prevState.map(message =>
-          data.includes(message.id)
-            ? {
-                ...message,
-                dateRead: formatDistance(Date.now(), message.dateRead!, {
-                  addSuffix: true,
-                }),
-              }
-            : message
-        )
-      )
-    })
+    // channel.bind("messages:read", (data: string[]) => {
+    //   setMessages(prevState =>
+    //     prevState.map(message =>
+    //       data.includes(message.id)
+    //         ? {
+    //             ...message,
+    //             dateRead: formatDistance(Date.now(), message.dateRead!, {
+    //               addSuffix: true,
+    //             }),
+    //           }
+    //         : message
+    //     )
+    //   )
+    // })
 
     return () => {
       // unbind events, not channels
       channel.unbind("message:new")
-      channel.unbind("messages:read")
+      // channel.unbind("messages:read")
       // unsubscribe channel
       pusherClient.unsubscribe(channelName)
     }
