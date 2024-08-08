@@ -1,9 +1,10 @@
 "use client"
 import type { MessageDTO } from "@/types"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import MessageBox from "./MessageBox"
 import { pusherClient } from "@/lib/pusher"
 import { format } from "date-fns"
+import type { Channel } from "pusher-js"
 
 type Props = {
   initialMessages: MessageDTO[]
@@ -19,6 +20,8 @@ export default function ChatMessages({
   userId,
 }: Props) {
   const [messages, setMessages] = useState(initialMessages)
+
+  const channelRef = useRef<Channel | null>(null)
 
   const handleNewMessage = useCallback(
     (message: MessageDTO) => {
@@ -46,16 +49,19 @@ export default function ChatMessages({
   )
 
   useEffect(() => {
-    const channel = pusherClient.subscribe(channelName)
-    channel.bind("message:new", handleNewMessage)
-    channel.bind("messages:read", handleReadMessages)
+    if (!channelRef.current) {
+      channelRef.current = pusherClient.subscribe(channelName)
+      channelRef.current.bind("message:new", handleNewMessage)
+      channelRef.current.bind("messages:read", handleReadMessages)
+    }
 
     return () => {
-      // unbind events, not channels
-      channel.unbind("message:new")
-      channel.unbind("messages:read")
-      // unsubscribe channel
-      pusherClient.unsubscribe(channelName)
+      if (channelRef.current && channelRef.current.subscribed) {
+        // unbind events, not channels
+        channelRef.current.unbind("message:new")
+        channelRef.current.unbind("messages:read")
+        channelRef.current.unsubscribe()
+      }
     }
   }, [channelName, handleNewMessage, handleReadMessages])
 
