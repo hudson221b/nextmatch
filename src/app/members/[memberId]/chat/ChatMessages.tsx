@@ -3,7 +3,7 @@ import type { MessageDTO } from "@/types"
 import React, { useCallback, useEffect, useState } from "react"
 import MessageBox from "./MessageBox"
 import { pusherClient } from "@/lib/pusher"
-import { formatDistance } from "date-fns"
+import { format } from "date-fns"
 
 type Props = {
   initialMessages: MessageDTO[]
@@ -21,22 +21,22 @@ export default function ChatMessages({
   const [messages, setMessages] = useState(initialMessages)
 
   const handleNewMessage = useCallback(
-    (data: MessageDTO) => {
+    (message: MessageDTO) => {
       setMessages(prevState => {
-        return [...prevState, data]
+        return [...prevState, message]
       })
     },
     [setMessages]
   )
 
   const handleReadMessages = useCallback(
-    (data: string[]) => {
+    (messageIds: string[]) => {
       setMessages(prevState =>
         prevState.map(message =>
-          data.includes(message.id)
+          messageIds.includes(message.id)
             ? {
                 ...message,
-                dateRead: "84 years ago",
+                dateRead: format(new Date(), "M-d-yy h:m:a"),
               }
             : message
         )

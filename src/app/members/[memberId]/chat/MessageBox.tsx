@@ -1,4 +1,5 @@
 "use client"
+import { timeAgo } from "@/lib/util"
 import type { MessageDTO } from "@/types"
 import { Avatar } from "@nextui-org/react"
 import React, { useEffect, useRef, type ReactNode } from "react"
@@ -61,8 +62,6 @@ export default function MessageBox({ message, userId }: Props) {
     )
   }
 
-
-
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -80,7 +79,9 @@ export default function MessageBox({ message, userId }: Props) {
         <Header message={message} />
         <div className="text-gray-900 w-full">{message.text}</div>
         {isSender && message.dateRead && (
-          <span className="text-[10px] text-gray-500">{message.dateRead}</span>
+          <span className="text-[10px] italic text-gray-500">
+            Read {timeAgo(message.dateRead)}
+          </span>
         )}
       </Bubble>
       <div ref={messagesEndRef}></div>
