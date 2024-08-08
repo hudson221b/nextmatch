@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma"
 import { format } from "date-fns"
 import { getChannelName } from "@/lib/util"
 import { pusherServer } from "@/lib/pusher"
+import { read } from "fs"
 
 /**
  * When user sends a new message in browser, update database and publish a Pusher event.
@@ -92,18 +93,6 @@ export const getChatMessages = async (
     })
     // mark received messages as read
     if (messages.length > 0) {
-      await prisma.message.updateMany({
-        where: {
-          recipientId: userId,
-          senderId: recipientId,
-          dateRead: null,
-        },
-        data: {
-          dateRead: new Date(),
-        },
-      })
-
-      // publish a new event to flag read messages
       const readMessageIds = messages
         .filter(
           m =>
@@ -112,8 +101,19 @@ export const getChatMessages = async (
             m.recipient?.userId === userId
         )
         .map(m => m.id)
+
+      await prisma.message.updateMany({
+        where: {
+          id: { in: readMessageIds },
+        },
+        data: {
+          dateRead: new Date(),
+        },
+      })
+
+      // publish a new event to flag read messages
       const channelName = getChannelName(userId, recipientId)
-      await pusherServer.trigger(channelName, "message:read", readMessageIds)
+      await pusherServer.trigger(channelName, "messages:read", readMessageIds)
     }
 
 

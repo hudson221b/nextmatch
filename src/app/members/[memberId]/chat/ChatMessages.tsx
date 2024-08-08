@@ -3,6 +3,7 @@ import type { MessageDTO } from "@/types"
 import React, { useEffect, useState } from "react"
 import MessageBox from "./MessageBox"
 import { pusherClient } from "@/lib/pusher"
+import { formatDistance } from "date-fns"
 
 type Props = {
   initialMessages: MessageDTO[]
@@ -21,15 +22,32 @@ export default function ChatMessages({
 
   useEffect(() => {
     const channel = pusherClient.subscribe(channelName)
-    channel.bind("message:new", (data: MessageDTO) => {
+    channel.bind("messages:new", (data: MessageDTO) => {
       setMessages(prevState => {
         return [...prevState, data]
       })
     })
 
+    // add read time to messages
+    channel.bind("messages:read", (data: string[]) => {
+      setMessages(prevState =>
+        prevState.map(message =>
+          data.includes(message.id)
+            ? {
+                ...message,
+                dateRead: formatDistance(Date.now(), message.dateRead!, {
+                  addSuffix: true,
+                }),
+              }
+            : message
+        )
+      )
+    })
+
     return () => {
       // unbind events, not channels
       channel.unbind("message:new")
+      channel.unbind("messages:read")
       // unsubscribe channel
       pusherClient.unsubscribe(channelName)
     }
