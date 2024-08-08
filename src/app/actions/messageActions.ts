@@ -67,6 +67,7 @@ function formatMessage(message: MessageFetchResult): MessageDTO {
 
 /**
  * Gets all messages in a chat
+ * @param recipientId the memberId of the other party in the chat other than the current user
  */
 export const getChatMessages = async (
   recipientId: string
@@ -101,7 +102,21 @@ export const getChatMessages = async (
           dateRead: new Date(),
         },
       })
+
+      // publish a new event to flag read messages
+      const readMessageIds = messages
+        .filter(
+          m =>
+            m.dateRead === null &&
+            m.sender?.userId === recipientId &&
+            m.recipient?.userId === userId
+        )
+        .map(m => m.id)
+      const channelName = getChannelName(userId, recipientId)
+      await pusherServer.trigger(channelName, "message:read", readMessageIds)
     }
+
+
     return messages.map(m => formatMessage(m))
   } catch (error) {
     console.error(error)
