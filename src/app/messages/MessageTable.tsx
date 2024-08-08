@@ -7,7 +7,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  getKeyValue,
   Card,
   Avatar,
   Button,
@@ -17,7 +16,6 @@ import React, { useCallback, type Key } from "react"
 import { AiFillDelete } from "react-icons/ai"
 import { deleteMessageById } from "../actions/messageActions"
 import TextWithTooltip from "@/components/TextWithTooltip"
-import textWithTooltip from "@/components/TextWithTooltip"
 
 export default function MessageTable({
   container,

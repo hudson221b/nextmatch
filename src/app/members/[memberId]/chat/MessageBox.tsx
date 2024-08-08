@@ -8,6 +8,9 @@ type Props = {
   userId: string
 }
 
+/**
+ * Componenent to display a single message. Includes sender avatar and message bubble
+ */
 export default function MessageBox({ message, userId }: Props) {
   const isSender = message.senderId === userId
 
@@ -58,6 +61,14 @@ export default function MessageBox({ message, userId }: Props) {
     )
   }
 
+  const Footer = ({ message }: { message: MessageDTO }) => {
+    return (
+      <div className="text-gray-500">
+        <span className="text-xs">{message.dateRead}</span>
+      </div>
+    )
+  }
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -74,6 +85,7 @@ export default function MessageBox({ message, userId }: Props) {
       <Bubble isCurrentUserSender={isSender}>
         <Header message={message} />
         <div className="text-gray-900 w-full">{message.text}</div>
+        {message.dateRead && <Footer message={message} />}
       </Bubble>
       <div ref={messagesEndRef}></div>
     </BoxWrapper>

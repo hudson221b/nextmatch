@@ -2,7 +2,7 @@
 
 import { Chip } from "@nextui-org/react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { GoInbox } from "react-icons/go"
 import { MdOutlineOutbox } from "react-icons/md"
 
@@ -10,7 +10,15 @@ export default function MessageSidebar() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
-  const selected = searchParams.get("container")
+  // defaults the sidebar to inbox at initial loading
+  const [selected, setSelected] = useState<string>("inbox")
+
+  useEffect(() => {
+    if (!searchParams.get("container")) {
+      setSelected("inbox")
+    }
+  }, [searchParams])
+
   const items = [
     {
       key: "inbox",
@@ -22,6 +30,7 @@ export default function MessageSidebar() {
   ]
 
   const handleClick = (key: string) => {
+    setSelected(key)
     const params = new URLSearchParams()
     params.set("container", key)
     router.replace(`${pathname}?${params}`)

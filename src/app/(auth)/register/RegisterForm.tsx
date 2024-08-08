@@ -1,7 +1,10 @@
 "use client"
 import { registerUser } from "@/app/actions/authActions"
-import { type RegisterSchema, registerSchema } from "@/lib/schemas/auth-schema"
-import { handleFormServerErrors } from "@/lib/util"
+import {
+  type RegisterSchema,
+  registerSchema,
+} from "@/lib/zod-schemas/auth-schema"
+import { handleFormServerErrors } from "@/lib/client-utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardHeader, CardBody, Button, Input } from "@nextui-org/react"
 import { useForm } from "react-hook-form"
