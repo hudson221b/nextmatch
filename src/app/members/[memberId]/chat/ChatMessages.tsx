@@ -12,7 +12,7 @@ type Props = {
 /**
  * Client component for chat history between the current user and a recipient. Has Pusher subscription
  */
-export default function ChatList({
+export default function ChatMessages({
   initialMessages,
   channelName,
   userId,

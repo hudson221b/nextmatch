@@ -11,6 +11,9 @@ import { format } from "date-fns"
 import { getChannelName } from "@/lib/util"
 import { pusherServer } from "@/lib/pusher"
 
+/**
+ * When user sends a new message in browser, update database and publish a Pusher event.
+ */
 export const createMessage = async (
   data: MessageSchema,
   recipientId: string
@@ -63,9 +66,9 @@ function formatMessage(message: MessageFetchResult): MessageDTO {
 }
 
 /**
- * Gets all messages between the current user and certain recipient
+ * Gets all messages in a chat
  */
-export const getMessageHistory = async (
+export const getChatMessages = async (
   recipientId: string
 ): Promise<MessageDTO[]> => {
   try {
@@ -106,12 +109,9 @@ export const getMessageHistory = async (
   }
 }
 
-export const getMessagesByContainer = async (container: string) => {
+export const getMessagesByContainer = async (container: "outbox" | "inbox") => {
   try {
     const userId = await getCurrentUserId()
-
-    // if container is inbox, selects all messages the current user has received
-    const selector = container === "inbox" ? "recipientId" : "senderId"
 
     const conditions = {
       [container === "inbox" ? "recipientId" : "senderId"]: userId,
