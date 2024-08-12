@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 import "./globals.css"
 import { UIProviders } from "@/components/Providers"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/ReactToastify.css"
+import TopNav from "@/components/navbar/TopNav"
 
 export const metadata: Metadata = {
   title: "NextMatch",
@@ -14,13 +13,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-
   return (
     <html lang="en">
       <body>
         <UIProviders>
-          <main className="p-10 container mx-auto">{children}</main>
-          <ToastContainer position="bottom-right"/>
+          <TopNav />
+          <main className="container mx-auto">{children}</main>
         </UIProviders>
       </body>
     </html>

@@ -1,3 +1,5 @@
+// "use client"
+
 import { useEffect, useRef } from "react"
 import { usePresenceStore } from "./useStores"
 import type { Channel, Members } from "pusher-js"
@@ -7,6 +9,8 @@ import { pusherClient } from "@/lib/pusher"
  * Changes in pusher presence channel will update the presence store
  */
 export const usePresenceChannel = () => {
+
+  // we would like these three methods to stay the same when members state changes
   const { add, remove, set } = usePresenceStore(state => ({
     add: state.addMember,
     remove: state.removeMember,

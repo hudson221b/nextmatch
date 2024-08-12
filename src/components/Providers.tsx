@@ -1,11 +1,16 @@
+"use client"
+
 import { NextUIProvider } from "@nextui-org/react"
 import React, { type ReactNode } from "react"
-import TopNav from "./navbar/TopNav"
+import { usePresenceChannel } from "@/hooks/usePresenceChannel"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/ReactToastify.css"
 
 export const UIProviders = ({ children }: { children: ReactNode }) => {
+  usePresenceChannel()
   return (
     <NextUIProvider>
-      <TopNav />
+      <ToastContainer position="bottom-right" />
       {children}
     </NextUIProvider>
   )
