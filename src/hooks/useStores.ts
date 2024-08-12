@@ -1,3 +1,7 @@
+/**
+ * This file exports all zustand stores
+ */
+
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 
@@ -11,7 +15,7 @@ type PresenceState = {
 /**
  * Creates a global presence store to keep track of users connected to the app.
  */
-const usePresenceStore = create<PresenceState>()(
+export const usePresenceStore = create<PresenceState>()(
   devtools(
     set => ({
       members: [],
