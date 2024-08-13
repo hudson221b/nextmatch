@@ -1,40 +1,40 @@
-// "use client"
-
 import { useEffect, useRef } from "react"
 import { usePresenceStore } from "./useStores"
 import type { Channel, Members } from "pusher-js"
 import { pusherClient } from "@/lib/pusher"
 
 /**
- * Changes in pusher presence channel will update the presence store
+ * Subscribes a logged in user to the presence channel immediately. It is called in the most top level client component - UIProviders. After successful subscription, sets redux state members to the channel members
  */
 export const usePresenceChannel = () => {
-
-  // we would like these three methods to stay the same when members state changes
+  // we would expect the three methods not changed by members state in the store
   const { add, remove, set } = usePresenceStore(state => ({
     add: state.addMember,
     remove: state.removeMember,
     set: state.setMembers,
   }))
 
-  // To prevent more than once channel subscription in useEffect (useEffect running twice in React strict mode in development), we need to assign channel object to a ref
+  // To prevent subscribing to the same channel multiple times in useEffect (useEffect intentionally runs twice in React strict mode in development), we need to assign the channel to a ref
   const channelRef = useRef<Channel | null>(null)
 
   useEffect(() => {
+    if (!pusherClient) {
+      console.error("Pusher client is not initialized")
+      return
+    }
+
     if (!channelRef.current) {
       channelRef.current = pusherClient.subscribe("presence-online-members")
 
-      // pusher:subscription_succeeded is one of the pre-defined events
-      // see members iterator doc here https://pusher.com/docs/channels/using_channels/presence-channels/#the-members-parameter
+      // read more about members param here https://pusher.com/docs/channels/using_channels/presence-channels/#accessing-channel-members. Or you can log it out and see its structure
       channelRef.current.bind(
         "pusher:subscription_succeeded",
         (members: Members) => {
-          console.log("#####🚀🚀🚀 ~ useEffect ~ members👉👉", members)
-          // upon successful subscription, set members in store using the members param from this pusher callback
+          set(Object.keys(members.members))
         }
       )
 
-      // the member object has two properties: id and info; both are set during server authorization
+      // this member param has two properties: id and info; both are set during server authorization
       channelRef.current.bind(
         "pusher:member_added",
         (member: Record<string, any>) => {
@@ -51,13 +51,11 @@ export const usePresenceChannel = () => {
     }
 
     return () => {
-      if (channelRef.current) {
-        channelRef.current.unsubscribe()
-
-        channelRef.current.unbind("pusher:subscription_succeeded")
-        channelRef.current.unbind("pusher:member_added")
-        channelRef.current.unbind("pusher:member_removed")
+      if (channelRef.current && channelRef.current.subscribed) {
+        console.log("ref is not null, cleaning up", channelRef.current)
+        channelRef.current.unbind_all()
+        pusherClient.unsubscribe("presence-online-members")
       }
     }
-  }, [add, remove])
+  }, [add, remove, set])
 }
