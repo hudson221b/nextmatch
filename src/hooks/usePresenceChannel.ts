@@ -7,7 +7,6 @@ import { pusherClient } from "@/lib/pusher"
  * Subscribes a logged in user to the presence channel immediately. It is called in the most top level client component - UIProviders. After successful subscription, sets redux state members to the channel members
  */
 export const usePresenceChannel = () => {
-  // we would expect the three methods not changed by members state in the store
   const { add, remove, set } = usePresenceStore(state => ({
     add: state.addMember,
     remove: state.removeMember,
@@ -52,7 +51,6 @@ export const usePresenceChannel = () => {
 
     return () => {
       if (channelRef.current && channelRef.current.subscribed) {
-        console.log("ref is not null, cleaning up", channelRef.current)
         channelRef.current.unbind_all()
         pusherClient.unsubscribe("presence-online-members")
       }
