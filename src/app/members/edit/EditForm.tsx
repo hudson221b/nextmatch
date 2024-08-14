@@ -4,13 +4,13 @@ import { Button, Input, Textarea } from "@nextui-org/react"
 import {
   type MemberEditSchema,
   memberEditSchema,
-} from "@/lib/schemas/member-edit-schema"
+} from "@/lib/zod-schemas/member-edit-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import type { Member } from "@prisma/client"
 import { updateMemberProfile } from "@/app/actions/memberActions"
 import { toast } from "react-toastify"
-import { handleFormServerErrors } from "@/lib/util"
+import { handleFormServerErrors } from "@/lib/client-utils"
 import { useRouter } from "next/navigation"
 
 type EditFormProp = {

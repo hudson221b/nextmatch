@@ -1,5 +1,3 @@
-"use client"
-
 import type { FieldValues, Path, UseFormSetError } from "react-hook-form"
 import type { ZodIssue } from "zod"
 
@@ -22,5 +20,3 @@ export function handleFormServerErrors<TFieldValues extends FieldValues>(
     setError("root.serverError", { message: errorResponse.error })
   }
 }
-
-

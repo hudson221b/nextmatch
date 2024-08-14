@@ -1,16 +1,23 @@
 "use server"
 
-import { messageSchema, type MessageSchema } from "@/lib/schemas/message-schema"
+import {
+  messageSchema,
+  type MessageSchema,
+} from "@/lib/zod-schemas/message-schema"
 import { ActionResult, type MessageDTO, type MessageFetchResult } from "@/types"
 import { getCurrentUserId } from "./authActions"
 import { prisma } from "@/lib/prisma"
-import type { Message } from "@prisma/client"
 import { format } from "date-fns"
+import { getChannelName } from "@/lib/util"
+import { pusherServer } from "@/lib/pusher"
 
+/**
+ * When user sends a new message in browser, update database and publish a Pusher event.
+ */
 export const createMessage = async (
   data: MessageSchema,
   recipientId: string
-): Promise<ActionResult<MessageSchema>> => {
+): Promise<ActionResult<MessageDTO>> => {
   try {
     const userId = await getCurrentUserId()
     const validated = messageSchema.safeParse(data)
@@ -24,8 +31,14 @@ export const createMessage = async (
         recipientId,
         senderId: userId,
       },
+      select: messageSelect,
     })
-    return { status: "success", data: message }
+    //after saving message in database, publish an event to the unique channel between the current logged-in user and recipient
+    const messageDTO = formatMessage(message)
+    const channelName = getChannelName(userId, recipientId)
+    await pusherServer.trigger(channelName, "message:new", messageDTO)
+
+    return { status: "success", data: messageDTO }
   } catch (error) {
     console.error(error)
     return { status: "error", error: "Something went wrong" }
@@ -53,9 +66,10 @@ function formatMessage(message: MessageFetchResult): MessageDTO {
 }
 
 /**
- * Gets all messages between the current user and certain recipient 
+ * Gets all messages in a chat
+ * @param recipientId the memberId of the other party in the chat other than the current user
  */
-export const getMessageHistory = async (
+export const getChatMessages = async (
   recipientId: string
 ): Promise<MessageDTO[]> => {
   try {
@@ -71,43 +85,37 @@ export const getMessageHistory = async (
           },
         ],
       },
-      select: {
-        id: true,
-        text: true,
-        created: true,
-        dateRead: true,
-        sender: {
-          select: {
-            name: true,
-            image: true,
-            userId: true,
-          },
-        },
-        recipient: {
-          select: {
-            name: true,
-            image: true,
-            userId: true,
-          },
-        },
-      },
+      select: messageSelect,
       orderBy: {
         created: "asc",
       },
     })
     // mark received messages as read
     if (messages.length > 0) {
+      const readMessageIds = messages
+        .filter(
+          m =>
+            m.dateRead === null &&
+            m.sender?.userId === recipientId &&
+            m.recipient?.userId === userId
+        )
+        .map(m => m.id)
+
       await prisma.message.updateMany({
         where: {
-          recipientId: userId,
-          senderId: recipientId,
-          dateRead: null,
+          id: { in: readMessageIds },
         },
         data: {
           dateRead: new Date(),
         },
       })
+
+      // publish a new event to flag read messages
+      const channelName = getChannelName(userId, recipientId)
+      await pusherServer.trigger(channelName, "messages:read", readMessageIds)
     }
+
+
     return messages.map(m => formatMessage(m))
   } catch (error) {
     console.error(error)
@@ -115,12 +123,9 @@ export const getMessageHistory = async (
   }
 }
 
-export const getMessagesByContainer = async (container: string) => {
+export const getMessagesByContainer = async (container: "outbox" | "inbox") => {
   try {
     const userId = await getCurrentUserId()
-
-    // if container is inbox, selects all messages the current user has received
-    const selector = container === "inbox" ? "recipientId" : "senderId"
 
     const conditions = {
       [container === "inbox" ? "recipientId" : "senderId"]: userId,
@@ -131,26 +136,7 @@ export const getMessagesByContainer = async (container: string) => {
 
     const messages = await prisma.message.findMany({
       where: conditions,
-      select: {
-        id: true,
-        text: true,
-        created: true,
-        dateRead: true,
-        sender: {
-          select: {
-            name: true,
-            image: true,
-            userId: true,
-          },
-        },
-        recipient: {
-          select: {
-            name: true,
-            image: true,
-            userId: true,
-          },
-        },
-      },
+      select: messageSelect,
       orderBy: {
         created: "desc",
       },
@@ -170,44 +156,65 @@ export const deleteMessageById = async (
 ) => {
   try {
     const userId = await getCurrentUserId()
-  const selector = isInbox ? "recipientDeleted" : "senderDeleted"
+    const selector = isInbox ? "recipientDeleted" : "senderDeleted"
 
-  // soft delete
-  await prisma.message.update({
-    where: { id: messageId },
-    data: {
-      [selector]: true,
-    },
-  })
-
-  // actually delete the message if the other party also 'delete' the message
-  const messagesToDelete = await prisma.message.findMany({
-    where:{
-      OR:[{
-        recipientId: userId,
-        senderDeleted: true,
-        recipientDeleted:true
-      }, {
-        senderId: userId,
-        senderDeleted: true,
-        recipientDeleted:true
-      }]
-    }
-  })
-
-  if (messagesToDelete.length) {
-    const ids = messagesToDelete.map(m => m.id)
-    await prisma.message.deleteMany({
-      where:{ 
-        id: {in: ids}
-      }
-
+    // soft delete
+    await prisma.message.update({
+      where: { id: messageId },
+      data: {
+        [selector]: true,
+      },
     })
-  }
+
+    // actually delete the message if the other party also 'delete' the message
+    const messagesToDelete = await prisma.message.findMany({
+      where: {
+        OR: [
+          {
+            recipientId: userId,
+            senderDeleted: true,
+            recipientDeleted: true,
+          },
+          {
+            senderId: userId,
+            senderDeleted: true,
+            recipientDeleted: true,
+          },
+        ],
+      },
+    })
+
+    if (messagesToDelete.length) {
+      const ids = messagesToDelete.map(m => m.id)
+      await prisma.message.deleteMany({
+        where: {
+          id: { in: ids },
+        },
+      })
+    }
   } catch (error) {
     console.error(error)
     throw error
   }
-  
+}
 
+const messageSelect = {
+  id: true,
+  text: true,
+  created: true,
+  dateRead: true,
+  sender: {
+    select: {
+      name: true,
+      image: true,
+      userId: true,
+    },
+  },
+  recipient: {
+    select: {
+      name: true,
+      image: true,
+      userId: true,
+    },
+  },
 }

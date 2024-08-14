@@ -1,4 +1,5 @@
 "use client"
+import { timeAgo } from "@/lib/util"
 import type { MessageDTO } from "@/types"
 import { Avatar } from "@nextui-org/react"
 import React, { useEffect, useRef, type ReactNode } from "react"
@@ -8,6 +9,9 @@ type Props = {
   userId: string
 }
 
+/**
+ * Componenent to display a single message. Includes sender avatar and message bubble
+ */
 export default function MessageBox({ message, userId }: Props) {
   const isSender = message.senderId === userId
 
@@ -74,6 +78,11 @@ export default function MessageBox({ message, userId }: Props) {
       <Bubble isCurrentUserSender={isSender}>
         <Header message={message} />
         <div className="text-gray-900 w-full">{message.text}</div>
+        {isSender && message.dateRead && (
+          <span className="text-[10px] italic text-gray-500">
+            Read {timeAgo(message.dateRead)}
+          </span>
+        )}
       </Bubble>
       <div ref={messagesEndRef}></div>
     </BoxWrapper>

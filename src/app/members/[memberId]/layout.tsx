@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import React, { type ReactNode } from "react"
 import MemberSidebar from "../memberSidebar"
 import { Card } from "@nextui-org/react"
+import styles from "./ChatPage.module.css"
 
 /**
  * This layout component receives a prop object containing two properties: 1. children: which are React elements returned from page.tsx under route /members/memberId.
@@ -27,12 +28,19 @@ export default async function MemberPageLayout({
   ]
 
   return (
-    <div className="grid grid-cols-12 gap-5 h-[80vh] ">
+    <div className="grid grid-cols-12 gap-5 h-[80vh]">
       <div className="col-span-3">
         <MemberSidebar member={member} navLinks={navLinks} />
       </div>
       <div className="col-span-9">
-        <Card className="w-full h-[80vh]">{children}</Card>
+        <Card
+          className="w-full h-[80vh]"
+          classNames={{
+            footer: styles.footer,
+          }}
+        >
+          {children}
+        </Card>
       </div>
     </div>
   )

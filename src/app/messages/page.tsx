@@ -8,9 +8,10 @@ const MessagesPage = async ({
 }: {
   searchParams: { container: string }
 }) => {
-  const messages = searchParams.container
-    ? await getMessagesByContainer(searchParams.container)
-    : "Please select Inbox or Outbox to see messages"
+  const isOutbox = searchParams.container === "outbox"
+  const messages = isOutbox
+    ? await getMessagesByContainer("outbox")
+    : await getMessagesByContainer("inbox")
 
   return (
     <div className="grid grid-cols-12 gap-5 h-[80vh]mt-10">
@@ -18,14 +19,10 @@ const MessagesPage = async ({
         <MessageSidebar />
       </div>
       <div className="col-span-10">
-        {typeof messages === "string" ? (
-          <div>{messages}</div>
-        ) : (
-          <MessageTable
-            messages={messages}
-            container={searchParams.container}
-          />
-        )}
+        <MessageTable
+          messages={messages}
+          container={isOutbox ? "outbox" : "inbox"}
+        />
       </div>
     </div>
   )
