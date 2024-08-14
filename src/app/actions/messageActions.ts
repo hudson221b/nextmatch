@@ -8,7 +8,7 @@ import { ActionResult, type MessageDTO, type MessageFetchResult } from "@/types"
 import { getCurrentUserId } from "./authActions"
 import { prisma } from "@/lib/prisma"
 import { format } from "date-fns"
-import { getChannelName } from "@/lib/util"
+import { generateChatChannelName } from "@/lib/util"
 import { pusherServer } from "@/lib/pusher"
 
 /**
@@ -35,7 +35,7 @@ export const createMessage = async (
     })
     //after saving message in database, publish an event to the unique channel between the current logged-in user and recipient
     const messageDTO = formatMessage(message)
-    const channelName = getChannelName(userId, recipientId)
+    const channelName = generateChatChannelName(userId, recipientId)
     await pusherServer.trigger(channelName, "message:new", messageDTO)
 
     return { status: "success", data: messageDTO }
@@ -67,7 +67,7 @@ function formatMessage(message: MessageFetchResult): MessageDTO {
 
 /**
  * Gets all messages in a chat
- * @param recipientId the memberId of the other party in the chat other than the current user
+ * @param recipientId the memberId of the other party in the chat
  */
 export const getChatMessages = async (
   recipientId: string
@@ -111,10 +111,9 @@ export const getChatMessages = async (
       })
 
       // publish a new event to flag read messages
-      const channelName = getChannelName(userId, recipientId)
+      const channelName = generateChatChannelName(userId, recipientId)
       await pusherServer.trigger(channelName, "messages:read", readMessageIds)
     }
-
 
     return messages.map(m => formatMessage(m))
   } catch (error) {
@@ -166,7 +165,7 @@ export const deleteMessageById = async (
       },
     })
 
-    // actually delete the message if the other party also 'delete' the message
+    // actually delete the message if the other party also 'deletes' the message
     const messagesToDelete = await prisma.message.findMany({
       where: {
         OR: [

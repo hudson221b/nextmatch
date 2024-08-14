@@ -3,7 +3,7 @@ import React from "react"
 import ChatForm from "./ChatForm"
 import { getChatMessages } from "@/app/actions/messageActions"
 import { getCurrentUserId } from "@/app/actions/authActions"
-import { getChannelName } from "@/lib/util"
+import { generateChatChannelName } from "@/lib/util"
 import ChatMessages from "./ChatMessages"
 
 export default async function ChatPage({
@@ -16,7 +16,7 @@ export default async function ChatPage({
   const initialMessages = await getChatMessages(memberId)
   const userId = await getCurrentUserId()
 
-  const channelName = getChannelName(userId, memberId)
+  const channelName = generateChatChannelName(userId, memberId)
 
   const body = (
     <div className="overflow-y-auto w-full h-full">
