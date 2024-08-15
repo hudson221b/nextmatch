@@ -16,7 +16,7 @@ function LikeButton({ isLiked, targetUserId }: LikeButtonProp) {
     e.preventDefault()
     e.stopPropagation()
     await toggleLikeMember(targetUserId, isLiked)
-    // refreshes matches page to reflect the lates like Ids
+    // refreshes matches page to reflect the latest like Ids
     router.refresh()
   }
   return (

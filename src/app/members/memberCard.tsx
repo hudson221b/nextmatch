@@ -1,10 +1,11 @@
 "use client"
-import LikeButton from "@/components/LikeButton"
-import { Card, CardFooter, Image } from "@nextui-org/react"
-import type { Member } from "@prisma/client"
+import React from "react"
 import { differenceInYears } from "date-fns"
 import Link from "next/link"
-import React from "react"
+import { Card, CardFooter, Image } from "@nextui-org/react"
+import LikeButton from "@/components/LikeButton"
+import type { Member } from "@prisma/client"
+import PresenceDot from "./PresenceDot"
 
 type memberCardProps = {
   member: Member
@@ -26,6 +27,9 @@ export default function MemberCard({ member, likeIds }: memberCardProps) {
         width={300}
         className="aspect-square object-cover"
       />
+      <div className="absolute top-[10px] left-[10px] z-10">
+        <PresenceDot member={member} />
+      </div>
       <div className="absolute top-[10px] right-[10px] z-10">
         <LikeButton isLiked={isLiked} targetUserId={member.userId} />
       </div>
