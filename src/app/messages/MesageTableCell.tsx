@@ -1,10 +1,8 @@
 import { PresenceAvatar } from "@/components/Presence"
 import TextWithTooltip from "@/components/TextWithTooltip"
 import { Button } from "@nextui-org/react"
-import router from "next/navigation"
 import React from "react"
 import { AiFillDelete } from "react-icons/ai"
-import { deleteMessageById } from "../actions/messageActions"
 import type { MessageDTO } from "@/types"
 
 type Props = {

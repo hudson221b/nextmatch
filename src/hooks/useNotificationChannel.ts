@@ -3,7 +3,7 @@ import type { Channel } from "pusher-js"
 import { pusherClient } from "@/lib/pusher"
 
 /**
- * Subscribes a logged in user to his/her private notification channel. User will get notification anywhere in the app if he/she receives a new message
+ * Subscribes a logged in user to his/her private notification channel. User will get notification anywhere (except on the Chat page with the message sender) in the app if he/she receives a new message
  */
 export const useNotificationChannel = (userId: string | null) => {
   const channelRef = useRef<Channel | null>(null)

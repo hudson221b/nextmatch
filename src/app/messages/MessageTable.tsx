@@ -8,14 +8,10 @@ import {
   TableRow,
   TableCell,
   Card,
-  Button,
 } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
-import React, { useCallback, type Key } from "react"
-import { AiFillDelete } from "react-icons/ai"
+import React, { useCallback, useMemo, type Key } from "react"
 import { deleteMessageById } from "../actions/messageActions"
-import TextWithTooltip from "@/components/TextWithTooltip"
-import { PresenceAvatar } from "@/components/Presence"
 import MesageTableCell from "./MesageTableCell"
 
 export default function MessageTable({
@@ -25,28 +21,35 @@ export default function MessageTable({
   container: string
   messages: MessageDTO[]
 }) {
-  const isInbox = container === "inbox"
-  const columns = [
-    {
-      key: isInbox ? "senderName" : "recipientName",
-      label: isInbox ? "Sender" : "Recipient",
-    },
-    { key: "text", label: "Content" },
-    {
-      key: "created",
-      label: isInbox ? "Date sent" : "Date received",
-    },
-    { key: "action", label: "Delete" },
-  ]
   const router = useRouter()
+  const isInbox = useMemo(() => container === "inbox", [container])
 
-  const handleRowCLick = (key: Key) => {
-    // key is message.id
-    const message = messages.find(m => m.id === key)
-    const ownerId = isInbox ? message?.senderId : message?.recipientId
-    const url = `/members/${ownerId}/chat`
-    router.push(url)
-  }
+  const columns = useMemo(
+    () => [
+      {
+        key: isInbox ? "senderName" : "recipientName",
+        label: isInbox ? "Sender" : "Recipient",
+      },
+      { key: "text", label: "Content" },
+      {
+        key: "created",
+        label: isInbox ? "Date sent" : "Date received",
+      },
+      { key: "action", label: "Delete" },
+    ],
+    [isInbox]
+  )
+
+  const handleRowCLick = useCallback(
+    (key: Key) => {
+      // key is message.id
+      const message = messages.find(m => m.id === key)
+      const ownerId = isInbox ? message?.senderId : message?.recipientId
+      const url = `/members/${ownerId}/chat`
+      router.push(url)
+    },
+    [isInbox, messages, router]
+  )
 
   return (
     <Card className="h-[80vh] overflow-auto">
