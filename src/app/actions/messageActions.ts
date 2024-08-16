@@ -38,6 +38,13 @@ export const createMessage = async (
     const channelName = generateChatChannelName(userId, recipientId)
     await pusherServer.trigger(channelName, "message:new", messageDTO)
 
+    // also publish an event to the recipient's private notification channel
+    await pusherServer.trigger(
+      `private-${recipientId}`,
+      "message:new",
+      messageDTO
+    )
+
     return { status: "success", data: messageDTO }
   } catch (error) {
     console.error(error)
