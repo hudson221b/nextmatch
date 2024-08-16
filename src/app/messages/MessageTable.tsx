@@ -16,6 +16,7 @@ import { AiFillDelete } from "react-icons/ai"
 import { deleteMessageById } from "../actions/messageActions"
 import TextWithTooltip from "@/components/TextWithTooltip"
 import { PresenceAvatar } from "@/components/Presence"
+import MesageTableCell from "./MesageTableCell"
 
 export default function MessageTable({
   container,
@@ -47,49 +48,6 @@ export default function MessageTable({
     router.push(url)
   }
 
-  // customize cells
-  const renderCell = useCallback(
-    (item: MessageDTO, columnKey: keyof MessageDTO) => {
-      const cellValue = item[columnKey]
-      const ownerId = isInbox ? item.senderId : item.recipientId
-      const imgSrc = isInbox ? item.senderImage : item.recipientImage
-
-      switch (columnKey) {
-        case "senderName":
-        case "recipientName":
-          return (
-            <div className="flex items-center gap-2">
-              <PresenceAvatar userId={ownerId!} src={imgSrc} />
-              <span>{cellValue}</span>
-            </div>
-          )
-
-        case "text":
-          return (
-            <TextWithTooltip text={cellValue!} limit={15} showTooltip={true} />
-          )
-
-        case "created":
-          return cellValue
-
-        default:
-          return (
-            <Button
-              isIconOnly
-              onClick={async () => {
-                await deleteMessageById(item.id, isInbox)
-                router.refresh()
-              }}
-            >
-              <AiFillDelete size={24} className="text-danger" />
-            </Button>
-          )
-      }
-    },
-
-    [isInbox]
-  )
-
   return (
     <Card className="h-[80vh] overflow-auto">
       <Table
@@ -108,7 +66,15 @@ export default function MessageTable({
                 <TableCell
                   className={`${!item.dateRead && isInbox && "font-semibold"}`}
                 >
-                  {renderCell(item, columnKey as keyof MessageDTO)}
+                  <MesageTableCell
+                    item={item}
+                    columnKey={columnKey as keyof MessageDTO}
+                    isInbox={isInbox}
+                    onDelete={async () => {
+                      await deleteMessageById(item.id, isInbox)
+                      router.refresh()
+                    }}
+                  />
                 </TableCell>
               )}
             </TableRow>
