@@ -8,7 +8,6 @@ import {
   TableRow,
   TableCell,
   Card,
-  Avatar,
   Button,
 } from "@nextui-org/react"
 import { useRouter } from "next/navigation"

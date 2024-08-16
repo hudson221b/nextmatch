@@ -1,4 +1,5 @@
 "use client"
+import { PresenceDot } from "@/components/Presence"
 import {
   Button,
   Card,
@@ -38,11 +39,12 @@ export default function MemberSidebar({
       />
       <CardBody>
         <div className="flex flex-col items-center">
-          <div className="text-2xl">
+          <div className="text-2xl flex items-center">
             {`${member.name}, ${differenceInYears(
               new Date(),
               member.dateOfBirth
             )}`}
+            <PresenceDot member={member} />
           </div>
           <div className="text-sm text-neutral-500">
             {`${member.city}, ${member.country}`}

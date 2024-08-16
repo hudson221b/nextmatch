@@ -1,4 +1,3 @@
-import { getMemberById } from "@/app/actions/memberActions"
 import { usePresenceStore } from "@/hooks/useStores"
 import { Avatar, Badge } from "@nextui-org/react"
 import type { Member } from "@prisma/client"
@@ -20,7 +19,7 @@ export function PresenceDot({ member }: Props) {
       <GoDot size={36} className="fill-white" />
       <GoDotFill
         size={32}
-        className="absolute top-[2px] left-[2px] fill-green-500"
+        className="absolute top-[2px] left-[2px] fill-green-500 animate-pulse"
       />
     </div>
   )
