@@ -16,6 +16,7 @@ import React, { useCallback, type Key } from "react"
 import { AiFillDelete } from "react-icons/ai"
 import { deleteMessageById } from "../actions/messageActions"
 import TextWithTooltip from "@/components/TextWithTooltip"
+import { PresenceAvatar } from "@/components/Presence"
 
 export default function MessageTable({
   container,
@@ -51,19 +52,15 @@ export default function MessageTable({
   const renderCell = useCallback(
     (item: MessageDTO, columnKey: keyof MessageDTO) => {
       const cellValue = item[columnKey]
+      const ownerId = isInbox ? item.senderId : item.recipientId
+      const imgSrc = isInbox ? item.senderImage : item.recipientImage
 
       switch (columnKey) {
         case "senderName":
         case "recipientName":
           return (
             <div className="flex items-center gap-2">
-              <Avatar
-                src={
-                  (isInbox ? item.senderImage : item.recipientImage) ||
-                  "/images/user.png"
-                }
-                alt="user image in messages table"
-              />
+              <PresenceAvatar userId={ownerId!} src={imgSrc} />
               <span>{cellValue}</span>
             </div>
           )

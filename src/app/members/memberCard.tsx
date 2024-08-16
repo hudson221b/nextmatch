@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Card, CardFooter, Image } from "@nextui-org/react"
 import LikeButton from "@/components/LikeButton"
 import type { Member } from "@prisma/client"
-import PresenceDot from "../../components/PresenceDot"
+import { PresenceDot } from "../../components/Presence"
 
 type memberCardProps = {
   member: Member
