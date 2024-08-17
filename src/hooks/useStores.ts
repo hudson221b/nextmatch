@@ -4,6 +4,7 @@
 
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
+import { MessageDTO } from "@/types"
 
 type PresenceState = {
   members: string[]
@@ -28,6 +29,31 @@ export const usePresenceStore = create<PresenceState>()(
     }),
     {
       name: "presence_store",
+    }
+  )
+)
+
+type MessagesState = {
+  messages: MessageDTO[]
+  add: (message: MessageDTO) => void
+  remove: (id: string) => void
+  set: (messages: MessageDTO[]) => void
+}
+
+export const useMessagesStore = create<MessagesState>()(
+  devtools(
+    set => ({
+      messages: [],
+      add: message =>
+        set(state => ({ messages: [...state.messages, message] })),
+      remove: id =>
+        set(state => ({
+          messages: state.messages.filter(m => m.id !== id),
+        })),
+      set: messages => set({ messages }),
+    }),
+    {
+      name: "messages_store",
     }
   )
 )
