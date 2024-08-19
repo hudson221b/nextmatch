@@ -14,7 +14,7 @@ export const UIProviders = ({
   children: ReactNode
   userId: string | null
 }) => {
-  usePresenceChannel()
+  usePresenceChannel(userId)
   useNotificationChannel(userId)
 
   return (
