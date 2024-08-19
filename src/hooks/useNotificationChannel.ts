@@ -20,10 +20,15 @@ export const useNotificationChannel = (userId: string | null) => {
     (message: MessageDTO) => {
       // if user is on "/messages" and on inbox, we update messages redux state
       if (path === "/messages" && searchParams.get("container") !== "outbox") {
+        console.log("adding new message on messages page")
+        
         add(message)
+        return 
       }
       // if user is on anywhere but the chat with message sender, pop a toast notification
       if (path !== `/${message.senderId}/chat`) {
+        console.log("adding new message on other pages")
+        add(message)
         toast.info(`${message.senderName} just sent you a message`)
       }
     },

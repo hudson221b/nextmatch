@@ -45,7 +45,7 @@ export const useMessagesStore = create<MessagesState>()(
     set => ({
       messages: [],
       add: message =>
-        set(state => ({ messages: [...state.messages, message] })),
+        set(state => ({ messages: [message, ...state.messages] })),
       remove: id =>
         set(state => ({
           messages: state.messages.filter(m => m.id !== id),

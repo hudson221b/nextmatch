@@ -10,19 +10,22 @@ import {
   Card,
 } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
-import React, { useCallback, useMemo, type Key } from "react"
+import React, { useCallback, useEffect, useMemo, type Key } from "react"
 import { deleteMessageById } from "../actions/messageActions"
 import MesageTableCell from "./MesageTableCell"
+import { useMessagesStore } from "@/hooks/useStores"
 
 export default function MessageTable({
   container,
-  messages,
+  initialMessages, // messages fetched from database
 }: {
   container: string
-  messages: MessageDTO[]
+  initialMessages: MessageDTO[]
 }) {
   const router = useRouter()
   const isInbox = useMemo(() => container === "inbox", [container])
+
+  const { set, messages } = useMessagesStore()
 
   const columns = useMemo(
     () => [
@@ -50,6 +53,14 @@ export default function MessageTable({
     },
     [isInbox, messages, router]
   )
+
+  useEffect(() => {
+    set(initialMessages)
+
+    return () => {
+      set([])
+    }
+  }, [initialMessages, set])
 
   return (
     <Card className="h-[80vh] overflow-auto">
