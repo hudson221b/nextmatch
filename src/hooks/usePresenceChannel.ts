@@ -12,11 +12,11 @@ import { pusherClient } from "@/lib/pusher"
  * 4) when a signed user closes the app, unsubscribes
  */
 export const usePresenceChannel = (userId: string | null) => {
-  const { add, remove, set } = usePresenceStore(state => ({
-    add: state.addMember,
-    remove: state.removeMember,
-    set: state.setMembers,
-  }))
+  const [add, remove, set] = usePresenceStore(state => [
+    state.addMember,
+    state.removeMember,
+    state.setMembers,
+  ])
 
   const channelRef = useRef<Channel | null>(null)
 
