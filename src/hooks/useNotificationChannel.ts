@@ -36,16 +36,32 @@ export const useNotificationChannel = (userId: string | null) => {
   )
 
   useEffect(() => {
-    if (!userId) return
+    // when a not signed-in user opens app, no subscription
+    if (!userId && !channelRef.current?.subscribed) {
+      return
+    }
+
+    // when a signed-in signs out, unsubscribe
+    if (!userId && channelRef.current?.subscribed) {
+      channelRef.current.unbind_all()
+      pusherClient.unsubscribe(`private-${userId}`)
+      return
+    }
+
+    // when a user signs in
     if (!channelRef.current) {
       channelRef.current = pusherClient.subscribe(`private-${userId}`)
       channelRef.current.bind("message:new", handleNewMessage)
     }
+  }, [userId])
+
+  // unsubscribe when a signed-in user closes the app
+  useEffect(() => {
     return () => {
-      if (channelRef.current && channelRef.current.subscribed) {
+      if (channelRef.current?.subscribed) {
         channelRef.current.unbind_all()
         pusherClient.unsubscribe(`private-${userId}`)
       }
     }
-  }, [handleNewMessage, userId])
+  }, [])
 }
