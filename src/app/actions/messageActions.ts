@@ -119,9 +119,16 @@ export const getChatMessages = async (
         },
       })
 
-      // publish a new event to flag read messages
+      // publish a new event to private chat channel to flag read messages
       const channelName = generateChatChannelName(userId, recipientId)
       await pusherServer.trigger(channelName, "messages:read", readMessageIds)
+
+      // also publish an event to notification channel to update unread count
+      await pusherServer.trigger(
+        `private-${userId}`,
+        "messages:read",
+        readMessageIds.length
+      )
     }
 
     return messages.map(m => formatMessage(m))

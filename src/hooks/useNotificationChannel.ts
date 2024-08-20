@@ -14,6 +14,8 @@ export const useNotificationChannel = (userId: string | null) => {
   const path = usePathname()
   const searchParams = useSearchParams()
 
+  const updateUnreadCount = useMessagesStore(state => state.updateUnreadCount)
+
   const handleNewMessage = useCallback(
     (message: MessageDTO) => {
       // if user is on "/messages" and in inbox, we update messages state so message table is updated
@@ -38,6 +40,13 @@ export const useNotificationChannel = (userId: string | null) => {
     [path, searchParams]
   )
 
+  const handleReadMessages = useCallback(
+    (n: number) => {
+      updateUnreadCount(-n)
+    },
+    [updateUnreadCount]
+  )
+
   useEffect(() => {
     // when a not signed-in user opens app, no subscription
     if (!userId && !channelRef.current?.subscribed) {
@@ -55,6 +64,7 @@ export const useNotificationChannel = (userId: string | null) => {
     if (!channelRef.current) {
       channelRef.current = pusherClient.subscribe(`private-${userId}`)
       channelRef.current.bind("message:new", handleNewMessage)
+      channelRef.current.bind("messages:read", handleReadMessages)
     }
   }, [userId])
 
