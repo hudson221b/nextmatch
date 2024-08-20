@@ -1,8 +1,8 @@
 'use client'
 import { PresenceAvatar } from "@/components/Presence"
 import TextWithTooltip from "@/components/TextWithTooltip"
-import { Button } from "@nextui-org/react"
-import React, { useCallback, useState } from "react"
+import { Button, Spinner } from "@nextui-org/react"
+import React, { useCallback, useMemo, useState } from "react"
 import { AiFillDelete } from "react-icons/ai"
 import type { MessageDTO } from "@/types"
 import { useMessagesStore } from "@/hooks/useStores"
@@ -15,30 +15,40 @@ type Props = {
 }
 
 /**
- * Cell renderer for MessageTable. 
- * 
+ * Cell renderer for MessageTable.
+ *
  */
-export default function MesageTableCell({
-  item,
-  columnKey,
-  isInbox,
-}: Props) {
-  const cellValue = item[columnKey]
-  const ownerId = isInbox ? item.senderId : item.recipientId
-  const imgSrc = isInbox ? item.senderImage : item.recipientImage
+export default function MesageTableCell({ item, columnKey, isInbox }: Props) {
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
-  const updateUnreadCount= useMessagesStore(state => state.updateUnreadCount)
+  const cellValue = useMemo(() => item[columnKey], [item, columnKey])
 
-  const handleDelete = useCallback(
-    async () => {
-      setIsDeleting(true)
-      await deleteMessageById(item.id, isInbox)
-      if (!item.dateRead && isInbox) {
-        updateUnreadCount(-1)
-      }
-    },
-    [item, updateUnreadCount, isInbox]
+  const ownerId = useMemo(
+    () => (isInbox ? item.senderId : item.recipientId),
+    [isInbox]
   )
+
+  const imgSrc = useMemo(
+    () => (isInbox ? item.senderImage : item.recipientImage),
+    [isInbox]
+  )
+
+  const { updateUnreadCount, removeMessage } = useMessagesStore(state => ({
+    updateUnreadCount: state.updateUnreadCount,
+    removeMessage: state.remove,
+  }))
+
+  const handleDelete = useCallback(async () => {
+    setIsDeleting(true)
+    await deleteMessageById(item.id, isInbox)
+    setTimeout(() => {
+      removeMessage(item.id)
+      setIsDeleting(false)
+    }, 1000)
+
+    if (!item.dateRead && isInbox) {
+      updateUnreadCount(-1)
+    }
+  }, [item, updateUnreadCount, isInbox])
 
   switch (columnKey) {
     case "senderName":
@@ -59,7 +69,11 @@ export default function MesageTableCell({
     default:
       return (
         <Button isIconOnly onClick={handleDelete}>
-          <AiFillDelete size={24} className="text-danger" />
+          {isDeleting ? (
+            <Spinner />
+          ) : (
+            <AiFillDelete size={24} className="text-danger" />
+          )}
         </Button>
       )
   }
