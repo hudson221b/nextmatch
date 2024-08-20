@@ -28,7 +28,7 @@ export const useNotificationChannel = (userId: string | null) => {
         return
       }
       // if user is on anywhere but the chat with message sender, pop a toast notification
-      if (path !== `/${message.senderId}/chat`) {
+      if (path !== `/members/${message.senderId}/chat`) {
         useMessagesStore.setState(state => {
           const updatedMessages = [message, ...state.messages]
           const updatedCount = state.unreadCount + 1
