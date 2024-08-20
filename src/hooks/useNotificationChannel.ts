@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation"
 import { useMessagesStore } from "./useStores"
 import type { MessageDTO } from "@/types"
 import { toast } from "react-toastify"
+import { newMessageToast } from "@/components/NewMessageToast"
 
 /**
  * Subscribes a logged in user to his/her private notification channel. User will get notification anywhere (except on the Chat page with the message sender) in the app if he/she receives a new message
@@ -26,7 +27,7 @@ export const useNotificationChannel = (userId: string | null) => {
       // if user is on anywhere but the chat with message sender, pop a toast notification
       if (path !== `/${message.senderId}/chat`) {
         add(message)
-        toast.info(`${message.senderName} just sent you a message`)
+        newMessageToast(message)
       }
     },
     [add, path, searchParams]
