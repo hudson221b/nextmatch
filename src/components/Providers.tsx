@@ -20,7 +20,7 @@ export const UIProviders = ({
   useNotificationChannel(userId)
 
   // set unread messages count on login
-  const setUnreadCount = useMessagesStore(state => state.setUnreadCount)
+  const updateUnreadCount = useMessagesStore(state => state.updateUnreadCount)
 
   const isUnreadCountSet = useRef<boolean>(false)
 
@@ -29,7 +29,7 @@ export const UIProviders = ({
 
     if (isUnreadCountSet.current) return
 
-    getUnreadMsgCount().then(count => setUnreadCount(count))
+    getUnreadMsgCount().then(count => updateUnreadCount(count))
     isUnreadCountSet.current = true
   }, [userId])
 

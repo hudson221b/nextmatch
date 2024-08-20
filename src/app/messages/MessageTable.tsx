@@ -27,6 +27,14 @@ export default function MessageTable({
 
   const { set, messages } = useMessagesStore()
 
+  useEffect(() => {
+    set(initialMessages)
+
+    return () => {
+      set([])
+    }
+  }, [initialMessages, set])
+
   const columns = useMemo(
     () => [
       {
@@ -54,14 +62,6 @@ export default function MessageTable({
     [isInbox, messages, router]
   )
 
-  useEffect(() => {
-    set(initialMessages)
-
-    return () => {
-      set([])
-    }
-  }, [initialMessages, set])
-
   return (
     <Card className="h-[80vh] overflow-auto">
       <Table
@@ -84,10 +84,6 @@ export default function MessageTable({
                     item={item}
                     columnKey={columnKey as keyof MessageDTO}
                     isInbox={isInbox}
-                    onDelete={async () => {
-                      await deleteMessageById(item.id, isInbox)
-                      router.refresh()
-                    }}
                   />
                 </TableCell>
               )}

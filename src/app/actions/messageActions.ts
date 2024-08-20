@@ -33,8 +33,10 @@ export const createMessage = async (
       },
       select: messageSelect,
     })
-    //after saving message in database, publish an event to the unique channel between the current logged-in user and recipient
+
     const messageDTO = formatMessage(message)
+
+    //after saving message in database, publish an event to the unique channel between the current user and the recipient
     const channelName = generateChatChannelName(userId, recipientId)
     await pusherServer.trigger(channelName, "message:new", messageDTO)
 

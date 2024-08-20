@@ -39,7 +39,7 @@ type MessagesState = {
   add: (message: MessageDTO) => void
   remove: (id: string) => void
   set: (messages: MessageDTO[]) => void
-  setUnreadCount: (n: number) => void
+  updateUnreadCount: (n: number) => void
 }
 
 export const useMessagesStore = create<MessagesState>()(
@@ -54,7 +54,7 @@ export const useMessagesStore = create<MessagesState>()(
           messages: state.messages.filter(m => m.id !== id),
         })),
       set: messages => set({ messages }),
-      setUnreadCount: n => set(state => ({ unreadCount: state.unreadCount + n })),
+      updateUnreadCount: n => set(state => ({ unreadCount: state.unreadCount + n })),
     }),
     {
       name: "messages_store",

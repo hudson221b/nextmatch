@@ -4,7 +4,6 @@ import { pusherClient } from "@/lib/pusher"
 import { usePathname, useSearchParams } from "next/navigation"
 import { useMessagesStore } from "./useStores"
 import type { MessageDTO } from "@/types"
-import { toast } from "react-toastify"
 import { newMessageToast } from "@/components/NewMessageToast"
 
 /**
@@ -15,22 +14,28 @@ export const useNotificationChannel = (userId: string | null) => {
   const path = usePathname()
   const searchParams = useSearchParams()
 
-  const { add } = useMessagesStore()
-
   const handleNewMessage = useCallback(
     (message: MessageDTO) => {
-      // if user is on "/messages" and on inbox, we update messages redux state
+      // if user is on "/messages" and in inbox, we update messages state so message table is updated
       if (path === "/messages" && searchParams.get("container") !== "outbox") {
-        add(message)
+        useMessagesStore.setState(state => {
+          const updatedMessages = [message, ...state.messages]
+          const updatedCount = state.unreadCount + 1
+          return { messages: updatedMessages, unreadCount: updatedCount }
+        })
         return
       }
       // if user is on anywhere but the chat with message sender, pop a toast notification
       if (path !== `/${message.senderId}/chat`) {
-        add(message)
+        useMessagesStore.setState(state => {
+          const updatedMessages = [message, ...state.messages]
+          const updatedCount = state.unreadCount + 1
+          return { messages: updatedMessages, unreadCount: updatedCount }
+        })
         newMessageToast(message)
       }
     },
-    [add, path, searchParams]
+    [path, searchParams]
   )
 
   useEffect(() => {
