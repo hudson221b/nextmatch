@@ -1,5 +1,6 @@
 "use client"
 
+import { useMessagesStore } from "@/hooks/useStores"
 import { Chip } from "@nextui-org/react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
@@ -10,6 +11,7 @@ export default function MessageSidebar() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
+  const unreadCount = useMessagesStore(state => state.unreadCount)
   // defaults the sidebar to inbox at initial loading
   const [selected, setSelected] = useState<string>("inbox")
 
@@ -52,7 +54,7 @@ export default function MessageSidebar() {
           <Icon size={24} />
           <div className="flex justify-between flex-grow">
             <span>{label}</span>
-            {chip && <Chip>5</Chip>}
+            {chip && <Chip>{unreadCount}</Chip>}
           </div>
         </div>
       ))}
