@@ -35,15 +35,18 @@ export const usePresenceStore = create<PresenceState>()(
 
 type MessagesState = {
   messages: MessageDTO[]
+  unreadCount: number
   add: (message: MessageDTO) => void
   remove: (id: string) => void
   set: (messages: MessageDTO[]) => void
+  setUnreadCount: (n: number) => void
 }
 
 export const useMessagesStore = create<MessagesState>()(
   devtools(
     set => ({
       messages: [],
+      unreadCount: 0,
       add: message =>
         set(state => ({ messages: [message, ...state.messages] })),
       remove: id =>
@@ -51,6 +54,7 @@ export const useMessagesStore = create<MessagesState>()(
           messages: state.messages.filter(m => m.id !== id),
         })),
       set: messages => set({ messages }),
+      setUnreadCount: n => set(state => ({ unreadCount: state.unreadCount + n })),
     }),
     {
       name: "messages_store",

@@ -204,6 +204,19 @@ export const deleteMessageById = async (
   }
 }
 
+export const getUnreadMsgCount = async () => {
+  try {
+    const userId = await getCurrentUserId()
+
+    return await prisma.message.count({
+      where: { recipientId: userId, recipientDeleted: false, dateRead: null },
+    })
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
 const messageSelect = {
   id: true,
   text: true,
