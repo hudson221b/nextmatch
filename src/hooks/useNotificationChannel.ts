@@ -13,11 +13,12 @@ export const useNotificationChannel = (userId: string | null) => {
   const channelRef = useRef<Channel | null>(null)
   const path = usePathname()
   const searchParams = useSearchParams()
-
   const updateUnreadCount = useMessagesStore(state => state.updateUnreadCount)
 
   const handleNewMessage = useCallback(
     (message: MessageDTO) => {
+      console.log("path in handle", path)
+
       // if user is on "/messages" and in inbox, we update messages state so message table is updated
       if (path === "/messages" && searchParams.get("container") !== "outbox") {
         useMessagesStore.setState(state => {
@@ -39,6 +40,13 @@ export const useNotificationChannel = (userId: string | null) => {
     },
     [path, searchParams]
   )
+
+  // this ref records the latest handleNewMessage 
+  const handleNewMessageRef = useRef(handleNewMessage)
+
+  useEffect(() => {
+    handleNewMessageRef.current = handleNewMessage
+  }, [handleNewMessage])
 
   const handleReadMessages = useCallback(
     (n: number) => {
@@ -62,8 +70,11 @@ export const useNotificationChannel = (userId: string | null) => {
 
     // when a user signs in
     if (!channelRef.current) {
+      const callLatestCallback = (message: MessageDTO) => {
+        handleNewMessageRef.current(message)
+      }
       channelRef.current = pusherClient.subscribe(`private-${userId}`)
-      channelRef.current.bind("message:new", handleNewMessage)
+      channelRef.current.bind("message:new", callLatestCallback)
       channelRef.current.bind("messages:read", handleReadMessages)
     }
   }, [userId])
@@ -77,4 +88,5 @@ export const useNotificationChannel = (userId: string | null) => {
       }
     }
   }, [])
+
 }
