@@ -4,12 +4,14 @@ import { Button } from "@nextui-org/button"
 import { SelectItem } from "@nextui-org/react"
 import { Select } from "@nextui-org/select"
 import { Slider } from "@nextui-org/slider"
-import { usePathname } from "next/navigation"
-import React, { useMemo } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import React, { useCallback, useMemo } from "react"
 import { FaFemale, FaMale } from "react-icons/fa"
 
 export default function Filters() {
   const path = usePathname()
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
   const genderItems = useMemo(
     () => [
@@ -37,6 +39,15 @@ export default function Filters() {
       },
     ],
     []
+  )
+
+  const handleAgeSelect = useCallback(
+    (value: number[]) => {
+      const params = new URLSearchParams(searchParams)
+      params.set("ageRange", value.join("-"))
+      router.replace(`${path}?${params}`)
+    },
+    [searchParams]
   )
 
   if (path !== "/members") return null
@@ -78,6 +89,7 @@ export default function Filters() {
           defaultValue={[25, 55]}
           size="sm"
           color="secondary"
+          onChangeEnd={value => handleAgeSelect(value as number[])}
         />
       </div>
       <div id="order-by-selector-container" className="w-1/4">
