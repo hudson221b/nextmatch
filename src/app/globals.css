@@ -2,3 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .vertical-center {
+    height: calc(100vh - 64px)
+  }
+
+  .page-size-box {
+    @apply cursor-pointer border-2
+    rounded-lg shadow-sm min-w-[36px] w-9 h-9 text-sm
+    flex items-center justify-center
+  }
+}
+
