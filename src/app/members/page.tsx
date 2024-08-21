@@ -5,9 +5,15 @@ import {
 } from "../actions/likeActions"
 import MemberCard from "./memberCard"
 import PaginationComponent from "@/components/PaginationComponent"
+import type { MemberFilters } from "@/types"
 
-const MembersPage: React.FC = async () => {
-  const members = await getMembers()
+const MembersPage = async ({
+  searchParams,
+}: {
+  searchParams: MemberFilters
+}) => {
+  const members = await getMembers(searchParams)
+  console.log("#####🚀🚀🚀 ~ searchParams👉👉", searchParams)
 
   // members that the current user has liked
   const likeIds = (await fetchLikesForCurrentUser("source", "id")) as string[]

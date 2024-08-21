@@ -8,15 +8,24 @@ import {
 } from "@/lib/zod-schemas/member-edit-schema"
 import type { Member, Photo } from "@prisma/client"
 import { getCurrentUserId } from "./authActions"
-import type { ActionResult } from "@/types"
+import type { ActionResult, MemberFilters } from "@/types"
 import { cloudinary } from "@/lib/cloudinary"
+import { addYears } from "date-fns"
 
 /**
  * get all members except oneself after login
  */
-export const getMembers = async () => {
+export const getMembers = async (searchParams: MemberFilters) => {
   const session = await auth()
   if (!session?.user) return null
+
+  // filter on age
+  const ageRange = (searchParams.ageRange || "18-100").split("-")
+  const currentDate = new Date()
+  // the upper bound of DoB, no later than this date
+  const maxDoB = addYears(currentDate, -ageRange[0])
+  // the lower bound of DoB, no earlier than this date
+  const minDoB = addYears(currentDate, -ageRange[1] - 1)
 
   try {
     return prisma.member.findMany({
@@ -24,6 +33,18 @@ export const getMembers = async () => {
         NOT: {
           userId: session.user.id,
         },
+        AND: [
+          {
+            dateOfBirth: {
+              gte: minDoB,
+            },
+          },
+          {
+            dateOfBirth: {
+              lte: maxDoB,
+            },
+          },
+        ],
       },
     })
   } catch (error) {
