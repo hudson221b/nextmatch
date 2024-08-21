@@ -1,7 +1,7 @@
 "use client"
+import { PresenceAvatar } from "@/components/Presence"
 import { timeAgo } from "@/lib/util"
 import type { MessageDTO } from "@/types"
-import { Avatar } from "@nextui-org/react"
 import React, { useEffect, useRef, type ReactNode } from "react"
 
 type Props = {
@@ -23,7 +23,8 @@ export default function MessageBox({ message, userId }: Props) {
     children: ReactNode
     isCurrentUserSender: boolean
   }) => {
-    const wrapperClassnames = "w-full flex gap-2 mb-3 justify-start items-end"
+    const wrapperClassnames =
+      "w-full flex gap-2 mb-3 justify-start items-end pr-2"
     const senderClassames = wrapperClassnames + " flex-row-reverse"
 
     return isCurrentUserSender ? (
@@ -74,7 +75,7 @@ export default function MessageBox({ message, userId }: Props) {
 
   return (
     <BoxWrapper isCurrentUserSender={isSender}>
-      <Avatar src={message.senderImage || "/images/user"} />
+      <PresenceAvatar userId={userId} src={message.senderImage} />
       <Bubble isCurrentUserSender={isSender}>
         <Header message={message} />
         <div className="text-gray-900 w-full">{message.text}</div>

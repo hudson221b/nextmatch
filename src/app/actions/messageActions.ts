@@ -33,10 +33,19 @@ export const createMessage = async (
       },
       select: messageSelect,
     })
-    //after saving message in database, publish an event to the unique channel between the current logged-in user and recipient
+
     const messageDTO = formatMessage(message)
+
+    //after saving message in database, publish an event to the unique channel between the current user and the recipient
     const channelName = generateChatChannelName(userId, recipientId)
     await pusherServer.trigger(channelName, "message:new", messageDTO)
+
+    // also publish an event to the recipient's private notification channel
+    await pusherServer.trigger(
+      `private-${recipientId}`,
+      "message:new",
+      messageDTO
+    )
 
     return { status: "success", data: messageDTO }
   } catch (error) {
@@ -110,9 +119,16 @@ export const getChatMessages = async (
         },
       })
 
-      // publish a new event to flag read messages
+      // publish a new event to private chat channel to flag read messages
       const channelName = generateChatChannelName(userId, recipientId)
       await pusherServer.trigger(channelName, "messages:read", readMessageIds)
+
+      // also publish an event to notification channel to update unread count
+      await pusherServer.trigger(
+        `private-${userId}`,
+        "messages:read",
+        readMessageIds.length
+      )
     }
 
     return messages.map(m => formatMessage(m))
@@ -193,6 +209,19 @@ export const deleteMessageById = async (
     }
   } catch (error) {
     console.error(error)
+    throw error
+  }
+}
+
+export const getUnreadMsgCount = async () => {
+  try {
+    const userId = await getCurrentUserId()
+
+    return await prisma.message.count({
+      where: { recipientId: userId, recipientDeleted: false, dateRead: null },
+    })
+  } catch (error) {
+    console.log(error)
     throw error
   }
 }

@@ -20,7 +20,7 @@ const MessagesPage = async ({
       </div>
       <div className="col-span-10">
         <MessageTable
-          messages={messages}
+          initialMessages={messages}
           container={isOutbox ? "outbox" : "inbox"}
         />
       </div>

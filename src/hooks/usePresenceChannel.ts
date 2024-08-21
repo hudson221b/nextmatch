@@ -4,16 +4,20 @@ import type { Channel, Members } from "pusher-js"
 import { pusherClient } from "@/lib/pusher"
 
 /**
- * Subscribes a logged in user to the presence channel immediately. It is called in the most top level client component - UIProviders. After successful subscription, sets redux state members to the channel members
+ * 
+ * This hook is in charge of the following scenarios:
+ * 1) when a not signed-in user opens the app, does not subscribe 
+ * 2) when a user signs in, subscribes to the presence channel, and maintains the same subscription across pages in the app as long as the user stays signed-in
+ * 3) when a user signs out, unsubscribes
+ * 4) when a signed user closes the app, unsubscribes
  */
-export const usePresenceChannel = () => {
-  const { add, remove, set } = usePresenceStore(state => ({
-    add: state.addMember,
-    remove: state.removeMember,
-    set: state.setMembers,
-  }))
+export const usePresenceChannel = (userId: string | null) => {
+  const [add, remove, set] = usePresenceStore(state => [
+    state.addMember,
+    state.removeMember,
+    state.setMembers,
+  ])
 
-  // To prevent subscribing to the same channel multiple times in useEffect (useEffect intentionally runs twice in React strict mode in development), we need to assign the channel to a ref
   const channelRef = useRef<Channel | null>(null)
 
   useEffect(() => {
@@ -22,6 +26,19 @@ export const usePresenceChannel = () => {
       return
     }
 
+    // when a not signed-in user opens app, no subscription
+    if (!userId && !channelRef.current?.subscribed) {
+      return
+    }
+
+    // when a signed-in signs out, unsubscribe
+    if (!userId && channelRef.current?.subscribed) {
+      channelRef.current.unbind_all()
+      pusherClient.unsubscribe("presence-online-members")
+      return
+    }
+
+    // when a user signs in
     if (!channelRef.current) {
       channelRef.current = pusherClient.subscribe("presence-online-members")
 
@@ -48,12 +65,15 @@ export const usePresenceChannel = () => {
         }
       )
     }
+  }, [userId])
 
+  // unsubscribe when a signed-in user closes the app
+  useEffect(() => {
     return () => {
-      if (channelRef.current && channelRef.current.subscribed) {
+      if (channelRef.current?.subscribed) {
         channelRef.current.unbind_all()
         pusherClient.unsubscribe("presence-online-members")
       }
     }
-  }, [add, remove, set])
+  }, [])
 }

@@ -19,7 +19,7 @@ export default async function ChatPage({
   const channelName = generateChatChannelName(userId, memberId)
 
   const body = (
-    <div className="overflow-y-auto w-full h-full">
+    <div className="overflow-y-auto w-full h-full overflow-x-hidden">
       <ChatMessages
         initialMessages={initialMessages}
         userId={userId}
