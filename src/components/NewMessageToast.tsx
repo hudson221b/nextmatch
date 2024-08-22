@@ -1,7 +1,7 @@
 import type { MessageDTO } from "@/types"
 import { Image } from "@nextui-org/react"
 import Link from "next/link"
-import React from "react"
+
 import { toast } from "react-toastify"
 
 type Props = {

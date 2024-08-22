@@ -1,4 +1,3 @@
-import React from "react"
 import MessageSidebar from "./MessageSidebar"
 import { getMessagesByContainer } from "../actions/messageActions"
 import MessageTable from "./MessageTable"

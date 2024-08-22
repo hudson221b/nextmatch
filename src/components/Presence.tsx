@@ -1,7 +1,7 @@
 import { usePresenceStore } from "@/hooks/useStores"
 import { Avatar, Badge } from "@nextui-org/react"
 import type { Member } from "@prisma/client"
-import React from "react"
+
 import { GoDot, GoDotFill } from "react-icons/go"
 
 type Props = {

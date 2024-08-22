@@ -1,7 +1,7 @@
 "use client"
 import { toggleLikeMember } from "@/app/actions/likeActions"
 import { useRouter } from "next/navigation"
-import React from "react"
+
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai"
 
 type LikeButtonProp = {
