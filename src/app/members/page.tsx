@@ -5,7 +5,6 @@ import {
 } from "../actions/likeActions"
 import MemberCard from "./memberCard"
 import PaginationComponent from "@/components/PaginationComponent"
-import type { MemberFilters } from "@/types"
 
 const MembersPage = async ({
   searchParams,

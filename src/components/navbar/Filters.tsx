@@ -80,7 +80,7 @@ export default function Filters() {
           step={1}
           maxValue={100}
           minValue={18}
-          defaultValue={[25, 55]}
+          defaultValue={filters.ageRange}
           size="sm"
           color="secondary"
           onChangeEnd={value =>
@@ -94,6 +94,7 @@ export default function Filters() {
           size="sm"
           variant="bordered"
           selectionMode="single"
+          selectedKeys={new Set([filters.orderBy])}
           onSelectionChange={handleOrderByFilter}
         >
           {orderByItems.map(item => (
