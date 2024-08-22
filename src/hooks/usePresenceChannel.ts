@@ -2,11 +2,12 @@ import { useEffect, useRef } from "react"
 import { usePresenceStore } from "./useStores"
 import type { Channel, Members } from "pusher-js"
 import { pusherClient } from "@/lib/pusher"
+import { updateLastActive } from "@/app/actions/memberActions"
 
 /**
- * 
+ *
  * This hook is in charge of the following scenarios:
- * 1) when a not signed-in user opens the app, does not subscribe 
+ * 1) when a not signed-in user opens the app, does not subscribe
  * 2) when a user signs in, subscribes to the presence channel, and maintains the same subscription across pages in the app as long as the user stays signed-in
  * 3) when a user signs out, unsubscribes
  * 4) when a signed user closes the app, unsubscribes
@@ -45,8 +46,9 @@ export const usePresenceChannel = (userId: string | null) => {
       // read more about members param here https://pusher.com/docs/channels/using_channels/presence-channels/#accessing-channel-members. Or you can log it out and see its structure
       channelRef.current.bind(
         "pusher:subscription_succeeded",
-        (members: Members) => {
+         async (members: Members) => {
           set(Object.keys(members.members))
+          await updateLastActive()
         }
       )
 

@@ -5,7 +5,7 @@ import { SelectItem, type Selection } from "@nextui-org/react"
 import { Select } from "@nextui-org/select"
 import { Slider } from "@nextui-org/slider"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { FaFemale, FaMale } from "react-icons/fa"
 
 export default function Filters() {
@@ -61,6 +61,32 @@ export default function Filters() {
     [searchParams, path]
   )
 
+  //gender button can be selected and unselected
+  const selectedGender = useMemo(() => {
+    // gender is not set upon initial load, we default to all genders
+    if (searchParams.get("gender") === null) return ["male", "female"]
+    // every gender is removed,param is an empty string
+    if (!searchParams.get("gender")) return []
+
+    return searchParams.get("gender")!.split("&")
+  }, [searchParams])
+
+  const handleGender = useCallback(
+    (value: string) => {
+      const params = new URLSearchParams(searchParams)
+
+      // if this gender has been set before, clicking the button will remove it
+      if (selectedGender.includes(value)) {
+        params.set("gender", selectedGender.filter(g => g !== value).join("&"))
+      } else {
+        // else, add this gender to selection
+        params.set("gender", [...selectedGender, value].join("&"))
+      }
+      router.replace(`${path}?${params}`)
+    },
+    [path, searchParams]
+  )
+
   if (path !== "/members") return null
 
   return (
@@ -83,9 +109,10 @@ export default function Filters() {
           <Button
             isIconOnly
             aria-label={value}
-            key={`${value}-button`}
-            color="secondary"
+            key={value}
+            color={selectedGender.includes(value) ? "secondary" : "default"}
             size="sm"
+            onClick={() => handleGender(value)}
           >
             <Icon size={24} />
           </Button>

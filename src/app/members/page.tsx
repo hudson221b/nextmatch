@@ -12,8 +12,8 @@ const MembersPage = async ({
 }: {
   searchParams: MemberFilters
 }) => {
+  console.log("#####🚀🚀🚀 ~ MembersPage👉👉", searchParams)
   const members = await getMembers(searchParams)
-  console.log("#####🚀🚀🚀 ~ searchParams👉👉", searchParams)
 
   // members that the current user has liked
   const likeIds = (await fetchLikesForCurrentUser("source", "id")) as string[]

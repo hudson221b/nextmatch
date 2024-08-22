@@ -30,6 +30,9 @@ export const getMembers = async (searchParams: MemberFilters) => {
   // sort result
   const orderBySelector = searchParams.orderBy || "updated"
 
+  // filter on gender
+  const selectedGender = searchParams.gender?.split("&") || ["female", "male"]
+
   try {
     return prisma.member.findMany({
       where: {
@@ -46,6 +49,9 @@ export const getMembers = async (searchParams: MemberFilters) => {
             dateOfBirth: {
               lte: maxDoB,
             },
+          },
+          {
+            gender: { in: selectedGender },
           },
         ],
       },
@@ -190,3 +196,15 @@ export const deleteImage = async (photo: Photo) => {
   }
 }
 
+export const updateLastActive = async () => {
+  const userId = await getCurrentUserId()
+  try {
+    await prisma.member.update({
+      where: { userId },
+      data: { updated: new Date() },
+    })
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}

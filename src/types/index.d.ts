@@ -45,5 +45,5 @@ type MessageDTO = {
 type MemberFilters = {
   ageRange: string
   orderBy: string
-  gender: string[]
+  gender: string
 }
