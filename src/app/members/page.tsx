@@ -10,9 +10,8 @@ import type { MemberFilters } from "@/types"
 const MembersPage = async ({
   searchParams,
 }: {
-  searchParams: MemberFilters
+  searchParams: { [key: string]: string }
 }) => {
-  console.log("#####🚀🚀🚀 ~ MembersPage👉👉", searchParams)
   const members = await getMembers(searchParams)
 
   // members that the current user has liked

@@ -15,7 +15,7 @@ import { addYears } from "date-fns"
 /**
  * get all members except oneself after login
  */
-export const getMembers = async (searchParams: MemberFilters) => {
+export const getMembers = async (searchParams: { [key: string]: string }) => {
   const session = await auth()
   if (!session?.user) return null
 
