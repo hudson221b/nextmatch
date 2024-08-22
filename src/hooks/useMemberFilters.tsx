@@ -14,7 +14,6 @@ export const useMemberFilters = () => {
   const { ageRange, gender, orderBy } = filters
 
   useEffect(() => {
-    if (path !== "/members") return
     const params = new URLSearchParams()
     params.set("ageRange", ageRange.join("-"))
     params.set("orderBy", orderBy)

@@ -10,8 +10,7 @@ import { usePathname } from "next/navigation"
 import React, { useMemo } from "react"
 import { FaFemale, FaMale } from "react-icons/fa"
 
-export default function Filters() {
-  const path = usePathname()
+export function Filters() {
   const { filters, handleAgeFilter, handleGenderFilter, handleOrderByFilter } =
     useMemberFilters()
 
@@ -42,8 +41,6 @@ export default function Filters() {
     ],
     []
   )
-
-  if (path !== "/members") return null
 
   return (
     <div
@@ -106,4 +103,14 @@ export default function Filters() {
       </div>
     </div>
   )
+}
+
+export function FiltersWrapper() {
+  const path = usePathname()
+
+  if (path === "/members") {
+    return <Filters />
+  } else {
+    return null
+  }
 }
