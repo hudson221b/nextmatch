@@ -1,6 +1,6 @@
 import { usePathname } from "next/navigation"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, } from "react"
+import { useCallback, useEffect, useTransition } from "react"
 import { useFiltersStore } from "./useStores"
 import type { MemberFilters } from "@/types"
 import type { Selection } from "@nextui-org/react"
@@ -8,24 +8,24 @@ import type { Selection } from "@nextui-org/react"
 export const useMemberFilters = () => {
   const path = usePathname()
   const router = useRouter()
-
   const { filters, setFilters } = useFiltersStore()
-
   const { ageRange, gender, orderBy } = filters
+  const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
-    const params = new URLSearchParams()
-    params.set("ageRange", ageRange.join("-"))
-    params.set("orderBy", orderBy)
+    startTransition(() => {
+      const params = new URLSearchParams()
+      params.set("ageRange", ageRange.join("-"))
+      params.set("orderBy", orderBy)
 
-    // special treatment of gender state before setting params
-    if (!gender.length) {
-      params.set("gender", "")
-    } else {
-      params.set("gender", gender.join("&"))
-    }
-
-    router.replace(`${path}?${params}`)
+      // special treatment of gender state before setting params
+      if (!gender.length) {
+        params.set("gender", "")
+      } else {
+        params.set("gender", gender.join("&"))
+      }
+      router.replace(`${path}?${params}`)
+    })
   }, [ageRange, gender, orderBy, path, router])
 
   // below three handlers update states only
@@ -63,5 +63,6 @@ export const useMemberFilters = () => {
     handleAgeFilter,
     handleGenderFilter,
     handleOrderByFilter,
+    isPending,
   }
 }

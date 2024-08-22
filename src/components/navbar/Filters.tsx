@@ -9,10 +9,16 @@ import { Slider } from "@nextui-org/slider"
 import { usePathname } from "next/navigation"
 import React, { useMemo } from "react"
 import { FaFemale, FaMale } from "react-icons/fa"
+import { LoadingWrapper } from "../Loading"
 
 export function Filters() {
-  const { filters, handleAgeFilter, handleGenderFilter, handleOrderByFilter } =
-    useMemberFilters()
+  const {
+    filters,
+    handleAgeFilter,
+    handleGenderFilter,
+    handleOrderByFilter,
+    isPending,
+  } = useMemberFilters()
 
   const genderItems = useMemo(
     () => [
@@ -45,8 +51,9 @@ export function Filters() {
   return (
     <div
       id="filters-wrapper"
-      className="flex justify-around items-center shadow-md py-2"
+      className="flex justify-around items-center shadow-md py-2 relative"
     >
+      <LoadingWrapper isLoading={isPending} />
       <div
         id="result-container"
         className="text-secondary font-semibold text-xl"
