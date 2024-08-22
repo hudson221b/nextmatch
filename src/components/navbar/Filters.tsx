@@ -1,17 +1,19 @@
 "use client"
 
+import { useMemberFilters } from "@/hooks/useMemberFilters"
+import type { MemberFilters } from "@/types"
 import { Button } from "@nextui-org/button"
-import { SelectItem, type Selection } from "@nextui-org/react"
+import { SelectItem } from "@nextui-org/react"
 import { Select } from "@nextui-org/select"
 import { Slider } from "@nextui-org/slider"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import React, { useCallback, useMemo, useState } from "react"
+import { usePathname } from "next/navigation"
+import React, { useMemo } from "react"
 import { FaFemale, FaMale } from "react-icons/fa"
 
 export default function Filters() {
   const path = usePathname()
-  const searchParams = useSearchParams()
-  const router = useRouter()
+  const { filters, handleAgeFilter, handleGenderFilter, handleOrderByFilter } =
+    useMemberFilters()
 
   const genderItems = useMemo(
     () => [
@@ -41,52 +43,6 @@ export default function Filters() {
     []
   )
 
-  const handleAgeSelect = useCallback(
-    (value: number[]) => {
-      const params = new URLSearchParams(searchParams)
-      params.set("ageRange", value.join("-"))
-      router.replace(`${path}?${params}`)
-    },
-    [path, searchParams]
-  )
-
-  const handleOrderBySelect = useCallback(
-    (value: Selection) => {
-      const params = new URLSearchParams(searchParams)
-      if (value instanceof Set) {
-        params.set("orderBy", value.values().next().value)
-        router.replace(`${path}?${params}`)
-      }
-    },
-    [searchParams, path]
-  )
-
-  //gender button can be selected and unselected
-  const selectedGender = useMemo(() => {
-    // gender is not set upon initial load, we default to all genders
-    if (searchParams.get("gender") === null) return ["male", "female"]
-    // every gender is removed,param is an empty string
-    if (!searchParams.get("gender")) return []
-
-    return searchParams.get("gender")!.split("&")
-  }, [searchParams])
-
-  const handleGender = useCallback(
-    (value: string) => {
-      const params = new URLSearchParams(searchParams)
-
-      // if this gender has been set before, clicking the button will remove it
-      if (selectedGender.includes(value)) {
-        params.set("gender", selectedGender.filter(g => g !== value).join("&"))
-      } else {
-        // else, add this gender to selection
-        params.set("gender", [...selectedGender, value].join("&"))
-      }
-      router.replace(`${path}?${params}`)
-    },
-    [path, searchParams]
-  )
-
   if (path !== "/members") return null
 
   return (
@@ -110,9 +66,9 @@ export default function Filters() {
             isIconOnly
             aria-label={value}
             key={value}
-            color={selectedGender.includes(value) ? "secondary" : "default"}
+            color={filters.gender.includes(value) ? "secondary" : "default"}
             size="sm"
-            onClick={() => handleGender(value)}
+            onClick={() => handleGenderFilter(value)}
           >
             <Icon size={24} />
           </Button>
@@ -127,7 +83,9 @@ export default function Filters() {
           defaultValue={[25, 55]}
           size="sm"
           color="secondary"
-          onChangeEnd={value => handleAgeSelect(value as number[])}
+          onChangeEnd={value =>
+            handleAgeFilter(value as MemberFilters["ageRange"])
+          }
         />
       </div>
       <div id="order-by-selector-container" className="w-1/4">
@@ -136,7 +94,7 @@ export default function Filters() {
           size="sm"
           variant="bordered"
           selectionMode="single"
-          onSelectionChange={handleOrderBySelect}
+          onSelectionChange={handleOrderByFilter}
         >
           {orderByItems.map(item => (
             <SelectItem key={item.value} value={item.value}>

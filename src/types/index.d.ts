@@ -43,7 +43,7 @@ type MessageDTO = {
 }
 
 /**
- * Type for data returned from member filters and the 'filters' state 
+ * Type for the 'filters' state 
  */
 type MemberFilters = {
   ageRange: [number, number]
