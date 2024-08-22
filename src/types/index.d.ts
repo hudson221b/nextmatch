@@ -42,8 +42,11 @@ type MessageDTO = {
   recipientImage?: string | null
 }
 
+/**
+ * Type for data returned from member filters and the 'filters' state 
+ */
 type MemberFilters = {
-  ageRange: string
+  ageRange: [number, number]
   orderBy: string
-  gender: string
+  gender: string[]
 }

@@ -4,7 +4,7 @@
 
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
-import { MessageDTO } from "@/types"
+import { MessageDTO, type MemberFilters } from "@/types"
 
 type PresenceState = {
   members: string[]
@@ -54,10 +54,34 @@ export const useMessagesStore = create<MessagesState>()(
           messages: state.messages.filter(m => m.id !== id),
         })),
       set: messages => set({ messages }),
-      updateUnreadCount: n => set(state => ({ unreadCount: state.unreadCount + n })),
+      updateUnreadCount: n =>
+        set(state => ({ unreadCount: state.unreadCount + n })),
     }),
     {
       name: "messages_store",
+    }
+  )
+)
+
+type FiltersState = {
+  filters: MemberFilters
+  setFilters: (filterName: keyof MemberFilters, value: any) => void
+}
+
+export const useFiltersStore = create<FiltersState>()(
+  devtools(
+    set => ({
+      filters: {
+        ageRange: [18, 100],
+        orderBy: "updated",
+        gender: ["female", "male"],
+      },
+      setFilters: (filterName, value) => {
+        set(state => ({ filters: { ...state.filters, [filterName]: value } }))
+      },
+    }),
+    {
+      name: "filterss_store",
     }
   )
 )
