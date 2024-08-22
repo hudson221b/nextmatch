@@ -27,6 +27,9 @@ export const getMembers = async (searchParams: MemberFilters) => {
   // the lower bound of DoB, no earlier than this date
   const minDoB = addYears(currentDate, -ageRange[1] - 1)
 
+  // sort result
+  const orderBySelector = searchParams.orderBy || "updated"
+
   try {
     return prisma.member.findMany({
       where: {
@@ -46,6 +49,7 @@ export const getMembers = async (searchParams: MemberFilters) => {
           },
         ],
       },
+      orderBy: { [orderBySelector]: "desc" },
     })
   } catch (error) {
     console.error(error)

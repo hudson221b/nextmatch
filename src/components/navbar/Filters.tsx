@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@nextui-org/button"
-import { SelectItem } from "@nextui-org/react"
+import { SelectItem, type Selection } from "@nextui-org/react"
 import { Select } from "@nextui-org/select"
 import { Slider } from "@nextui-org/slider"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -47,7 +47,18 @@ export default function Filters() {
       params.set("ageRange", value.join("-"))
       router.replace(`${path}?${params}`)
     },
-    [searchParams]
+    [path, searchParams]
+  )
+
+  const handleOrderBySelect = useCallback(
+    (value: Selection) => {
+      const params = new URLSearchParams(searchParams)
+      if (value instanceof Set) {
+        params.set("orderBy", value.values().next().value)
+        router.replace(`${path}?${params}`)
+      }
+    },
+    [searchParams, path]
   )
 
   if (path !== "/members") return null
@@ -93,9 +104,15 @@ export default function Filters() {
         />
       </div>
       <div id="order-by-selector-container" className="w-1/4">
-        <Select label="Order by" size="sm" variant="bordered">
+        <Select
+          label="Order by"
+          size="sm"
+          variant="bordered"
+          selectionMode="single"
+          onSelectionChange={handleOrderBySelect}
+        >
           {orderByItems.map(item => (
-            <SelectItem key={`${item.value}-option`} value={item.value}>
+            <SelectItem key={item.value} value={item.value}>
               {item.label}
             </SelectItem>
           ))}
