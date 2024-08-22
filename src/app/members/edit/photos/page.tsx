@@ -3,7 +3,7 @@ import {
   getMemberById,
   getMemberPhotosByUserId,
 } from "@/app/actions/memberActions"
-import React from "react"
+
 import ImageUploadButton from "@/components/ImageUploadButton"
 import MemberPhoto from "@/components/MemberPhotos"
 import CardInnerWrapper from "@/components/CardInnerWrapper"

@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+
 import { CldUploadButton } from "next-cloudinary"
 import { HiPhoto } from "react-icons/hi2"
 import { updateMemberPhotos } from "@/app/actions/memberActions"

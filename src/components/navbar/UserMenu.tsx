@@ -11,7 +11,7 @@ import {
 import type { User } from "@prisma/client"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
-import React from "react"
+
 
 type UserMenuProps = {
   user: User

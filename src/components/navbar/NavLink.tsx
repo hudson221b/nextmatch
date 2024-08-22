@@ -3,7 +3,7 @@ import { useMessagesStore } from "@/hooks/useStores"
 import { NavbarItem } from "@nextui-org/react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import React from "react"
+
 
 type Props = {
   href: string

@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+
 import { differenceInYears } from "date-fns"
 import Link from "next/link"
 import { Card, CardFooter, Image } from "@nextui-org/react"

@@ -1,4 +1,3 @@
-import React from "react"
 import { ListTabs } from "./ListTabs"
 import {
   fetchLikesForCurrentUser,

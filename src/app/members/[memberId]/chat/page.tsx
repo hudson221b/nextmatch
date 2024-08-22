@@ -1,5 +1,5 @@
 import CardInnerWrapper from "@/components/CardInnerWrapper"
-import React from "react"
+
 import ChatForm from "./ChatForm"
 import { getChatMessages } from "@/app/actions/messageActions"
 import { getCurrentUserId } from "@/app/actions/authActions"
