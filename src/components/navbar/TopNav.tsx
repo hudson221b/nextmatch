@@ -65,7 +65,7 @@ export const TopNav = async () => {
           )}
         </NavbarContent>
       </Navbar>
-      <FiltersWrapper />
+      {/* <FiltersWrapper /> */}
     </>
   )
 }

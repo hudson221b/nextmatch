@@ -6,13 +6,12 @@ export default function usePagination() {
   const path = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { pagination } = usePaginationStore(state => ({
-    pagination: state.pagination,
-  }))
+  const { pagination, setTotalCount, setPageNumber, setPageSize } =
+    usePaginationStore()
 
   const { pageNumber, pageSize } = pagination
 
-  const [_isPending, startTransition] = useTransition()
+  const [_, startTransition] = useTransition()
 
   useEffect(() => {
     startTransition(() => {
@@ -23,4 +22,11 @@ export default function usePagination() {
       router.replace(`${path}?${params}`)
     })
   }, [pageNumber, pageSize, path, router, searchParams])
+
+  return {
+    pagination,
+    setTotalCount,
+    setPageNumber,
+    setPageSize,
+  }
 }

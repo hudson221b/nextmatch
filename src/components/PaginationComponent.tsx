@@ -1,5 +1,5 @@
 "use client"
-import { usePaginationStore } from "@/hooks/useStores"
+import usePagination from "@/hooks/usePagination"
 import { Pagination } from "@nextui-org/react"
 import { useEffect, useMemo } from "react"
 
@@ -9,7 +9,7 @@ export default function PaginationComponent({
   totalCount: number
 }) {
   const { pagination, setTotalCount, setPageNumber, setPageSize } =
-    usePaginationStore()
+    usePagination()
 
   useEffect(() => {
     setTotalCount(totalCount)

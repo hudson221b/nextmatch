@@ -39,7 +39,7 @@ export const getMembers = async ({
   // filter on gender
   const genderArray = gender.split("&")
 
-  const skip = parseInt(pageNumber) - 1 * parseInt(pageSize)
+  const skip = (parseInt(pageNumber) - 1) * parseInt(pageSize)
 
   try {
     const totalCount = await prisma.member.count({

@@ -108,7 +108,7 @@ export const usePaginationStore = create<PaginationState>()(
       setTotalCount: totalCount =>
         set(state => ({
           pagination: {
-            pageNumber: 1, // whenever we change settings, go back to page 1
+            pageNumber: 1, // whenever totalCount changes, go back to page 1
             pageSize: state.pagination.pageSize,
             totalCount,
             totalPages: Math.ceil(totalCount / state.pagination.pageSize),
@@ -126,7 +126,7 @@ export const usePaginationStore = create<PaginationState>()(
           pagination: {
             ...state.pagination,
             pageSize: size,
-            pageNumber: 1, // reset page to 1 when page size changes
+            pageNumber: 1, // whenever page size changes, go back to page 1
             totalPages: Math.ceil(state.pagination.totalCount / size),
           },
         })),
