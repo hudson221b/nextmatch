@@ -5,13 +5,14 @@ import {
 import MemberCard from "./memberCard"
 import PaginationComponent from "@/components/PaginationComponent"
 import EmptyResult from "@/components/EmptyResult"
+import type { GetMembersParams } from "@/types"
 
 const MembersPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string }
+  searchParams: GetMembersParams
 }) => {
-  const members = await getMembers(searchParams)
+  const { items: members, totalCount } = await getMembers(searchParams)
 
   // members that the current user has liked
   const likeIds = (await fetchLikesForCurrentUser("source", "id")) as string[]
@@ -32,7 +33,7 @@ const MembersPage = async ({
             )
           })}
       </div>
-      <PaginationComponent />
+      <PaginationComponent totalCount={totalCount} />
     </>
   )
 }

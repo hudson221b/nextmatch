@@ -3,15 +3,17 @@ import { usePaginationStore } from "@/hooks/useStores"
 import { Pagination } from "@nextui-org/react"
 import { useEffect, useMemo } from "react"
 
-export default function PaginationComponent() {
+export default function PaginationComponent({
+  totalCount,
+}: {
+  totalCount: number
+}) {
   const { pagination, setTotalCount, setPageNumber, setPageSize } =
     usePaginationStore()
 
-  const totalCount = 20
-
   useEffect(() => {
     setTotalCount(totalCount)
-  }, [setTotalCount])
+  }, [setTotalCount, totalCount])
 
   const { pageNumber, pageSize, totalPages } = pagination
 
@@ -51,7 +53,7 @@ export default function PaginationComponent() {
         className="flex gap-1 items-center"
       >
         Results per page:
-        {[4, 8, 12].map(size => (
+        {[3, 6, 12].map(size => (
           <div
             className={`page-size-box ${
               pageSize === size

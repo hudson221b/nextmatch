@@ -18,7 +18,7 @@ export default function usePagination() {
     startTransition(() => {
       const params = new URLSearchParams(searchParams)
       params.set("pageSize", pageSize.toString())
-      params.set("page", pageNumber.toString())
+      params.set("pageNumber", pageNumber.toString())
 
       router.replace(`${path}?${params}`)
     })

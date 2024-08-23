@@ -70,3 +70,12 @@ type PaginationResponse<T> ={
   items: T[]
   totalCount: number
 }
+
+/** Type for getMembers server action parameters*/
+type GetMembersParams = {
+  ageRange?: string
+  orderBy?: string
+  gender?: string
+  pageNumber?: string
+  pageSize?: string
+}
