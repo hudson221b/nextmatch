@@ -4,7 +4,7 @@
 
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
-import { MessageDTO, type MemberFilters } from "@/types"
+import { MessageDTO, type MemberFilters, type PagingResult } from "@/types"
 
 type PresenceState = {
   members: string[]
@@ -82,6 +82,57 @@ export const useFiltersStore = create<FiltersState>()(
     }),
     {
       name: "filterss_store",
+    }
+  )
+)
+
+type PaginationState = {
+  pagination: PagingResult
+  setTotalCount: (totalCount: number) => void // set total count and re-calculate total pages based new total count and existing page size
+  setPageNumber: (page: number) => void
+  setPageSize: (size: number) => void //set page size and re-calculate total pages based on new size and existing total count
+}
+
+/**
+ * Pagination is based on this formula: TC(total count) = PS(page size) * TP(total pages). Whenever any element in this formula changes, store sets the change, keeps one elemnt fixed, and recalulates the third. 
+ */
+export const usePaginationStore = create<PaginationState>()(
+  devtools(
+    set => ({
+      pagination: {
+        pageNumber: 1,
+        pageSize: 12,
+        totalPages: 1,
+        totalCount: 0,
+      },
+      setTotalCount: totalCount =>
+        set(state => ({
+          pagination: {
+            pageNumber: 1, // whenever we change settings, go back to page 1
+            pageSize: state.pagination.pageSize,
+            totalCount,
+            totalPages: Math.ceil(totalCount / state.pagination.pageSize),
+          },
+        })),
+      setPageNumber: (page: number) =>
+        set(state => ({
+          pagination: {
+            ...state.pagination,
+            pageNumber: page,
+          },
+        })),
+      setPageSize: (size: number) =>
+        set(state => ({
+          pagination: {
+            ...state.pagination,
+            pageSize: size,
+            pageNumber: 1, // reset page to 1 when page size changes
+            totalPages: Math.ceil(state.pagination.totalCount / size),
+          },
+        })),
+    }),
+    {
+      name: "pagination_store",
     }
   )
 )

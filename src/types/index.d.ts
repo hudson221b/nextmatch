@@ -50,3 +50,23 @@ type MemberFilters = {
   orderBy: string
   gender: string[]
 }
+
+
+type PagingParams = {
+  pageNumber: number // current page
+  pageSize:number // how many items per page
+}
+
+/**
+ * big picture to tell all important metadata about pagination
+ */
+type PagingResult = {
+  totalPages: number
+  totalCount:number // the number of all possible results
+} & PagingParams
+
+
+type PaginationResponse<T> ={
+  items: T[]
+  totalCount: number
+}
