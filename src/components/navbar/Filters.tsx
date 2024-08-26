@@ -55,12 +55,6 @@ export function Filters() {
     >
       <LoadingWrapper isLoading={isPending} />
       <div
-        id="result-container"
-        className="text-secondary font-semibold text-xl"
-      >
-        Results: 10
-      </div>
-      <div
         id="gender-selection-buttons-container"
         className="flex gap-2 items-center"
       >

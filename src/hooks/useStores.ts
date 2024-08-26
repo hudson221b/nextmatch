@@ -5,6 +5,11 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { MessageDTO, type MemberFilters, type PagingResult } from "@/types"
+import {
+  defaultAgeRange,
+  defaultGenders,
+  defaultOrderBy,
+} from "./storeDefaultStates"
 
 type PresenceState = {
   members: string[]
@@ -72,16 +77,16 @@ export const useFiltersStore = create<FiltersState>()(
   devtools(
     set => ({
       filters: {
-        ageRange: [18, 100],
-        orderBy: "updated",
-        gender: ["female", "male"],
+        ageRange: defaultAgeRange,
+        orderBy: defaultOrderBy,
+        gender: defaultGenders,
       },
       setFilters: (filterName, value) => {
         set(state => ({ filters: { ...state.filters, [filterName]: value } }))
       },
     }),
     {
-      name: "filterss_store",
+      name: "filters_store",
     }
   )
 )
