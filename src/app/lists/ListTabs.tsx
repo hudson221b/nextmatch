@@ -4,7 +4,7 @@ import { Tabs, Tab } from "@nextui-org/react"
 import { usePathname, useRouter } from "next/navigation"
 import MemberCard from "../members/memberCard"
 import type { Member } from "@prisma/client"
-import Loading from "@/components/Loading"
+import { LoadingComponent } from "@/components/Loading"
 
 type ListTabProps = {
   members: Member[]
@@ -50,7 +50,7 @@ export function ListTabs({ members, likeIds }: ListTabProps) {
       {item => (
         <Tab key={item.id} title={item.label}>
           {isPending ? (
-            <Loading />
+            <LoadingComponent />
           ) : members.length ? (
             <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8">
               {members.map(m => (

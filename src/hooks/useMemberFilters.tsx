@@ -9,24 +9,22 @@ export const useMemberFilters = () => {
   const path = usePathname()
   const router = useRouter()
   const { filters, setFilters } = useFiltersStore()
-  const { ageRange, gender, orderBy } = filters
-  const [isPending, startTransition] = useTransition()
+  const { ageRange, gender, orderBy, hasPhotos } = filters
 
   useEffect(() => {
-    startTransition(() => {
-      const params = new URLSearchParams()
-      params.set("ageRange", ageRange.join("-"))
-      params.set("orderBy", orderBy)
+    const params = new URLSearchParams()
+    params.set("ageRange", ageRange.join("-"))
+    params.set("orderBy", orderBy)
+    params.set("hasPhotos", hasPhotos.toString())
 
-      // special treatment of gender state before setting params
-      if (!gender.length) {
-        params.set("gender", "")
-      } else {
-        params.set("gender", gender.join("&"))
-      }
-      router.replace(`${path}?${params}`)
-    })
-  }, [ageRange, gender, orderBy, path, router])
+    // special treatment of gender state before setting params
+    if (!gender.length) {
+      params.set("gender", "")
+    } else {
+      params.set("gender", gender.join("&"))
+    }
+    router.replace(`${path}?${params}`)
+  }, [ageRange, gender, orderBy, path, router, hasPhotos])
 
   // below three handlers update states only
   const handleAgeFilter = useCallback(
@@ -58,11 +56,18 @@ export const useMemberFilters = () => {
     },
     [setFilters]
   )
+
+  const handleHasPhotosFilter = useCallback(
+    (value: boolean) => {
+      setFilters("hasPhotos", value)
+    },
+    [setFilters]
+  )
   return {
     filters,
     handleAgeFilter,
     handleGenderFilter,
     handleOrderByFilter,
-    isPending,
+    handleHasPhotosFilter,
   }
 }

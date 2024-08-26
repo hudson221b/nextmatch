@@ -25,6 +25,7 @@ export const getMembers = async ({
   gender = "female&male",
   pageNumber = "1",
   pageSize = "12",
+  hasPhotos = "false",
 }: GetMembersParams): Promise<PaginationResponse<Member>> => {
   const userId = await getCurrentUserId()
 
@@ -38,6 +39,9 @@ export const getMembers = async ({
 
   // filter on gender
   const genderArray = gender.split("&")
+
+  // filter on photos
+  const hasImage = hasPhotos === "true" ? { image: { not: null } } : {}
 
   const skip = (parseInt(pageNumber) - 1) * parseInt(pageSize)
 
@@ -61,6 +65,7 @@ export const getMembers = async ({
           {
             gender: { in: genderArray },
           },
+          hasImage,
         ],
       },
     })
@@ -83,6 +88,7 @@ export const getMembers = async ({
           {
             gender: { in: genderArray },
           },
+          hasImage,
         ],
       },
       skip,

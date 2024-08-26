@@ -49,12 +49,12 @@ type MemberFilters = {
   ageRange: number[]
   orderBy: string
   gender: string[]
+  hasPhotos: boolean
 }
-
 
 type PagingParams = {
   pageNumber: number // current page
-  pageSize:number // how many items per page
+  pageSize: number // how many items per page
 }
 
 /**
@@ -62,11 +62,10 @@ type PagingParams = {
  */
 type PagingResult = {
   totalPages: number
-  totalCount:number // the number of all possible results
+  totalCount: number // the number of all possible results
 } & PagingParams
 
-
-type PaginationResponse<T> ={
+type PaginationResponse<T> = {
   items: T[]
   totalCount: number
 }
@@ -76,6 +75,7 @@ type GetMembersParams = {
   ageRange?: string
   orderBy?: string
   gender?: string
+  hasPhotos?: string
   pageNumber?: string
   pageSize?: string
 }

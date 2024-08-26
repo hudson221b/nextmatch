@@ -88,6 +88,7 @@ export const useFiltersStore = create<FiltersState>()(
         ageRange: defaultAgeRange,
         orderBy: defaultOrderBy,
         gender: defaultGenders,
+        hasPhotos: false,
       },
       setFilters: (filterName, value) => {
         set(state => ({ filters: { ...state.filters, [filterName]: value } }))
