@@ -46,7 +46,36 @@ type MessageDTO = {
  * Type for the 'filters' state 
  */
 type MemberFilters = {
-  ageRange: [number, number]
+  ageRange: number[]
   orderBy: string
   gender: string[]
+  hasPhotos: boolean
+}
+
+type PagingParams = {
+  pageNumber: number // current page
+  pageSize: number // how many items per page
+}
+
+/**
+ * big picture to tell all important metadata about pagination
+ */
+type PagingResult = {
+  totalPages: number
+  totalCount: number // the number of all possible results
+} & PagingParams
+
+type PaginationResponse<T> = {
+  items: T[]
+  totalCount: number
+}
+
+/** Type for getMembers server action parameters*/
+type GetMembersParams = {
+  ageRange?: string
+  orderBy?: string
+  gender?: string
+  hasPhotos?: string
+  pageNumber?: string
+  pageSize?: string
 }

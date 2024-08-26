@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import React, { type ReactNode } from "react"
 import MemberSidebar from "../memberSidebar"
 import { Card } from "@nextui-org/react"
-import styles from "./ChatPage.module.css"
+import styles from "../../NextUIOverride.module.css"
 
 /**
  * This layout component receives a prop object containing two properties: 1. children: which are React elements returned from page.tsx under route /members/memberId.

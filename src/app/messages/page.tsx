@@ -8,7 +8,7 @@ const MessagesPage = async ({
   searchParams: { container: string }
 }) => {
   const isOutbox = searchParams.container === "outbox"
-  const messages = isOutbox
+  const { messages, nextCursor } = isOutbox
     ? await getMessagesByContainer("outbox")
     : await getMessagesByContainer("inbox")
 
@@ -21,6 +21,7 @@ const MessagesPage = async ({
         <MessageTable
           initialMessages={messages}
           container={isOutbox ? "outbox" : "inbox"}
+          cursor={nextCursor}
         />
       </div>
     </div>

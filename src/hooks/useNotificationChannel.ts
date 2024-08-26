@@ -17,8 +17,6 @@ export const useNotificationChannel = (userId: string | null) => {
 
   const handleNewMessage = useCallback(
     (message: MessageDTO) => {
-      console.log("path in handle", path)
-
       // if user is on "/messages" and in inbox, we update messages state so message table is updated
       if (path === "/messages" && searchParams.get("container") !== "outbox") {
         useMessagesStore.setState(state => {

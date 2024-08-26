@@ -8,36 +8,48 @@ import {
 } from "@/lib/zod-schemas/member-edit-schema"
 import type { Member, Photo } from "@prisma/client"
 import { getCurrentUserId } from "./authActions"
-import type { ActionResult, MemberFilters } from "@/types"
+import type {
+  ActionResult,
+  GetMembersParams,
+  PaginationResponse,
+} from "@/types"
 import { cloudinary } from "@/lib/cloudinary"
 import { addYears } from "date-fns"
 
 /**
  * get all members except oneself after login
  */
-export const getMembers = async (searchParams: { [key: string]: string }) => {
-  const session = await auth()
-  if (!session?.user) return null
+export const getMembers = async ({
+  ageRange = "18-100",
+  orderBy = "updated",
+  gender = "female&male",
+  pageNumber = "1",
+  pageSize = "12",
+  hasPhotos = "false",
+}: GetMembersParams): Promise<PaginationResponse<Member>> => {
+  const userId = await getCurrentUserId()
 
   // filter on age
-  const ageRange = (searchParams.ageRange || "18-100").split("-")
+  const [minAge, maxAge] = ageRange.split("-")
   const currentDate = new Date()
   // the upper bound of DoB, no later than this date
-  const maxDoB = addYears(currentDate, -ageRange[0])
+  const maxDoB = addYears(currentDate, -minAge)
   // the lower bound of DoB, no earlier than this date
-  const minDoB = addYears(currentDate, -ageRange[1] - 1)
-
-  // sort result
-  const orderBySelector = searchParams.orderBy || "updated"
+  const minDoB = addYears(currentDate, -maxAge - 1)
 
   // filter on gender
-  const selectedGender = searchParams.gender?.split("&") || ["female", "male"]
+  const genderArray = gender.split("&")
+
+  // filter on photos
+  const hasImage = hasPhotos === "true" ? { image: { not: null } } : {}
+
+  const skip = (parseInt(pageNumber) - 1) * parseInt(pageSize)
 
   try {
-    return prisma.member.findMany({
+    const totalCount = await prisma.member.count({
       where: {
         NOT: {
-          userId: session.user.id,
+          userId: userId,
         },
         AND: [
           {
@@ -51,12 +63,40 @@ export const getMembers = async (searchParams: { [key: string]: string }) => {
             },
           },
           {
-            gender: { in: selectedGender },
+            gender: { in: genderArray },
           },
+          hasImage,
         ],
       },
-      orderBy: { [orderBySelector]: "desc" },
     })
+    const members = await prisma.member.findMany({
+      where: {
+        NOT: {
+          userId,
+        },
+        AND: [
+          {
+            dateOfBirth: {
+              gte: minDoB,
+            },
+          },
+          {
+            dateOfBirth: {
+              lte: maxDoB,
+            },
+          },
+          {
+            gender: { in: genderArray },
+          },
+          hasImage,
+        ],
+      },
+      skip,
+      take: parseInt(pageSize),
+      orderBy: { [orderBy]: "desc" },
+    })
+
+    return { items: members, totalCount }
   } catch (error) {
     console.error(error)
     throw error

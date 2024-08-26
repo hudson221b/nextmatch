@@ -3,13 +3,12 @@
 import { useMemberFilters } from "@/hooks/useMemberFilters"
 import type { MemberFilters } from "@/types"
 import { Button } from "@nextui-org/button"
-import { SelectItem } from "@nextui-org/react"
+import { SelectItem, Switch } from "@nextui-org/react"
 import { Select } from "@nextui-org/select"
 import { Slider } from "@nextui-org/slider"
 import { usePathname } from "next/navigation"
 import React, { useMemo } from "react"
 import { FaFemale, FaMale } from "react-icons/fa"
-import { LoadingWrapper } from "../Loading"
 
 export function Filters() {
   const {
@@ -17,7 +16,7 @@ export function Filters() {
     handleAgeFilter,
     handleGenderFilter,
     handleOrderByFilter,
-    isPending,
+    handleHasPhotosFilter,
   } = useMemberFilters()
 
   const genderItems = useMemo(
@@ -53,13 +52,7 @@ export function Filters() {
       id="filters-wrapper"
       className="flex justify-around items-center shadow-md py-2 relative"
     >
-      <LoadingWrapper isLoading={isPending} />
-      <div
-        id="result-container"
-        className="text-secondary font-semibold text-xl"
-      >
-        Results: 10
-      </div>
+      {/* <LoadingWrapper isLoading={isPending} /> */}
       <div
         id="gender-selection-buttons-container"
         className="flex gap-2 items-center"
@@ -91,6 +84,17 @@ export function Filters() {
             handleAgeFilter(value as MemberFilters["ageRange"])
           }
         />
+      </div>
+      <div id="has-photo-switch-container">
+        <Switch
+          isSelected={filters.hasPhotos}
+          onValueChange={handleHasPhotosFilter}
+          classNames={{ base: "flex flex-col-reverse items-center" }}
+          size="sm"
+          color="secondary"
+        >
+          Has Photos
+        </Switch>
       </div>
       <div id="order-by-selector-container" className="w-1/4">
         <Select
