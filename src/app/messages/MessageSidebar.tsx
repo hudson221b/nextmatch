@@ -3,7 +3,7 @@
 import { useMessagesStore } from "@/hooks/useStores"
 import { Chip } from "@nextui-org/react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { GoInbox } from "react-icons/go"
 import { MdOutlineOutbox } from "react-icons/md"
 
@@ -15,6 +15,9 @@ export default function MessageSidebar() {
   const [selected, setSelected] = useState<string>(
     searchParams.get("container") || "inbox"
   )
+  useEffect(() => {
+    setSelected(searchParams.get("container") || "inbox")
+  }, [searchParams])
 
   const items = [
     {

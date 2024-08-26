@@ -138,7 +138,11 @@ export const getChatMessages = async (
   }
 }
 
-export const getMessagesByContainer = async (container: "outbox" | "inbox") => {
+/**
+ * @param cursor a date string that indicates the starting point(included) of messages to fetch
+ * @param limit how many messages to fetch in this request
+ */
+export const getMessagesByContainer = async (container: "outbox" | "inbox", cursor?: string, limit=2) => {
   try {
     const userId = await getCurrentUserId()
 
@@ -150,14 +154,28 @@ export const getMessagesByContainer = async (container: "outbox" | "inbox") => {
     }
 
     const messages = await prisma.message.findMany({
-      where: conditions,
+      where: {
+        ...conditions,
+        ...(cursor ? { created: { lte: new Date(cursor) } } : {}),
+      },
       select: messageSelect,
       orderBy: {
         created: "desc",
       },
+      take: limit + 1,
     })
 
-    return messages.map(m => formatMessage(m))
+    let newCursor: string | undefined
+    if (messages.length > limit) {
+      const nextItem = messages.pop()
+      newCursor = nextItem?.created.toISOString()
+    }
+
+    return {
+      messages: messages.map(m => formatMessage(m)),
+      nextCursor: newCursor,
+    }
+      
   } catch (error) {
     console.error(error)
     throw error
@@ -221,7 +239,7 @@ export const getUnreadMsgCount = async () => {
       where: { recipientId: userId, recipientDeleted: false, dateRead: null },
     })
   } catch (error) {
-    console.log(error)
+    console.error(error)
     throw error
   }
 }

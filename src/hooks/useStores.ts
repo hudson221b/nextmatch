@@ -45,6 +45,7 @@ type MessagesState = {
   remove: (id: string) => void
   set: (messages: MessageDTO[]) => void
   updateUnreadCount: (n: number) => void
+  resetMessages: () => void
 }
 
 export const useMessagesStore = create<MessagesState>()(
@@ -58,9 +59,16 @@ export const useMessagesStore = create<MessagesState>()(
         set(state => ({
           messages: state.messages.filter(m => m.id !== id),
         })),
-      set: messages => set({ messages }),
+      set: messages =>
+        set(state => {
+          // remove dup messages
+          const map = new Map([...state.messages, ...messages].map(m => [m.id, m]))
+          const uniqMessages = Array.from(map.values())
+          return { messages: uniqMessages }
+        }),
       updateUnreadCount: n =>
         set(state => ({ unreadCount: state.unreadCount + n })),
+      resetMessages: () => set({ messages: [] }),
     }),
     {
       name: "messages_store",
