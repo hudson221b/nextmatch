@@ -10,25 +10,28 @@ import { Card, CardHeader, CardBody, Button, Input } from "@nextui-org/react"
 import { useForm } from "react-hook-form"
 import { GiPadlock } from "react-icons/gi"
 import { toast } from "react-toastify"
+import UserDetailsForm from "./UserDetailsForm"
 
 const RegisterForm: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid, isSubmitting },
-    setError,
-  } = useForm<RegisterSchema>({
+  const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     mode: "onTouched",
   })
 
+  const {
+    handleSubmit,
+    getValues,
+    formState: { errors, isValid, isSubmitting },
+  } = form
+
   const onSubmit = async (data: RegisterSchema) => {
-    const result = await registerUser(data)
-    if (result.status === "success") {
-      toast.success("User registered successfully")
-    } else {
-      handleFormServerErrors(result, setError)
-    }
+    // const result = await registerUser(data)
+    // if (result.status === "success") {
+    //   toast.success("User registered successfully")
+    // } else {
+    //   handleFormServerErrors(result, setError)
+    // }
+    console.log(getValues())
   }
   return (
     <Card className="w-2/5 mx-auto">
@@ -44,28 +47,7 @@ const RegisterForm: React.FC = () => {
       <CardBody>
         <form action="" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
-            <Input
-              {...register("name")}
-              label="Name"
-              variant="bordered"
-              isInvalid={!!errors.name}
-              errorMessage={errors.name?.message}
-            />
-            <Input
-              {...register("email")}
-              label="Email"
-              variant="bordered"
-              isInvalid={!!errors.email}
-              errorMessage={errors.email?.message}
-            />
-            <Input
-              {...register("password")}
-              type={"password"}
-              label="Password"
-              variant="bordered"
-              isInvalid={!!errors.password}
-              errorMessage={errors.password?.message}
-            />
+            <UserDetailsForm />
             {errors.root?.serverError && (
               <p className="text-danger text-sm">
                 {errors.root.serverError.message}

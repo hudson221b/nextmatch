@@ -1,4 +1,6 @@
+import exp from "constants"
 import { z } from "zod"
+import { calculateAge } from "../util"
 
 export const loginSchema = z.object({
   email: z.string().email({ message: "Must be valid email format" }),
@@ -14,3 +16,20 @@ export const registerSchema = z.object({
 })
 
 export type RegisterSchema = z.infer<typeof registerSchema>
+
+export const profileSchema = z.object({
+  gender: z.string().min(1),
+  description: z.string().min(1),
+  city: z.string().min(1),
+  country: z.string().min(1),
+  dateOfBirth: z
+    .string()
+    .min(1)
+    .refine(
+      dateString => {
+        const age = calculateAge(new Date(dateString))
+        return age >= 18
+      },
+      { message: "You must be at least 18 to use this app" }
+    ),
+})
