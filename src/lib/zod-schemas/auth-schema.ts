@@ -15,7 +15,9 @@ export const registerSchema = z.object({
   password: z.string().min(6, { message: "Password is at least 6 characters" }),
 })
 
-export type RegisterSchema = z.infer<typeof registerSchema>
+export type RegisterSchema = z.infer<
+  typeof registerSchema & typeof profileSchema
+>
 
 export const profileSchema = z.object({
   gender: z.string().min(1),
