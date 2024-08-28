@@ -3,6 +3,9 @@
 import { Input } from "@nextui-org/react"
 import { useFormContext } from "react-hook-form"
 
+/**
+ * Form to collect info for register a user 
+ */
 export default function UserDetailsForm() {
   const {
     register,
@@ -33,7 +36,7 @@ export default function UserDetailsForm() {
         label="Password"
         variant="bordered"
         isInvalid={!!errors.password}
-        defaultValue={getValues("password")}
+        errorMessage={errors.password?.message as string}
       />
     </>
   )

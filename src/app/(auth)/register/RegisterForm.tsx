@@ -1,21 +1,20 @@
 "use client"
 import { registerUser } from "@/app/actions/authActions"
 import {
-  profileSchema,
+  userSchema,
+  memberSchema,
   type RegisterSchema,
-  registerSchema,
 } from "@/lib/zod-schemas/auth-schema"
 import { handleFormServerErrors } from "@/lib/client-utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardHeader, CardBody, Button, Input } from "@nextui-org/react"
 import { FormProvider, useForm } from "react-hook-form"
 import { GiPadlock } from "react-icons/gi"
-import { toast } from "react-toastify"
 import UserDetailsForm from "./UserDetailsForm"
-import { useState } from "react"
-import ProfileForm from "./ProfileForm"
+import { useCallback, useState } from "react"
+import MemberDetailsForm from "./MemberDetailsForm"
 
-const stepSchemas = [registerSchema, profileSchema]
+const stepSchemas = [userSchema, memberSchema]
 const totalSteps = stepSchemas.length
 /**
  * Two-step form
@@ -35,25 +34,27 @@ const RegisterForm: React.FC = () => {
     formState: { isValid, isSubmitting, errors },
   } = methods
 
-  // handles next when at non-last step, handles submmit on the last step
-  const onNext = (data: RegisterSchema) => {
-    // const result = await registerUser(data)
-    // if (result.status === "success") {
-    //   toast.success("User registered successfully")
-    // } else {
-    //   handleFormServerErrors(result, setError)
-    // }
-    if (currentStep == totalSteps - 1) {
-      console.log(getValues())
-    } else {
-      console.log("heehoe")
+  const onSubmit = () => {
+    console.log("#####🚀🚀🚀 ~ onSubmit ~ getValues👉👉", getValues())
+    console.log(
+      "#####🚀🚀🚀 ~ onSubmit ~ formState",
+      isValid,
+      isSubmitting,
+      errors
+    )
+
+    if (currentStep !== totalSteps - 1) {
       setCurrentStep(prev => prev + 1)
     }
   }
 
-  const onBack = () => {
-    setCurrentStep(prev => prev - 1)
-  }
+  const getForm = useCallback((step: number) => {
+    if (step === 0) {
+      return <UserDetailsForm />
+    } else if (step === totalSteps - 1) {
+      return <MemberDetailsForm />
+    }
+  }, [])
 
   return (
     <Card className="w-2/5 mx-auto vertical-center">
@@ -68,9 +69,9 @@ const RegisterForm: React.FC = () => {
       </CardHeader>
       <CardBody>
         <FormProvider {...methods}>
-          <form action="" onSubmit={handleSubmit(onNext)}>
+          <form action="" onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
-              {currentStep === 0 ? <UserDetailsForm /> : <ProfileForm />}
+              {getForm(currentStep)}
               {errors.root?.serverError && (
                 <p className="text-danger text-sm">
                   {errors.root.serverError.message}
@@ -78,16 +79,19 @@ const RegisterForm: React.FC = () => {
               )}
               <div className="flex flex-col items-center gap-4">
                 <Button
-                  color="secondary"
                   type="submit"
+                  color="secondary"
                   isDisabled={!isValid}
                   isLoading={isSubmitting}
                   fullWidth
                 >
-                  {currentStep === totalSteps - 1 ? "Register" : "Continue"}
+                  {currentStep !== totalSteps - 1 ? "Continue" : "Register"}
                 </Button>
                 {currentStep !== 0 && (
-                  <Button onClick={onBack} fullWidth>
+                  <Button
+                    onClick={() => setCurrentStep(prev => prev - 1)}
+                    fullWidth
+                  >
                     Back
                   </Button>
                 )}
