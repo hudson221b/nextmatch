@@ -73,14 +73,6 @@ export async function registerUser(
   }
 }
 
-export async function getUserByEmail(email: string) {
-  return prisma.user.findUnique({ where: { email } })
-}
-
-export async function getUserById(id: string) {
-  return prisma.user.findUnique({ where: { id } })
-}
-
 export async function signInUser(
   data: LoginSchema
 ): Promise<ActionResult<string>> {
@@ -107,6 +99,59 @@ export async function signInUser(
     }
     return { status: "error", error: error.message || "Sign in internal error" }
   }
+}
+
+/**
+ * Needs to verify the following:
+ * 1) token exists
+ * 2) token has not expired
+ * 3) a user can be found by token.email
+ * Then marks this user's emailVerified field with a date
+ */
+export async function verifyEmail(
+  token: string
+): Promise<ActionResult<string>> {
+  try {
+    const tokenObj = await prisma.token.findFirst({
+      where: { token },
+    })
+
+    if (!tokenObj) {
+      return { status: "error", error: "Token is invalid" }
+    }
+
+    if (new Date() > tokenObj.expires) {
+      return { status: "error", error: "Token has expired" }
+    }
+
+    const user = await getUserByEmail(tokenObj.email)
+    if (!user) {
+      return { status: "error", error: "User not found" }
+    }
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        emailVerified: new Date(),
+      },
+    })
+
+    await prisma.token.delete({where:{id: tokenObj.id}})
+
+    return { status: "success", data: "Email successfully verified!" }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+export async function getUserByEmail(email: string) {
+  return prisma.user.findUnique({ where: { email } })
+}
+
+export async function getUserById(id: string) {
+  return prisma.user.findUnique({ where: { id } })
 }
 
 export const getCurrentUserId = async (): Promise<string> => {
