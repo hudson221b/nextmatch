@@ -10,7 +10,7 @@ declare global {
 }
 
 if (!global.pusherClient) {
-  PusherClient.logToConsole = true
+  // PusherClient.logToConsole = true
   global.pusherClient = new PusherClient(
     process.env.NEXT_PUBLIC_PUSHER_APP_KEY!,
     {

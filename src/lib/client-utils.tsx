@@ -1,11 +1,11 @@
+import type { ActionErrorResponse } from "@/types"
 import type { FieldValues, Path, UseFormSetError } from "react-hook-form"
-import type { ZodIssue } from "zod"
 
 /**
- * Display errors after submitting the form to server
+ * Display errors after submitting a form to the server
  */
 export function handleFormServerErrors<TFieldValues extends FieldValues>(
-  errorResponse: { error: string | ZodIssue[] },
+  errorResponse:ActionErrorResponse,
   setError: UseFormSetError<TFieldValues>
 ) {
   if (Array.isArray(errorResponse.error)) {

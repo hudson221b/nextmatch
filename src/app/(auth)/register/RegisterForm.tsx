@@ -1,37 +1,70 @@
 "use client"
 import { registerUser } from "@/app/actions/authActions"
 import {
+  userSchema,
+  memberSchema,
   type RegisterSchema,
-  registerSchema,
 } from "@/lib/zod-schemas/auth-schema"
 import { handleFormServerErrors } from "@/lib/client-utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardHeader, CardBody, Button, Input } from "@nextui-org/react"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { GiPadlock } from "react-icons/gi"
-import { toast } from "react-toastify"
+import UserDetailsForm from "./UserDetailsForm"
+import { useCallback, useState } from "react"
+import MemberDetailsForm from "./MemberDetailsForm"
+import { useRouter } from "next/navigation"
 
+const stepSchemas = [userSchema, memberSchema]
+const totalSteps = stepSchemas.length
+/**
+ * Two-step form
+ */
 const RegisterForm: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid, isSubmitting },
-    setError,
-  } = useForm<RegisterSchema>({
-    resolver: zodResolver(registerSchema),
+  const router = useRouter()
+  const [currentStep, setCurrentStep] = useState<number>(0)
+  const schemaToUse = stepSchemas[currentStep]
+
+  const methods = useForm<RegisterSchema>({
+    resolver: zodResolver(schemaToUse),
     mode: "onTouched",
   })
 
-  const onSubmit = async (data: RegisterSchema) => {
-    const result = await registerUser(data)
+  const {
+    handleSubmit,
+    getValues,
+    setError,
+    formState: { isValid, isSubmitting, errors },
+  } = methods
+
+  const onNext = async () => {
+    if (currentStep !== totalSteps - 1) {
+      setCurrentStep(prev => prev + 1)
+    } else {
+      await onSubmit()
+    }
+  }
+
+  const onSubmit = async () => {
+    const result = await registerUser(getValues())
+    console.log("#####🚀🚀🚀 ~ onSubmit ~ result👉👉", result)
     if (result.status === "success") {
-      toast.success("User registered successfully")
+      router.push("/register/success")
     } else {
       handleFormServerErrors(result, setError)
     }
   }
+
+  const getForm = useCallback((step: number) => {
+    if (step === 0) {
+      return <UserDetailsForm />
+    } else if (step === totalSteps - 1) {
+      return <MemberDetailsForm />
+    }
+  }, [])
+
   return (
-    <Card className="w-2/5 mx-auto">
+    <Card className="w-2/5 mx-auto vertical-center">
       <CardHeader className="flex flex-col items-center justify-center">
         <div className="flex flex-col gap-2 items-center text-secondary">
           <div className="flex flex-row items-center gap-3">
@@ -42,46 +75,37 @@ const RegisterForm: React.FC = () => {
         </div>
       </CardHeader>
       <CardBody>
-        <form action="" onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-4">
-            <Input
-              {...register("name")}
-              label="Name"
-              variant="bordered"
-              isInvalid={!!errors.name}
-              errorMessage={errors.name?.message}
-            />
-            <Input
-              {...register("email")}
-              label="Email"
-              variant="bordered"
-              isInvalid={!!errors.email}
-              errorMessage={errors.email?.message}
-            />
-            <Input
-              {...register("password")}
-              type={"password"}
-              label="Password"
-              variant="bordered"
-              isInvalid={!!errors.password}
-              errorMessage={errors.password?.message}
-            />
-            {errors.root?.serverError && (
-              <p className="text-danger text-sm">
-                {errors.root.serverError.message}
-              </p>
-            )}
-            <Button
-              fullWidth
-              color="secondary"
-              type="submit"
-              isDisabled={!isValid}
-              isLoading={isSubmitting}
-            >
-              Register
-            </Button>
-          </div>
-        </form>
+        <FormProvider {...methods}>
+          <form action="" onSubmit={handleSubmit(onNext)}>
+            <div className="space-y-4">
+              {getForm(currentStep)}
+              {errors.root?.serverError && (
+                <p className="text-danger text-sm">
+                  {errors.root.serverError.message}
+                </p>
+              )}
+              <div className="flex flex-col items-center gap-4">
+                <Button
+                  type="submit"
+                  color="secondary"
+                  isDisabled={!isValid}
+                  isLoading={isSubmitting}
+                  fullWidth
+                >
+                  {currentStep !== totalSteps - 1 ? "Continue" : "Register"}
+                </Button>
+                {currentStep !== 0 && (
+                  <Button
+                    onClick={() => setCurrentStep(prev => prev - 1)}
+                    fullWidth
+                  >
+                    Back
+                  </Button>
+                )}
+              </div>
+            </div>
+          </form>
+        </FormProvider>
       </CardBody>
     </Card>
   )
