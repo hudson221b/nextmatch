@@ -7,11 +7,12 @@ import {
   type RegisterSchema,
 } from "@/lib/zod-schemas/auth-schema"
 import type { ActionResult } from "../../types"
-import type { User } from "@prisma/client"
+import type { Token, User } from "@prisma/client"
 import bcrypt from "bcryptjs"
 import { auth, signIn } from "@/auth"
 import { AuthError } from "next-auth"
 import { generateVerificationToken } from "@/lib/token"
+import { sendVerficationEmail } from "@/lib/email"
 
 export async function registerUser(
   data: RegisterSchema
@@ -63,6 +64,7 @@ export async function registerUser(
     const token = await generateVerificationToken(email)
 
     // send them an email
+    await sendVerficationEmail(name, token.email, token.token)
 
     return { status: "success", data: user }
   } catch (error: any) {
@@ -84,9 +86,10 @@ export async function signInUser(
 ): Promise<ActionResult<string>> {
   try {
     const existingUser = await getUserByEmail(data.email)
-    if (!existingUser?.emailVerified) {
-      const token = await generateVerificationToken(data.email)
+    if (existingUser && !existingUser.emailVerified) {
+      const token: Token = await generateVerificationToken(data.email)
       // send user an email with token
+      await sendVerficationEmail(existingUser.name!, token.email, token.token)
       throw new Error("Please verify your email before logging in")
     }
     const result = await signIn("credentials", {
