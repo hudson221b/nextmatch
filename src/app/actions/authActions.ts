@@ -32,6 +32,7 @@ export async function registerUser(
       country,
       dateOfBirth,
     } = validated.data
+    console.log("#####🚀🚀🚀 ~ validated.data👉👉", validated.data)
 
     // check if the user email already exists. We'll query database user table
     const isExistingUser = await prisma.user.findUnique({ where: { email } })
@@ -49,7 +50,7 @@ export async function registerUser(
           create: {
             name,
             description: description || "",
-            dateOfBirth,
+            dateOfBirth: new Date(dateOfBirth),
             city,
             country,
             gender,
@@ -59,8 +60,9 @@ export async function registerUser(
     })
 
     return { status: "success", data: user }
-  } catch (error) {
-    return { status: "error", error: "Interval server error" }
+  } catch (error: any) {
+    console.error("#####🚀🚀🚀 ~ Prisma request error👉👉", error)
+    return { status: "error", error: error.message || "Interval server error" }
   }
 }
 
