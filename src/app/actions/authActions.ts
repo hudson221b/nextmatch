@@ -22,7 +22,16 @@ export async function registerUser(
       return { status: "error", error: validated.error.issues }
     }
 
-    const { name, email, password } = validated.data
+    const {
+      name,
+      email,
+      password,
+      gender,
+      description,
+      city,
+      country,
+      dateOfBirth,
+    } = validated.data
 
     // check if the user email already exists. We'll query database user table
     const isExistingUser = await prisma.user.findUnique({ where: { email } })
@@ -36,6 +45,16 @@ export async function registerUser(
         name,
         email,
         passwordHash,
+        member: {
+          create: {
+            name,
+            description: description || "",
+            dateOfBirth,
+            city,
+            country,
+            gender,
+          },
+        },
       },
     })
 

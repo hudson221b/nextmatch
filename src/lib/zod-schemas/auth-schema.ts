@@ -30,8 +30,9 @@ export const memberSchema = z.object({
       { message: "You must be at least 18 to use this app" }
     ),
 })
-//#endregion
 
+export const registerSchema = userSchema.and(memberSchema)
+//#endregion
 
 //#region TS types
 export type LoginSchema = z.infer<typeof loginSchema>
@@ -39,7 +40,7 @@ export type LoginSchema = z.infer<typeof loginSchema>
 export type UserSchema = z.infer<typeof userSchema>
 export type MemberSchema = z.infer<typeof memberSchema>
 
-export type RegisterSchema = UserSchema & MemberSchema
+export type RegisterSchema = z.infer<typeof registerSchema>
 
 
 

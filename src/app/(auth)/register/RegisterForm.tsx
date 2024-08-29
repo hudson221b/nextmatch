@@ -13,6 +13,7 @@ import { GiPadlock } from "react-icons/gi"
 import UserDetailsForm from "./UserDetailsForm"
 import { useCallback, useState } from "react"
 import MemberDetailsForm from "./MemberDetailsForm"
+import { useRouter } from "next/navigation"
 
 const stepSchemas = [userSchema, memberSchema]
 const totalSteps = stepSchemas.length
@@ -20,6 +21,7 @@ const totalSteps = stepSchemas.length
  * Two-step form
  */
 const RegisterForm: React.FC = () => {
+  const router = useRouter()
   const [currentStep, setCurrentStep] = useState<number>(0)
   const schemaToUse = stepSchemas[currentStep]
 
@@ -31,20 +33,24 @@ const RegisterForm: React.FC = () => {
   const {
     handleSubmit,
     getValues,
+    setError,
     formState: { isValid, isSubmitting, errors },
   } = methods
 
-  const onSubmit = () => {
-    console.log("#####🚀🚀🚀 ~ onSubmit ~ getValues👉👉", getValues())
-    console.log(
-      "#####🚀🚀🚀 ~ onSubmit ~ formState",
-      isValid,
-      isSubmitting,
-      errors
-    )
-
+  const onNext = async () => {
     if (currentStep !== totalSteps - 1) {
       setCurrentStep(prev => prev + 1)
+    } else {
+      await onSubmit()
+    }
+  }
+
+  const onSubmit = async () => {
+    const result = await registerUser(getValues())
+    if (result.status === "success") {
+      router.push("/register/success")
+    } else {
+      handleFormServerErrors(result, setError)
     }
   }
 
@@ -69,7 +75,7 @@ const RegisterForm: React.FC = () => {
       </CardHeader>
       <CardBody>
         <FormProvider {...methods}>
-          <form action="" onSubmit={handleSubmit(onSubmit)}>
+          <form action="" onSubmit={handleSubmit(onNext)}>
             <div className="space-y-4">
               {getForm(currentStep)}
               {errors.root?.serverError && (
