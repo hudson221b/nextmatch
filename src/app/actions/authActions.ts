@@ -46,6 +46,7 @@ export async function registerUser(
         name,
         email,
         passwordHash,
+        profileCompleted: true,
         member: {
           create: {
             name,
