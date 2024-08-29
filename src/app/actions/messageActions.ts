@@ -49,7 +49,7 @@ export const createMessage = async (
 
     return { status: "success", data: messageDTO }
   } catch (error) {
-    console.error(error)
+    console.log(error)
     return { status: "error", error: "Something went wrong" }
   }
 }
@@ -133,7 +133,7 @@ export const getChatMessages = async (
 
     return messages.map(m => formatMessage(m))
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }
@@ -142,7 +142,11 @@ export const getChatMessages = async (
  * @param cursor a date string that indicates the starting point(included) of messages to fetch
  * @param limit how many messages to fetch in this request
  */
-export const getMessagesByContainer = async (container: "outbox" | "inbox", cursor?: string, limit=2) => {
+export const getMessagesByContainer = async (
+  container: "outbox" | "inbox",
+  cursor?: string,
+  limit = 2
+) => {
   try {
     const userId = await getCurrentUserId()
 
@@ -175,9 +179,8 @@ export const getMessagesByContainer = async (container: "outbox" | "inbox", curs
       messages: messages.map(m => formatMessage(m)),
       nextCursor: newCursor,
     }
-      
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }
@@ -226,7 +229,7 @@ export const deleteMessageById = async (
       })
     }
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }
@@ -239,7 +242,7 @@ export const getUnreadMsgCount = async () => {
       where: { recipientId: userId, recipientDeleted: false, dateRead: null },
     })
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }

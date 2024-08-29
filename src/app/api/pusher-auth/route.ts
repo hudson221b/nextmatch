@@ -37,7 +37,7 @@ export async function POST(req: Request) {
 
     return Response.json(authResponse, { status: 200 })
   } catch (error) {
-    console.error("Presence channel authorization error:", error)
+    console.log("Presence channel authorization error:", error)
     return Response.json({
       message: "Error during authorizing Pusher request",
       error: error instanceof Error ? error.message : String(error),

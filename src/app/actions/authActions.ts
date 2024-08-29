@@ -11,6 +11,7 @@ import type { User } from "@prisma/client"
 import bcrypt from "bcryptjs"
 import { auth, signIn } from "@/auth"
 import { AuthError } from "next-auth"
+import { generateVerificationToken } from "@/lib/token"
 
 export async function registerUser(
   data: RegisterSchema
@@ -32,7 +33,6 @@ export async function registerUser(
       country,
       dateOfBirth,
     } = validated.data
-    console.log("#####🚀🚀🚀 ~ validated.data👉👉", validated.data)
 
     // check if the user email already exists. We'll query database user table
     const isExistingUser = await prisma.user.findUnique({ where: { email } })
@@ -60,9 +60,13 @@ export async function registerUser(
       },
     })
 
+    const token = await generateVerificationToken(email)
+
+    // send them an email
+
     return { status: "success", data: user }
   } catch (error: any) {
-    console.error("#####🚀🚀🚀 ~ Prisma request error👉👉", error)
+    console.log("#####🚀🚀🚀 ~ registerUser server error👉👉", error)
     return { status: "error", error: error.message || "Interval server error" }
   }
 }
@@ -79,20 +83,26 @@ export async function signInUser(
   data: LoginSchema
 ): Promise<ActionResult<string>> {
   try {
+    const existingUser = await getUserByEmail(data.email)
+    if (!existingUser?.emailVerified) {
+      const token = await generateVerificationToken(data.email)
+      // send user an email with token
+      throw new Error("Please verify your email before logging in")
+    }
     const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,
     })
     return { status: "success", data: "Logged in" }
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    console.log("#####🚀🚀🚀 ~ signInUser server error👉👉", error)
     if (error instanceof AuthError) {
       if (error.type === "CredentialsSignin")
         return { status: "error", error: "Invalid credentials" }
       else return { status: "error", error: "Some Auth error" }
     }
-    return { status: "error", error: "Sign in internal error" }
+    return { status: "error", error: error.message || "Sign in internal error" }
   }
 }
 

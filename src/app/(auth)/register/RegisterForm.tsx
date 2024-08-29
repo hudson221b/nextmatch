@@ -47,7 +47,6 @@ const RegisterForm: React.FC = () => {
 
   const onSubmit = async () => {
     const result = await registerUser(getValues())
-    console.log("#####🚀🚀🚀 ~ onSubmit ~ result👉👉", result)
     if (result.status === "success") {
       router.push("/register/success")
     } else {
