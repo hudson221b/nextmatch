@@ -12,7 +12,7 @@ import bcrypt from "bcryptjs"
 import { auth, signIn } from "@/auth"
 import { AuthError } from "next-auth"
 import { generateToken } from "@/lib/token"
-import { sendVerficationEmail } from "@/lib/email"
+import { sendPasswordResetEmail, sendVerficationEmail } from "@/lib/email"
 
 export async function registerUser(
   data: RegisterSchema
@@ -167,6 +167,35 @@ export async function verifyEmail(
     }
   }
 }
+
+/**
+ * Callback fired when unauthorized user provides an email and requests password reset
+ */
+export const checkAndSendPasswordResetEmail = async (
+  email: string
+): Promise<ActionResult<string>> => {
+  try {
+    const existingUser = await getUserByEmail(email)
+    if (!existingUser) {
+      return { status: "error", error: "Email not found" }
+    } else {
+      const token = await generateToken(email, TokenType.PASSWORD_RESET)
+      await sendPasswordResetEmail(existingUser.name as string, email, token.token)
+      return {
+        status: "success",
+        data: "Password reset email has been sent. Please check your emails",
+      }
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      status: "error",
+      error: "Server error at sending password reset email",
+    }
+  }
+}
+
+
 
 export async function resetPassword(token: string, password: string) {
   try {

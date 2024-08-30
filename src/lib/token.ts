@@ -1,11 +1,14 @@
-import { TokenType } from "@prisma/client"
+import { TokenType, type Token } from "@prisma/client"
 import { randomBytes } from "crypto"
 import { prisma } from "./prisma"
 
 /**
  * Creates a token record in the database
  */
-export const generateToken = async (email: string, type: TokenType) => {
+export const generateToken = async (
+  email: string,
+  type: TokenType
+): Promise<Token> => {
   try {
     const existingToken = await getTokenByEmail(email)
     if (existingToken) {
