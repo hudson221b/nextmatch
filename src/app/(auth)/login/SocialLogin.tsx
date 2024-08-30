@@ -1,10 +1,12 @@
 import { Button } from "@nextui-org/react"
+import { signIn } from "next-auth/react"
 import { FaGithub } from "react-icons/fa"
 import { FcGoogle } from "react-icons/fc"
 
+
 export default function SocialLogin() {
-  const onClick = (provider: "google" | "github") => {
-    console.log(provider)
+  const onClick = async (provider: "google" | "github") => {
+    await signIn(provider)
   }
   return (
     <div className="flex gap-2 items-center">
