@@ -1,7 +1,14 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react"
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Input,
+  Link,
+} from "@nextui-org/react"
 import { useForm } from "react-hook-form"
 import { GiPadlock } from "react-icons/gi"
 import { loginSchema, type LoginSchema } from "@/lib/zod-schemas/auth-schema"
@@ -73,6 +80,11 @@ const LoginForm: React.FC = () => {
             >
               Login
             </Button>
+            <div className="flex justify-center text-sm hover:underline">
+              <Link href="/forgot-password" className="text-secondary-400">
+                Forgot password?
+              </Link>
+            </div>
           </div>
         </form>
       </CardBody>

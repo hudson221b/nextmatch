@@ -5,7 +5,7 @@ import { prisma } from "./prisma"
 /**
  * Creates a token record in the database
  */
-export const generateVerificationToken = async (email: string) => {
+export const generateToken = async (email: string, type: TokenType) => {
   try {
     const existingToken = await getTokenByEmail(email)
     if (existingToken) {
@@ -23,7 +23,7 @@ export const generateVerificationToken = async (email: string) => {
         email,
         expires: expiryDate,
         token,
-        type: TokenType.VERIFICATION,
+        type,
       },
     })
   } catch (error) {

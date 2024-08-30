@@ -7,11 +7,11 @@ import {
   type RegisterSchema,
 } from "@/lib/zod-schemas/auth-schema"
 import type { ActionResult } from "../../types"
-import type { Token, User } from "@prisma/client"
+import { TokenType, type Token, type User } from "@prisma/client"
 import bcrypt from "bcryptjs"
 import { auth, signIn } from "@/auth"
 import { AuthError } from "next-auth"
-import { generateVerificationToken } from "@/lib/token"
+import { generateToken } from "@/lib/token"
 import { sendVerficationEmail } from "@/lib/email"
 
 export async function registerUser(
@@ -61,7 +61,7 @@ export async function registerUser(
       },
     })
 
-    const token = await generateVerificationToken(email)
+    const token = await generateToken(email, TokenType.VERIFICATION)
 
     // send them an email
     await sendVerficationEmail(name, token.email, token.token)
@@ -79,7 +79,10 @@ export async function signInUser(
   try {
     const existingUser = await getUserByEmail(data.email)
     if (existingUser && !existingUser.emailVerified) {
-      const token: Token = await generateVerificationToken(data.email)
+      const token: Token = await generateToken(
+        data.email,
+        TokenType.VERIFICATION
+      )
       // send user an email with token
       await sendVerficationEmail(existingUser.name!, token.email, token.token)
       throw new Error("Please verify your email before logging in")
@@ -106,46 +109,83 @@ export async function signInUser(
  * 1) token exists
  * 2) token has not expired
  * 3) a user can be found by token.email
- * Then marks this user's emailVerified field with a date
+ */
+async function verifyToken(
+  token: string
+): Promise<ActionResult<{ user: User; token: Token }>> {
+  const tokenObj = await prisma.token.findFirst({
+    where: { token },
+  })
+
+  if (!tokenObj) {
+    return { status: "error", error: "Token is invalid" }
+  }
+
+  if (new Date() > tokenObj.expires) {
+    return { status: "error", error: "Token has expired" }
+  }
+
+  const user = await getUserByEmail(tokenObj.email)
+  if (!user) {
+    return { status: "error", error: "User not found" }
+  }
+
+  return { status: "success", data: { user, token: tokenObj } }
+}
+/**
+ * Marks user's emailVerified field with a date
  */
 export async function verifyEmail(
   token: string
 ): Promise<ActionResult<string>> {
   try {
-    const tokenObj = await prisma.token.findFirst({
-      where: { token },
-    })
+    const result = await verifyToken(token)
 
-    if (!tokenObj) {
-      return { status: "error", error: "Token is invalid" }
+    if (result.status === "success") {
+      const { user, token } = result.data
+
+      await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          emailVerified: new Date(),
+        },
+      })
+
+      await prisma.token.delete({ where: { id: token.id } })
+
+      return { status: "success", data: "Email successfully verified!" }
+    } else {
+      return result
     }
-
-    if (new Date() > tokenObj.expires) {
-      return { status: "error", error: "Token has expired" }
-    }
-
-    const user = await getUserByEmail(tokenObj.email)
-    if (!user) {
-      return { status: "error", error: "User not found" }
-    }
-
-    await prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        emailVerified: new Date(),
-      },
-    })
-
-    await prisma.token.delete({where:{id: tokenObj.id}})
-
-    return { status: "success", data: "Email successfully verified!" }
-  } catch (error) {
+  } catch (error: any) {
     console.log(error)
-    throw error
+    return {
+      status: "error",
+      error: error.message || "Internal server error at verifying email",
+    }
   }
 }
+
+export async function resetPassword(token: string, password: string) {
+  try {
+    const result = await verifyToken(token)
+
+    if (result.status === "success") {
+      // hash password and save to database
+    }
+  } catch (error: any) {
+    console.log(error)
+    return {
+      status: "error",
+      error: error.message || "Internal server error at resetting password",
+    }
+  }
+}
+
+
+
 export async function getUserByEmail(email: string) {
   return prisma.user.findUnique({ where: { email } })
 }
