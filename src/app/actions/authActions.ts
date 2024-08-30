@@ -111,8 +111,11 @@ export async function signInUser(
  * 3) a user can be found by token.email
  */
 async function verifyToken(
-  token: string
+  token: string | null
 ): Promise<ActionResult<{ user: User; token: Token }>> {
+  if (!token) {
+    return { status: "error", error: "No token string is provided" }
+  }
   const tokenObj = await prisma.token.findFirst({
     where: { token },
   })
@@ -180,7 +183,11 @@ export const checkAndSendPasswordResetEmail = async (
       return { status: "error", error: "Email not found" }
     } else {
       const token = await generateToken(email, TokenType.PASSWORD_RESET)
-      await sendPasswordResetEmail(existingUser.name as string, email, token.token)
+      await sendPasswordResetEmail(
+        existingUser.name as string,
+        email,
+        token.token
+      )
       return {
         status: "success",
         data: "Password reset email has been sent. Please check your emails",
@@ -195,14 +202,29 @@ export const checkAndSendPasswordResetEmail = async (
   }
 }
 
-
-
-export async function resetPassword(token: string, password: string) {
+export const resetPassword = async (
+  token: string | null,
+  password: string
+): Promise<ActionResult<string>> => {
   try {
     const result = await verifyToken(token)
 
     if (result.status === "success") {
-      // hash password and save to database
+      const { user, token } = result.data
+      const hashedPassword = bcrypt.hashSync(password, 10)
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          passwordHash: hashedPassword,
+        },
+      })
+
+      await prisma.token.delete({
+        where: { id: token.id },
+      })
+      return { status: "success", data: "Password is updated successfully" }
+    } else {
+      return result
     }
   } catch (error: any) {
     console.log(error)
