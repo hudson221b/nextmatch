@@ -27,7 +27,7 @@ export const sendPasswordResetEmail = async (
   email: string,
   token: string
 ) => {
-  const link = `http://localhost:3000/forgot-password?token=${token}`
+  const link = `http://localhost:3000/reset-password?token=${token}`
   const title = "Rest Password"
   const body =
     "You have requested to reset your password. Follow the link below:"

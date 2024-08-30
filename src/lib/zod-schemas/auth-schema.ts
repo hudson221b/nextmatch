@@ -32,6 +32,16 @@ export const memberSchema = z.object({
 })
 
 export const registerSchema = userSchema.and(memberSchema)
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters" }),
+    confirmPassword: z.string().min(6),
+  })
+  .refine(data => data.password === data.confirmPassword, {message:"Passwords do not match", path:['confirmPassword']})
+
 //#endregion
 
 //#region TS types
@@ -42,6 +52,6 @@ export type MemberSchema = z.infer<typeof memberSchema>
 
 export type RegisterSchema = z.infer<typeof registerSchema>
 
-
+export type resetPasswordSchema = z.infer<typeof resetPasswordSchema>
 
 
