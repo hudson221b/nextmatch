@@ -15,6 +15,7 @@ import { loginSchema, type LoginSchema } from "@/lib/zod-schemas/auth-schema"
 import { signInUser } from "@/app/actions/authActions"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
+import SocialLogin from "./SocialLogin"
 
 const LoginForm: React.FC = () => {
   const {
@@ -37,8 +38,7 @@ const LoginForm: React.FC = () => {
       router.refresh()
     } else {
       console.log(result.error)
-      toast.error(result.error as string,{hideProgressBar: true});
-      
+      toast.error(result.error as string, { hideProgressBar: true })
     }
   }
 
@@ -80,6 +80,7 @@ const LoginForm: React.FC = () => {
             >
               Login
             </Button>
+            <SocialLogin />
             <div className="flex justify-center text-sm hover:underline">
               <Link href="/forgot-password" className="text-secondary-400">
                 Forgot password?
