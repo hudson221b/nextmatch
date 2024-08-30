@@ -98,7 +98,7 @@ export const getMembers = async ({
 
     return { items: members, totalCount }
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }
@@ -107,7 +107,7 @@ export const getMemberById = async (userId: string) => {
   try {
     return prisma.member.findUnique({ where: { userId } })
   } catch (error) {
-    console.error("Error finding a member")
+    console.log("Error finding a member")
   }
 }
 
@@ -121,7 +121,7 @@ export const getMemberPhotosByUserId = async (userId: string) => {
     if (!member) return null
     return member.photos as Photo[]
   } catch (error) {
-    console.error("Error finding a member")
+    console.log("Error finding a member")
   }
 }
 
@@ -158,7 +158,7 @@ export const updateMemberProfile = async (
     })
     return { status: "success", data: member }
   } catch (error) {
-    console.error(error)
+    console.log(error)
     return {
       status: "error",
       error: "Error updating member profile",
@@ -184,7 +184,7 @@ export const updateMemberPhotos = async (url: string, publicId: string) => {
       },
     })
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }
@@ -208,7 +208,7 @@ export const setMainImage = async (url: string) => {
       },
     })
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }
@@ -231,7 +231,7 @@ export const deleteImage = async (photo: Photo) => {
       },
     })
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }
@@ -244,7 +244,7 @@ export const updateLastActive = async () => {
       data: { updated: new Date() },
     })
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }

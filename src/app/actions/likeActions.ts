@@ -28,7 +28,7 @@ export const toggleLikeMember = async (
       })
     }
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }
@@ -137,7 +137,7 @@ export const fetchLikesForCurrentUser = async (
         throw new Error("fetchLikesForCurrentUser arguments not correct")
     }
   } catch (error) {
-    console.error(error)
+    console.log(error)
     throw error
   }
 }

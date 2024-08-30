@@ -4,7 +4,7 @@ import { EditForm } from "./EditForm"
 import { getCurrentUserId } from "@/app/actions/authActions"
 import { getMemberById } from "@/app/actions/memberActions"
 import { notFound } from "next/navigation"
-import CardInnerWrapper from "@/components/CardInnerWrapper"
+import { CardInnerWrapper } from "@/components/CardWrappers"
 
 export default async function MemberEditPage() {
   const userId = await getCurrentUserId()

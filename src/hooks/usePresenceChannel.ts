@@ -23,7 +23,7 @@ export const usePresenceChannel = (userId: string | null) => {
 
   useEffect(() => {
     if (!pusherClient) {
-      console.error("Pusher client is not initialized")
+      console.log("Pusher client is not initialized")
       return
     }
 

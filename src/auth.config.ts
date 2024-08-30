@@ -17,16 +17,16 @@ export default {
           const { email, password } = validated.data
           const user = await getUserByEmail(email)
           if (!user) {
-            console.error("No user found!")
+            console.log("No user found!")
             return null
           }
           if (!bcrypt.compareSync(password, user.passwordHash)) {
-            console.error("Password not match")
+            console.log("Password not match")
             return null
           }
           return user
         } else {
-          console.error("Server side validation failed!")
+          console.log("Server side validation failed!")
           return null
         }
       },

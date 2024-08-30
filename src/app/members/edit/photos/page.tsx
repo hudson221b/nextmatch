@@ -6,7 +6,7 @@ import {
 
 import ImageUploadButton from "@/components/ImageUploadButton"
 import MemberPhoto from "@/components/MemberPhotos"
-import CardInnerWrapper from "@/components/CardInnerWrapper"
+import { CardInnerWrapper } from "@/components/CardWrappers"
 
 export default async function EditPhotsPage() {
   const userId = await getCurrentUserId()

@@ -11,6 +11,7 @@ async function seedMembers() {
         name: member.name,
         email: member.email,
         passwordHash: hashSync("123456", 10),
+        profileCompleted: true,
         member: {
           create: {
             name: member.name,
@@ -49,10 +50,10 @@ async function updateUserImage() {
   }
 }
 
-  main()
-    // updateUserImage()
-    .catch(e => {
-      console.error(e)
-      process.exit(1)
-    })
-    .finally(async () => await prisma.$disconnect())
+main()
+  // updateUserImage()
+  .catch(e => {
+    console.log(e)
+    process.exit(1)
+  })
+  .finally(async () => await prisma.$disconnect())

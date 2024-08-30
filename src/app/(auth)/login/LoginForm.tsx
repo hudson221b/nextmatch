@@ -1,7 +1,14 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react"
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Input,
+  Link,
+} from "@nextui-org/react"
 import { useForm } from "react-hook-form"
 import { GiPadlock } from "react-icons/gi"
 import { loginSchema, type LoginSchema } from "@/lib/zod-schemas/auth-schema"
@@ -29,7 +36,7 @@ const LoginForm: React.FC = () => {
       // force page refresh after sign in to re-render TopNav server component
       router.refresh()
     } else {
-      console.error(result.error)
+      console.log(result.error)
       toast.error(result.error as string,{hideProgressBar: true});
       
     }
@@ -73,6 +80,11 @@ const LoginForm: React.FC = () => {
             >
               Login
             </Button>
+            <div className="flex justify-center text-sm hover:underline">
+              <Link href="/forgot-password" className="text-secondary-400">
+                Forgot password?
+              </Link>
+            </div>
           </div>
         </form>
       </CardBody>
