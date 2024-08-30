@@ -1,4 +1,4 @@
-import CardInnerWrapper from "@/components/CardInnerWrapper"
+import { CardInnerWrapper } from "@/components/CardWrappers"
 
 import ChatForm from "./ChatForm"
 import { getChatMessages } from "@/app/actions/messageActions"

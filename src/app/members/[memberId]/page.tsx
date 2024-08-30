@@ -1,8 +1,7 @@
 import { getMemberById } from "@/app/actions/memberActions"
 import { notFound } from "next/navigation"
 
-import { CardHeader, CardBody, Divider } from "@nextui-org/react"
-import CardInnerWrapper from "@/components/CardInnerWrapper"
+import { CardInnerWrapper } from "@/components/CardWrappers"
 
 export default async function MemberDetails(params: {
   params: { memberId: string }

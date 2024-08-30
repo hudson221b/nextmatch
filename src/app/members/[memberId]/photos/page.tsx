@@ -1,5 +1,5 @@
 import { getMemberPhotosByUserId } from "@/app/actions/memberActions"
-import CardInnerWrapper from "@/components/CardInnerWrapper"
+import { CardInnerWrapper } from "@/components/CardWrappers"
 import { Image } from "@nextui-org/react"
 
 
