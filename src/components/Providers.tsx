@@ -12,12 +12,14 @@ import { getUnreadMsgCount } from "@/app/actions/messageActions"
 export const UIProviders = ({
   children,
   userId,
+  profileCompleted,
 }: {
   children: ReactNode
   userId: string | null
+  profileCompleted: boolean | null
 }) => {
-  usePresenceChannel(userId)
-  useNotificationChannel(userId)
+  usePresenceChannel(userId, profileCompleted)
+  useNotificationChannel(userId, profileCompleted)
 
   // set unread messages count on login
   const updateUnreadCount = useMessagesStore(state => state.updateUnreadCount)
