@@ -6,12 +6,18 @@ export default auth(req => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
   const isProfileCompleted = req.auth?.user.profileCompleted
+  const isAdmin = req.auth?.user.role === "ADMIN"
+  const isAdminRoute = nextUrl.pathname.startsWith("/admin")
 
   const isPublic = publicRoutes.includes(nextUrl.pathname)
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
-  if (isPublic) {
+  if (isPublic || isAdmin) {
     return NextResponse.next()
+  }
+
+  if (isAdminRoute && !isAdmin) {
+    return NextResponse.redirect(new URL("/", nextUrl))
   }
 
   if (isAuthRoute) {
@@ -48,6 +54,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/((?!api|_next/static|_next/image|images|favicon.ico).*)",
   ],
 }

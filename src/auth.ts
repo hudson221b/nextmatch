@@ -13,6 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Auth.js only expose a subset of the user’s information by default. See docs here https://authjs.dev/guides/extending-the-session
         session.user.id = token.sub
         session.user.profileCompleted = token.profileCompleted as boolean
+        session.user.role = token.role
       }
 
       return session
@@ -21,6 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ user, token }) {
       if (user) {
         token.profileCompleted = user.profileCompleted
+        token.role = user.role
       }
       return token
     },

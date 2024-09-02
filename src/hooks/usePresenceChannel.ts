@@ -14,7 +14,8 @@ import { updateLastActive } from "@/app/actions/memberActions"
  */
 export const usePresenceChannel = (
   userId: string | null,
-  profileCompleted: boolean | null
+  profileCompleted: boolean | null,
+  isAdmin: boolean
 ) => {
   const [add, remove, set] = usePresenceStore(state => [
     state.addMember,
@@ -30,7 +31,7 @@ export const usePresenceChannel = (
       return
     }
 
-    if (!profileCompleted) {
+    if (!profileCompleted || isAdmin) {
       return
     }
 

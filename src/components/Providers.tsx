@@ -8,17 +8,20 @@ import { ToastContainer } from "react-toastify"
 import { useNotificationChannel } from "@/hooks/useNotificationChannel"
 import { useMessagesStore } from "@/hooks/useStores"
 import { getUnreadMsgCount } from "@/app/actions/messageActions"
+import { SessionProvider } from "next-auth/react"
 
-export const UIProviders = ({
+export const Providers = ({
   children,
   userId,
   profileCompleted,
+  isAdmin,
 }: {
   children: ReactNode
   userId: string | null
   profileCompleted: boolean | null
+  isAdmin: boolean
 }) => {
-  usePresenceChannel(userId, profileCompleted)
+  usePresenceChannel(userId, profileCompleted, isAdmin)
   useNotificationChannel(userId, profileCompleted)
 
   // set unread messages count on login
@@ -36,10 +39,12 @@ export const UIProviders = ({
   }, [userId])
 
   return (
-    <NextUIProvider>
-      <ToastContainer position="bottom-right" />
-      {children}
-    </NextUIProvider>
+    <SessionProvider>
+      <NextUIProvider>
+        <ToastContainer position="bottom-right" />
+        {children}
+      </NextUIProvider>
+    </SessionProvider>
   )
 }
 
