@@ -25,12 +25,17 @@ export default auth(req => {
     return NextResponse.redirect(new URL("/login", nextUrl))
   }
 
-  if (isLoggedIn && !isProfileCompleted && nextUrl.pathname !== "/complete-profileCompleted"){
-    NextResponse.redirect(new URL('/complete-profile', nextUrl))
+  if (
+    isLoggedIn &&
+    !isProfileCompleted &&
+    nextUrl.pathname !== "/complete-profile"
+  ) {
+    return NextResponse.redirect(new URL("/complete-profile", nextUrl))
   }
 
   return NextResponse.next()
 })
+
 
 // to prevent this auth from running on every request
 

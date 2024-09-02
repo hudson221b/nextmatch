@@ -26,6 +26,7 @@ export default function CompleteProfileForm() {
     <CardWrapper
       headerText="About you"
       headerIcon={RiProfileLine}
+      subheaderText="Please complete your profile to continue to the app"
       body={
         <FormProvider {...methods}>
           <form action="" onSubmit={handleSubmit(onSubmit)}>
