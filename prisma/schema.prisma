@@ -35,7 +35,7 @@ model Member {
   dateOfBirth        DateTime
   created            DateTime  @default(now())
   updated            DateTime  @default(now())
-  description        String
+  description        String?
   city               String
   country            String
   image              String?

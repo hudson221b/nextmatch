@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import {
   registerSchema,
   type LoginSchema,
+  type MemberSchema,
   type RegisterSchema,
 } from "@/lib/zod-schemas/auth-schema"
 import type { ActionResult } from "../../types"
@@ -13,6 +14,7 @@ import { auth, signIn } from "@/auth"
 import { AuthError } from "next-auth"
 import { generateToken } from "@/lib/token"
 import { sendPasswordResetEmail, sendVerficationEmail } from "@/lib/email"
+import type { MemberEditSchema } from "@/lib/zod-schemas/member-edit-schema"
 
 export async function registerUser(
   data: RegisterSchema
@@ -135,6 +137,7 @@ async function verifyToken(
 
   return { status: "success", data: { user, token: tokenObj } }
 }
+
 /**
  * Marks user's emailVerified field with a date
  */
@@ -232,6 +235,51 @@ export const resetPassword = async (
       status: "error",
       error: error.message || "Internal server error at resetting password",
     }
+  }
+}
+
+/**
+ * Marks User profileCompleted field as true, create a Member for the user and returns the login provider
+ */
+export const completeSocialLoginProfile = async (data: MemberSchema) => {
+  const session = await auth()
+  const user = session?.user
+  if (!user) return { status: "error", message: "No user found" }
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        profileCompleted: true,
+        member: {
+          create: {
+            name: user.name as string,
+            gender: data.gender,
+            dateOfBirth: new Date(data.dateOfBirth),
+            description: data.description,
+            city: data.city,
+            country: data.country,
+          },
+        },
+      },
+      select: {
+        accounts: {
+          select: {
+            provider: true,
+          },
+        },
+      },
+    })
+    console.log(
+      "#####🚀🚀🚀 ~ completeSocialLoginProfile ~ updatedUser👉👉",
+      updatedUser
+    )
+    return { status: "success", data: updatedUser.accounts[0].provider }
+  } catch (error) {
+    console.log(error)
+    throw error
   }
 }
 
