@@ -5,6 +5,7 @@ import { auth } from "./auth"
 export default auth(req => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
+  const isProfileCompleted = req.auth?.user.profileCompleted
 
   const isPublic = publicRoutes.includes(nextUrl.pathname)
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
@@ -22,6 +23,10 @@ export default auth(req => {
 
   if (!isPublic && !isLoggedIn) {
     return NextResponse.redirect(new URL("/login", nextUrl))
+  }
+
+  if (isLoggedIn && !isProfileCompleted && nextUrl.pathname !== "/complete-profileCompleted"){
+    NextResponse.redirect(new URL('/complete-profile', nextUrl))
   }
 
   return NextResponse.next()
