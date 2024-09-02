@@ -272,10 +272,7 @@ export const completeSocialLoginProfile = async (data: MemberSchema) => {
         },
       },
     })
-    console.log(
-      "#####🚀🚀🚀 ~ completeSocialLoginProfile ~ updatedUser👉👉",
-      updatedUser
-    )
+
     return { status: "success", data: updatedUser.accounts[0].provider }
   } catch (error) {
     console.log(error)

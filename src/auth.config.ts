@@ -5,7 +5,8 @@ import { getUserByEmail } from "./app/actions/authActions"
 import bcrypt from "bcryptjs"
 import Github from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
-// import Google from "next-auth/providers/google"
+
+
 /**
  * More specific configs related to custom authentication logic and error handling
  */
