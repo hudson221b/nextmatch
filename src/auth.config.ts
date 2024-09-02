@@ -4,6 +4,7 @@ import { loginSchema } from "./lib/zod-schemas/auth-schema"
 import { getUserByEmail } from "./app/actions/authActions"
 import bcrypt from "bcryptjs"
 import Github from "next-auth/providers/github"
+import Google from "next-auth/providers/google"
 // import Google from "next-auth/providers/google"
 /**
  * More specific configs related to custom authentication logic and error handling
@@ -11,7 +12,7 @@ import Github from "next-auth/providers/github"
 export default {
   providers: [
     Github,
-    // Google,
+    Google,
     Credentials({
       authorize: async credentials => {
         const validated = loginSchema.safeParse(credentials)
