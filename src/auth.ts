@@ -12,9 +12,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user && token.sub) {
         // Auth.js only expose a subset of the user’s information by default. See docs here https://authjs.dev/guides/extending-the-session
         session.user.id = token.sub
+        session.user.profileCompleted = token.profileCompleted as boolean
       }
 
       return session
+    },
+    // pass user's profileComplete property to token, then token can pass it to session
+    async jwt({ user, token }) {
+      if (user) {
+        token.profileCompleted = user.profileCompleted
+      }
+      return token
     },
   },
   adapter: PrismaAdapter(prisma),

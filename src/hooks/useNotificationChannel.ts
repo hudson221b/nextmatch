@@ -9,7 +9,10 @@ import { newMessageToast } from "@/components/NewMessageToast"
 /**
  * Subscribes a logged in user to his/her private notification channel. User will get notification anywhere (except on the Chat page with the message sender) in the app if he/she receives a new message
  */
-export const useNotificationChannel = (userId: string | null) => {
+export const useNotificationChannel = (
+  userId: string | null,
+  profileCompleted: boolean | null
+) => {
   const channelRef = useRef<Channel | null>(null)
   const path = usePathname()
   const searchParams = useSearchParams()
@@ -39,7 +42,7 @@ export const useNotificationChannel = (userId: string | null) => {
     [path, searchParams]
   )
 
-  // this ref records the latest handleNewMessage 
+  // this ref records the latest handleNewMessage
   const handleNewMessageRef = useRef(handleNewMessage)
 
   useEffect(() => {
@@ -54,6 +57,9 @@ export const useNotificationChannel = (userId: string | null) => {
   )
 
   useEffect(() => {
+    if (!profileCompleted) {
+      return
+    }
     // when a not signed-in user opens app, no subscription
     if (!userId && !channelRef.current?.subscribed) {
       return
@@ -86,5 +92,4 @@ export const useNotificationChannel = (userId: string | null) => {
       }
     }
   }, [])
-
 }

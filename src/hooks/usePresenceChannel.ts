@@ -12,7 +12,10 @@ import { updateLastActive } from "@/app/actions/memberActions"
  * 3) when a user signs out, unsubscribes
  * 4) when a signed user closes the app, unsubscribes
  */
-export const usePresenceChannel = (userId: string | null) => {
+export const usePresenceChannel = (
+  userId: string | null,
+  profileCompleted: boolean | null
+) => {
   const [add, remove, set] = usePresenceStore(state => [
     state.addMember,
     state.removeMember,
@@ -24,6 +27,10 @@ export const usePresenceChannel = (userId: string | null) => {
   useEffect(() => {
     if (!pusherClient) {
       console.log("Pusher client is not initialized")
+      return
+    }
+
+    if (!profileCompleted) {
       return
     }
 
@@ -46,7 +53,7 @@ export const usePresenceChannel = (userId: string | null) => {
       // read more about members param here https://pusher.com/docs/channels/using_channels/presence-channels/#accessing-channel-members. Or you can log it out and see its structure
       channelRef.current.bind(
         "pusher:subscription_succeeded",
-         async (members: Members) => {
+        async (members: Members) => {
           set(Object.keys(members.members))
           await updateLastActive()
         }
@@ -67,7 +74,7 @@ export const usePresenceChannel = (userId: string | null) => {
         }
       )
     }
-  }, [userId])
+  }, [userId, profileCompleted])
 
   // unsubscribe when a signed-in user closes the app
   useEffect(() => {
