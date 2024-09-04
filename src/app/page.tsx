@@ -1,23 +1,25 @@
 import { auth, signOut } from "@/auth"
 import ClientSession from "@/components/ClientSession"
-import { Button } from "@nextui-org/react"
+import LinkButton from "@/components/LinkButton"
+import { Button, Link } from "@nextui-org/react"
 import { FaRegSmile } from "react-icons/fa"
+import { GiMatchTip } from "react-icons/gi"
 
 export default async function Home() {
-  // auth returns the result of its callbacks.
-  // TODO: what about the results from multiple callbacks?
   const session = await auth()
+
   return (
-    <div className="flex justify-around mt-20 gap-6">
-      <div className="bg-green-50 p-10 rounded-xl shadow-md w-1/2 overflow-auto">
-        <h3 className="text-2xl font-semibold">Server session data</h3>
-        {session ? (
-          <pre>{JSON.stringify(session, null, 2)}</pre>
-        ) : (
-          "Not signed in"
-        )}
-      </div>
-      <ClientSession />
+    <div className="flex flex-col justify-center items-center mt-20 gap-6 text-secondary">
+      <GiMatchTip size={100} />
+      <h1 className="text-3xl font-semibold">Welcome to NextMatch</h1>
+      {session ? (
+        <LinkButton text="Continue" href="/members" />
+      ) : (
+        <div className="flex gap-10">
+          <LinkButton text="Sign In" href="/login" />
+          <LinkButton text="Register" href="/register" />
+        </div>
+      )}
     </div>
   )
 }
