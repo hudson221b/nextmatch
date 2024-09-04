@@ -1,8 +1,5 @@
-import { auth, signOut } from "@/auth"
-import ClientSession from "@/components/ClientSession"
+import { auth } from "@/auth"
 import LinkButton from "@/components/LinkButton"
-import { Button, Link } from "@nextui-org/react"
-import { FaRegSmile } from "react-icons/fa"
 import { GiMatchTip } from "react-icons/gi"
 
 export default async function Home() {

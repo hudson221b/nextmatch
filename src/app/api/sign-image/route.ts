@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       process.env.CLOUDINARY_API_SECRET as string
     )
     return Response.json({ signature })
-  } catch (error) {
-    return Response.json({ error: "Error signing image" }, { status: 500 })
+  } catch (error:any) {
+    return Response.json({ error: error.message || "Error signing image" }, { status: 500 })
   }
 }

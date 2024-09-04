@@ -4,7 +4,6 @@ import { Tabs, Tab, Spinner } from "@nextui-org/react"
 import { usePathname, useRouter } from "next/navigation"
 import MemberCard from "../members/memberCard"
 import type { Member } from "@prisma/client"
-import { LoadingComponent } from "@/components/Loading"
 
 type ListTabProps = {
   members: Member[]

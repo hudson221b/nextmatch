@@ -14,7 +14,6 @@ import { auth, signIn } from "@/auth"
 import { AuthError } from "next-auth"
 import { generateToken } from "@/lib/token"
 import { sendPasswordResetEmail, sendVerficationEmail } from "@/lib/email"
-import type { MemberEditSchema } from "@/lib/zod-schemas/member-edit-schema"
 
 export async function registerUser(
   data: RegisterSchema
@@ -89,7 +88,7 @@ export async function signInUser(
       await sendVerficationEmail(existingUser.name!, token.email, token.token)
       throw new Error("Please verify your email before logging in")
     }
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,

@@ -7,7 +7,7 @@ import {
 } from "@/lib/zod-schemas/auth-schema"
 import { handleFormServerErrors } from "@/lib/client-utils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Card, CardHeader, CardBody, Button, Input } from "@nextui-org/react"
+import { Card, CardHeader, CardBody, Button } from "@nextui-org/react"
 import { FormProvider, useForm } from "react-hook-form"
 import { GiPadlock } from "react-icons/gi"
 import UserDetailsForm from "./UserDetailsForm"

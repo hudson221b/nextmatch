@@ -106,7 +106,8 @@ export const getMemberById = async (userId: string) => {
   try {
     return prisma.member.findUnique({ where: { userId } })
   } catch (error) {
-    console.log("Error finding a member")
+    console.log("Error finding a member", error)
+    throw error
   }
 }
 
@@ -120,7 +121,8 @@ export const getMemberPhotosByUserId = async (userId: string) => {
     if (!member) return null
     return member.photos as Photo[]
   } catch (error) {
-    console.log("Error finding a member")
+    console.log(error)
+    throw error
   }
 }
 
