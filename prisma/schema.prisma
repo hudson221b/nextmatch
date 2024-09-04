@@ -24,6 +24,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   profileCompleted Boolean @default(false)
+  role         Role @default(MEMBER)
   member        Member?
 }
 
@@ -108,4 +109,9 @@ model Token {
 enum TokenType {
   VERIFICATION
   PASSWORD_RESET
+}
+
+enum Role {
+  ADMIN
+  MEMBER
 }
