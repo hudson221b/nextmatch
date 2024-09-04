@@ -53,19 +53,9 @@ async function main() {
   await seedAdmin()
 }
 
-async function updateUserImage() {
-  for (const member of membersData) {
-    await prisma.user.updateMany({
-      where: { name: member.name },
-      data: {
-        image: member.image,
-      },
-    })
-  }
-}
+
 
 main()
-  // updateUserImage()
   .catch(e => {
     console.log(e)
     process.exit(1)
