@@ -18,7 +18,7 @@ const ListsPage = async ({
   )) as Member[]
 
   return (
-    <div>
+    <div className="mt-10">
       <ListTabs members={membersToDisplay} likeIds={likeIds} />
     </div>
   )
