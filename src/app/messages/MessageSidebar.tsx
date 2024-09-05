@@ -38,7 +38,9 @@ export default function MessageSidebar() {
   }
 
   return (
-    <div className="flex flex-col shadow-md rounded-lg">
+    <div
+      className="flex flex-col shadow-md rounded-lg overflow-hidden" 
+    >
       {items.map(({ key, label, icon: Icon, chip }) => (
         <div
           key={key}

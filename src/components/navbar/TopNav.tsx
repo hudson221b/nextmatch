@@ -15,9 +15,9 @@ export const TopNav = async () => {
     session?.user && (await getUserById(session.user.id as string))
 
     const memberLinks = [
+      { href: "/members", label: "Members" },
       { href: "/lists", label: "Lists" },
       { href: "/messages", label: "Messages" },
-      { href: "/members", label: "Members" },
     ]
 
     const adminLinks = [
@@ -47,9 +47,10 @@ export const TopNav = async () => {
             </div>
           </NavbarBrand>
           <NavbarContent>
-            {links.map(item => (
-              <NavLink key={item.href} href={item.href} label={item.label} />
-            ))}
+            {session &&
+              links.map(item => (
+                <NavLink key={item.href} href={item.href} label={item.label} />
+              ))}
           </NavbarContent>
           <NavbarContent justify="end">
             {latestUser ? (

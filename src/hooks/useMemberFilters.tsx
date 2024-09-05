@@ -1,6 +1,6 @@
 import { usePathname } from "next/navigation"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useTransition } from "react"
+import { useCallback, useEffect } from "react"
 import { useFiltersStore } from "./useStores"
 import type { MemberFilters } from "@/types"
 import type { Selection } from "@nextui-org/react"

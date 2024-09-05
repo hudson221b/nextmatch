@@ -1,4 +1,3 @@
-import { CardHeader, Divider, CardBody } from "@nextui-org/react"
 
 import { EditForm } from "./EditForm"
 import { getCurrentUserId } from "@/app/actions/authActions"
