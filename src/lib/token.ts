@@ -1,5 +1,4 @@
 import { TokenType, type Token } from "@prisma/client"
-import { randomBytes } from "crypto"
 import { prisma } from "./prisma"
 
 /**
@@ -18,7 +17,10 @@ export const generateToken = async (
         },
       })
     }
-    const token = randomBytes(48).toString("hex")
+
+    const arrayBuffer = new Uint8Array(48)
+    crypto.getRandomValues(arrayBuffer)
+    const token = Array.from(arrayBuffer, byte => byte.toString(16).padStart(2, '0')).join("")
     // expires in 24 hours
     const expiryDate = new Date(Date.now() + 1000 * 60 * 60 * 24)
     return prisma.token.create({

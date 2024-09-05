@@ -5,6 +5,8 @@ import {
 } from "../actions/likeActions"
 import type { Member } from "@prisma/client"
 
+export const dynamic = 'force-dynamic'
+
 const ListsPage = async ({
   searchParams,
 }: {
