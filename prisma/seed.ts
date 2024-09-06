@@ -57,6 +57,8 @@ async function main() {
     console.log("#####🚀🚀🚀 seeding members data")
     await seedMembers()
     await seedAdmin()
+  } else{
+    console.log("#####🚀🚀🚀 running main, doing nothing")
   }
 }
 
