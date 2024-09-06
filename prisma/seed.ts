@@ -54,6 +54,7 @@ async function main() {
     process.env.RUN_SEED === "true" ||
     process.env.NODE_ENV === "development"
   ) {
+    console.log("#####🚀🚀🚀 seeding members data")
     await seedMembers()
     await seedAdmin()
   }
