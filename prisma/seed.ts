@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import { membersData } from "./membersData.js"
-import { hashSync } from "bcryptjs"
+// import { hashSync } from "bcryptjs"
+import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
@@ -10,7 +11,7 @@ async function seedMembers() {
       data: {
         name: member.name,
         email: member.email,
-        passwordHash: hashSync("123456", 10),
+        passwordHash: bcrypt.hashSync("123456", 10),
         profileCompleted: true,
         member: {
           create: {
@@ -42,7 +43,7 @@ async function seedAdmin() {
       emailVerified: new Date(),
       profileCompleted: true,
       name: "Admin",
-      passwordHash: hashSync("password", 10),
+      passwordHash: bcrypt.hashSync("password", 10),
       role: "ADMIN",
     },
   })
