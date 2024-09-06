@@ -50,14 +50,11 @@ async function seedAdmin() {
 }
 
 async function main() {
-  if (
-    process.env.RUN_SEED === "true" ||
-    process.env.NODE_ENV === "development"
-  ) {
+  if (process.env.RUN_SEED || process.env.NODE_ENV === "development") {
     console.log("#####🚀🚀🚀 seeding members data")
     await seedMembers()
     await seedAdmin()
-  } else{
+  } else {
     console.log("#####🚀🚀🚀 running main, doing nothing")
   }
 }
