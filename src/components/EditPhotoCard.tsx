@@ -7,6 +7,7 @@ import { DeleteButton } from "./DeleteButton"
 import { useRouter } from "next/navigation"
 import { deleteImage, setMainImage } from "@/app/actions/memberActions"
 import { toast } from "react-toastify"
+import MemberPhoto from "./MemberPhoto"
 
 type Props = {
   photo: Photo
@@ -16,7 +17,7 @@ type Props = {
 /**
  * Component for a single photo on members/edit/photos page
  */
-export default function MemberPhoto({ photo, mainImageUrl }: Props) {
+export default function EditPhotoCard({ photo, mainImageUrl }: Props) {
   const [isStarButtonLoading, setIsStarButtonLoading] = useState(false)
   const router = useRouter()
 
@@ -44,24 +45,7 @@ export default function MemberPhoto({ photo, mainImageUrl }: Props) {
   return (
     <Card key={photo.id}>
       <CardBody>
-        {photo.publicId ? (
-          <CldImage
-            alt="member photo"
-            src={photo.publicId}
-            crop="fill"
-            gravity="faces"
-            width={220}
-            height={220}
-            className="rounded-[14px]"
-          />
-        ) : (
-          <Image
-            src={photo?.url || "/images/user.png"}
-            alt="member photo"
-            width={220} // must be the same as CldImage width!
-            className="object-cover aspect-square"
-          />
-        )}
+        <MemberPhoto photo={photo} />
       </CardBody>
       <CardFooter className="flex justify-between">
         <Button

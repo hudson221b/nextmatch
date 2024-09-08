@@ -5,7 +5,7 @@ import {
 } from "@/app/actions/memberActions"
 
 import ImageUploadButton from "@/components/ImageUploadButton"
-import MemberPhoto from "@/components/MemberPhotos"
+import EditPhotoCard from "@/components/EditPhotoCard"
 import { CardInnerWrapper } from "@/components/CardWrappers"
 
 export default async function EditPhotsPage() {
@@ -18,7 +18,7 @@ export default async function EditPhotsPage() {
     <div className="grid grid-cols-5 gap-3 p-5">
       {photos?.length &&
         photos.map(photo => (
-          <MemberPhoto
+          <EditPhotoCard
             photo={photo}
             mainImageUrl={mainImageUrl}
             key={photo.id}

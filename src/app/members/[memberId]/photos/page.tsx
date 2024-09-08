@@ -1,6 +1,7 @@
 import { getMemberPhotosByUserId } from "@/app/actions/memberActions"
 import { CardInnerWrapper } from "@/components/CardWrappers"
-import { Image } from "@nextui-org/react"
+import MemberPhoto from "@/components/MemberPhoto"
+
 
 
 export default async function PhotosPage({
@@ -13,16 +14,7 @@ export default async function PhotosPage({
   const body = (
     <div className="grid grid-cols-5 gap-3">
       {photos
-        ? photos.map(photo => (
-            <Image
-              key={photo.id}
-              width={300}
-              height={300}
-              className="object-cover aspect-square"
-              src={photo.url}
-              alt="member photos"
-            />
-          ))
+        ? photos.map(photo => <MemberPhoto photo={photo} key={photo.id} />)
         : null}
     </div>
   )
