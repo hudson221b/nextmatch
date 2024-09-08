@@ -29,7 +29,7 @@ export default function MemberSidebar({
   const pathName = usePathname()
 
   return (
-    <Card className="h-[80vh] w-full items-center">
+    <Card className="h-full w-full items-center">
       <Image
         src={member.image || "/images/user.png"}
         alt="member-image-sidebar"

@@ -14,6 +14,7 @@ export default async function MemberEditPage() {
     <CardInnerWrapper
       header="Edit Profile"
       body={<EditForm member={member} />}
+      classNames={{ header: "pl-6", body: "px-5" }}
     />
   )
 }

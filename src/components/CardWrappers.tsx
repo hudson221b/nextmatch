@@ -16,10 +16,16 @@ type Props = {
   header: ReactNode | string
   body: ReactNode
   footer?: ReactNode
+  classNames?: Partial<Record<"base" | "header" | "body" | "footer", string>>
 }
-export function CardInnerWrapper({ header, body, footer }: Props) {
+
+/**
+ *
+ * Wrapper for the cards used together with a sidebar. It has a title, a divider, and a content section.
+ */
+export function CardInnerWrapper({ header, body, footer, classNames }: Props) {
   return (
-    <>
+    <Card classNames={classNames} className="w-full h-full">
       <CardHeader>
         {typeof header === "string" ? (
           <div className="text-2xl font-semibold text-secondary"> {header}</div>
@@ -30,7 +36,7 @@ export function CardInnerWrapper({ header, body, footer }: Props) {
       <Divider />
       <CardBody>{body}</CardBody>
       {footer && <CardFooter>{footer}</CardFooter>}
-    </>
+    </Card>
   )
 }
 

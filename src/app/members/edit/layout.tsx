@@ -1,7 +1,6 @@
 import { getMemberById } from "@/app/actions/memberActions"
 import { notFound } from "next/navigation"
 import React, { type ReactNode } from "react"
-import { Card } from "@nextui-org/react"
 import MemberSidebar from "../memberSidebar"
 import { getCurrentUserId } from "@/app/actions/authActions"
 
@@ -22,17 +21,15 @@ export default async function MemberEditLayout({
 
     const navLinks = [
       { name: "Edit Profile", href: baseUrl },
-      { name: "Update Photos", href: `${baseUrl}/photos` },
+      { name: "Edit Photos", href: `${baseUrl}/photos` },
     ]
 
   return (
-    <div className="grid grid-cols-12 gap-5 h-[80vh]">
+    <div className="grid grid-cols-12 gap-5 h-[80vh] mt-10">
       <div className="col-span-3">
-        <MemberSidebar member={member} navLinks={navLinks}/>
+        <MemberSidebar member={member} navLinks={navLinks} />
       </div>
-      <div className="col-span-9">
-        <Card className="w-full h-full">{children}</Card>
-      </div>
+      <div className="col-span-9">{children}</div>
     </div>
   )
 }

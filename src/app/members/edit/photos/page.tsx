@@ -37,6 +37,7 @@ export default async function EditPhotsPage() {
         </div>
       }
       body={body}
+      classNames={{ header: "pl-8" }}
     />
   )
 }

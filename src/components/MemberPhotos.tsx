@@ -1,15 +1,9 @@
 "use client"
 import type { Photo } from "@prisma/client"
-import { Image } from "@nextui-org/react"
+import { Button, Card, CardBody, CardFooter, Image } from "@nextui-org/react"
 import { CldImage } from "next-cloudinary"
-
-/**
- * Component for a single photo on members/edit/photos page
- */
-
 import React, { useMemo, useState } from "react"
 import { DeleteButton } from "./DeleteButton"
-import { StarButton } from "./StarButton"
 import { useRouter } from "next/navigation"
 import { deleteImage, setMainImage } from "@/app/actions/memberActions"
 import { toast } from "react-toastify"
@@ -19,9 +13,11 @@ type Props = {
   mainImageUrl: string | null | undefined
 }
 
+/**
+ * Component for a single photo on members/edit/photos page
+ */
 export default function MemberPhoto({ photo, mainImageUrl }: Props) {
   const [isStarButtonLoading, setIsStarButtonLoading] = useState(false)
-  const [isDeleteButtonLoading, setIsDeleteButtonLoading] = useState(false)
   const router = useRouter()
 
   const isMainImage = useMemo(
@@ -29,7 +25,7 @@ export default function MemberPhoto({ photo, mainImageUrl }: Props) {
     [photo, mainImageUrl]
   )
 
-  const handleStarButton = async () => {
+  const setMain = async () => {
     setIsStarButtonLoading(true)
     await setMainImage(photo.url)
     setIsStarButtonLoading(false)
@@ -38,44 +34,58 @@ export default function MemberPhoto({ photo, mainImageUrl }: Props) {
 
   const handleDeleteButton = async () => {
     if (isMainImage) {
-      toast.info("Cannot delete main image")
+      toast.info("Cannot delete the main image")
     } else {
-      setIsDeleteButtonLoading(true)
       await deleteImage(photo)
       router.refresh()
     }
   }
 
   return (
-    <div key={photo.id} className="relative">
-      {photo.publicId ? (
-        <CldImage
-          alt="member photo"
-          src={photo.publicId}
-          crop="fill"
-          gravity="faces"
-          width={220}
-          height={220}
-          className="rounded-2xl"
-        />
-      ) : (
-        <Image
-          src={photo?.url || "/images/user.png"}
-          alt="member photo"
-          width={300}
-          height={300}
-          className="object-cover aspect-square"
-        />
-      )}
-      <div className="absolute top-3 left-3 z-20" onClick={handleStarButton}>
-        <StarButton
-          isSelected={mainImageUrl === photo.url}
+    <Card key={photo.id}>
+      <CardBody>
+        {photo.publicId ? (
+          <CldImage
+            alt="member photo"
+            src={photo.publicId}
+            crop="fill"
+            gravity="faces"
+            width={220}
+            height={220}
+            className="rounded-[14px]"
+          />
+        ) : (
+          <Image
+            src={photo?.url || "/images/user.png"}
+            alt="member photo"
+            width={220} // must be the same as CldImage width!
+            className="object-cover aspect-square"
+          />
+        )}
+      </CardBody>
+      <CardFooter className="flex justify-between">
+        <Button
+          onClick={setMain}
+          className="font-semibold w-[85px]"
+          variant={`${isMainImage ? "flat" : "bordered"}`}
+          size="sm"
           isLoading={isStarButtonLoading}
-        />
-      </div>
-      <div className="absolute top-3 right-3 z-20" onClick={handleDeleteButton}>
-        <DeleteButton isLoading={isDeleteButtonLoading} />
-      </div>
-    </div>
+          color={`${isMainImage ? "secondary" : "default"}`}
+        >
+          <span className="text-xs">
+            {isMainImage ? "Main Image" : "Set main"}
+          </span>
+        </Button>
+
+        {!isMainImage && (
+          <DeleteButton
+            showModal={true}
+            modalText="Are you sure you want to delete this photo?"
+            size={24}
+            onDelete={handleDeleteButton}
+          />
+        )}
+      </CardFooter>
+    </Card>
   )
 }

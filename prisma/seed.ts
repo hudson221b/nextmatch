@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client"
 import { membersData } from "./membersData.js"
-// import { hashSync } from "bcryptjs"
 import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
@@ -52,12 +51,9 @@ async function seedAdmin() {
 }
 
 async function main() {
-  if (process.env.RUN_SEED || process.env.NODE_ENV === "development") {
-    console.log("#####🚀🚀🚀 seeding members data")
+  if (process.env.RUN_SEED) {
     await seedMembers()
     await seedAdmin()
-  } else {
-    console.log("#####🚀🚀🚀 running main, doing nothing")
   }
 }
 
