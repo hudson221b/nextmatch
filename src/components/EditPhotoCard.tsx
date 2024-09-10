@@ -1,7 +1,6 @@
 "use client"
 import type { Photo } from "@prisma/client"
-import { Button, Card, CardBody, CardFooter, Image } from "@nextui-org/react"
-import { CldImage } from "next-cloudinary"
+import { Button, Card, CardBody, CardFooter, } from "@nextui-org/react"
 import React, { useMemo, useState } from "react"
 import { DeleteButton } from "./DeleteButton"
 import { useRouter } from "next/navigation"

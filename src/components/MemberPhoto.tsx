@@ -3,10 +3,7 @@ import {
   useDisclosure,
   Modal,
   ModalContent,
-  ModalHeader,
   ModalBody,
-  ModalFooter,
-  Button,
   Image,
 } from "@nextui-org/react"
 import type { Photo } from "@prisma/client"
@@ -48,10 +45,10 @@ export default function MemberPhoto({ photo }: Props) {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         size="full"
-        classNames={{ body: "overflow-auto" }}
+        classNames={{ body: "overflow-auto items-center" }}
       >
         <ModalContent>
-          {onClose => (
+          {(_onClose) => (
             <ModalBody>
               {photo.publicId ? (
                 <CldImage
@@ -65,6 +62,7 @@ export default function MemberPhoto({ photo }: Props) {
                 <Image
                   src={photo?.url || "/images/user.png"}
                   alt="member photo"
+                  radius="none"
                 />
               )}
             </ModalBody>

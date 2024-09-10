@@ -75,7 +75,7 @@ export const usePresenceChannel = (
         }
       )
     }
-  }, [userId, profileCompleted])
+  }, [userId, profileCompleted, isAdmin])
 
   // unsubscribe when a signed-in user closes the app
   useEffect(() => {
