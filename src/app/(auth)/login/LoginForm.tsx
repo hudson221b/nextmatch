@@ -16,6 +16,7 @@ import { signInUser } from "@/app/actions/authActions"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 import SocialLogin from "./SocialLogin"
+import PasswordInput from "@/components/PasswordInput"
 
 const LoginForm: React.FC = () => {
   const {
@@ -63,13 +64,10 @@ const LoginForm: React.FC = () => {
               isInvalid={!!errors.email}
               errorMessage={errors.email?.message}
             />
-            <Input
-              {...register("password")}
-              type="password"
-              label="Password"
-              variant="bordered"
+            <PasswordInput
+              registerReturn={register("password")}
               isInvalid={!!errors.password}
-              errorMessage={errors.password?.message}
+              errorMessage={errors.password?.message as string}
             />
             <Button
               fullWidth

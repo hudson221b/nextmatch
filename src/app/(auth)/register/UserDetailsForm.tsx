@@ -1,10 +1,11 @@
 "use client"
 
+import PasswordInput from "@/components/PasswordInput"
 import { Input } from "@nextui-org/react"
 import { useFormContext } from "react-hook-form"
 
 /**
- * Form to collect info for register a user 
+ * Form to collect info for register a user
  */
 export default function UserDetailsForm() {
   const {
@@ -12,6 +13,7 @@ export default function UserDetailsForm() {
     formState: { errors },
     getValues,
   } = useFormContext()
+
   return (
     <>
       <Input
@@ -30,11 +32,8 @@ export default function UserDetailsForm() {
         errorMessage={errors.email?.message as string}
         defaultValue={getValues("email")}
       />
-      <Input
-        {...register("password")}
-        type={"password"}
-        label="Password"
-        variant="bordered"
+      <PasswordInput
+        registerReturn={register("password")}
         isInvalid={!!errors.password}
         errorMessage={errors.password?.message as string}
       />
