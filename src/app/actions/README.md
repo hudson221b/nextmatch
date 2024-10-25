@@ -1,1 +1,0 @@
-This folder is a place for server side operations initiated from front-end.
