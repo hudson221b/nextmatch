@@ -63,15 +63,7 @@ export default function MessageBox({ message, userId }: Props) {
     )
   }
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [message])
 
   return (
     <BoxWrapper isCurrentUserSender={isSender}>
@@ -85,7 +77,7 @@ export default function MessageBox({ message, userId }: Props) {
           </span>
         )}
       </Bubble>
-      <div ref={messagesEndRef}></div>
+  
     </BoxWrapper>
   )
 }

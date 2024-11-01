@@ -14,8 +14,9 @@ A small dating app to help you find the next match in this small world
 ## Table of Content:
 
 - [Features](#features)
-- [Technologies](#technologies)
+- [Technocal highlights](#technical-highlights)
 - [Challenges](#challenges)
+- [Tech stacks](#tech-stacks)
 
 ## Features
 - Social sign-in with Google and Github account
@@ -34,21 +35,22 @@ https://github.com/user-attachments/assets/554f258a-7513-464b-b5f1-abb74bc7d972
 - Email verification & password reset
 
 
-## Technologies
-- Full-stack framework:  Next.js, Typescript, React
-- Database: Prisma ORM, Neon Tech PostgresSQL
-- Middleware and authentication: Auth.js V5
-- UI: NextUI, TailwindCSS
-- Hosting: Vercel
-- Others: Web socket service Pusher Channels, Resend email service, react-hook-form, Zod, Zustand
+## Technical Highlights
+- Client-side form validation and server-side validation using the same Zod schema
 
 ## Challenges
 I have came across a lot of blockers, pitfalls and my solutions during each logic section of building this app. They are documented in each of my PRs. To summarize, some of the biggest challenges are:
 - Conventions and quirks using Next.js 
 - Setting up Auth.js and configuring JWT session strategy
 - Prisma schema update, migration and seeding
-- Choosing filtering strategy: from search params change to zustand states to UI, or from zustand state change to search params to UI?
 
+## Tech stacks
+- Full-stack framework:  Next.js, Typescript
+- Database: Prisma ORM, Neon Tech PostgresSQL
+- Authentication: Auth.js V5
+- UI: NextUI, TailwindCSS
+- Hosting: Vercel
+- Others: Web socket service Pusher Channels, Resend email service, react-hook-form, Zod, Zustand
 
 
 

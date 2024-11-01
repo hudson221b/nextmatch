@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client"
 
+// this var is made purely to silence ts check
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-export const prisma =
-  globalForPrisma.prisma || new PrismaClient({ log: ["query"] })
+if (!globalForPrisma.prisma) {
+  globalForPrisma.prisma = new PrismaClient()
+}
 
-// makes sure in development mode, the hot module reloading does not create multiple prisma client
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
+export const prisma = globalForPrisma.prisma

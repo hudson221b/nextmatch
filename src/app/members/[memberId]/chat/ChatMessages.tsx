@@ -20,8 +20,8 @@ export default function ChatMessages({
   userId,
 }: Props) {
   const [messages, setMessages] = useState(initialMessages)
-
   const channelRef = useRef<Channel | null>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const handleNewMessage = useCallback(
     (message: MessageDTO) => {
@@ -48,6 +48,11 @@ export default function ChatMessages({
     [setMessages]
   )
 
+  // makes sure whenever a new message is sent or received, Chat box always scroll to the bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
+
   useEffect(() => {
     if (!channelRef.current) {
       channelRef.current = pusherClient.subscribe(channelName)
@@ -70,6 +75,7 @@ export default function ChatMessages({
       {messages.map(message => (
         <MessageBox message={message} userId={userId} key={message.id} />
       ))}
+      <div ref={messagesEndRef} ></div>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { getChatMessages } from "@/app/actions/messageActions"
 import { getCurrentUserId } from "@/app/actions/authActions"
 import { generateChatChannelName } from "@/lib/util"
 import ChatMessages from "./ChatMessages"
+import styles from "@/app/NextUIOverride.module.css"
 
 export default async function ChatPage({
   params,
@@ -28,5 +29,7 @@ export default async function ChatPage({
     </div>
   )
 
-  return <CardInnerWrapper header="Chat" body={body} footer={<ChatForm />} />
+  return <CardInnerWrapper header="Chat" body={body} footer={<ChatForm />}  classNames={{
+    footer: styles.footer,
+  }}/>
 }
