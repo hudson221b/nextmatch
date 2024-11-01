@@ -19,7 +19,7 @@ export default function MemberCard({ member, likeIds }: memberCardProps) {
   const age = differenceInYears(new Date(), member.dateOfBirth)
   const isLiked = likeIds.includes(member.userId)
   return (
-    <Card fullWidth as={Link} href={`/members/${member.userId}`}>
+    <Card w-fit as={Link} href={`/members/${member.userId}`} className="mx-auto">
       <Image
         isZoomed
         alt={`${member.name} image`}
